@@ -17,6 +17,7 @@ namespace PowerSystemLibrary.Entity
     {
         [Key]
         public int ID { get; set; }
+        public string No { get; set; }
         public int OperationID { get; set; }
         public int UserID { get; set; }
         public int DepartmentID { get; set; }

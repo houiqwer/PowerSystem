@@ -66,22 +66,32 @@ namespace PowerSystemLibrary.DBContext
 
         public void Init(T context)
         {
+            Department department = context.Set<Department>().FirstOrDefault();
+            if (department == null)
+            {
+                context.Set<Department>().AddOrUpdate(t => t.Name, new Department()
+                {
+                    Name = "测试部门",
+                    No = "1",
+                });
+                context.SaveChanges();
+                department = context.Set<Department>().FirstOrDefault(t => t.Name == "测试部门");
+            }
 
-            //SysUser user = context.Set<SysUser>().FirstOrDefault(t => t.UserName == "admin");
-            //if (user == null)
-            //{
-            //    context.Set<SysUser>().AddOrUpdate(t => t.UserName, new SysUser()
-            //    {
-            //        UserName = "admin",
-            //        RealName = "超级管理员",
-            //        Password = new BaseUtil().BuildPassword("admin", "yzy@2021"),
-            //        CellPhone = "18888888888",
-            //        Post = "超管",
-            //        DepartmentID = department.ID
-            //    });
-            //    context.SaveChanges();
-            //    user = context.Set<SysUser>().FirstOrDefault(t => t.UserName == "admin");
-            //}
+            User user = context.Set<User>().FirstOrDefault(t => t.Username == "admin");
+            if (user == null)
+            {
+                context.Set<User>().AddOrUpdate(t => t.Username, new User()
+                {
+                    Username = "admin",
+                    Realname = "超级管理员",
+                    Password = new BaseUtil().BuildPassword("admin", "admin"),
+                    Cellphone = "18888888888",                  
+                    DepartmentID = department.ID
+                });
+                context.SaveChanges();
+                user = context.Set<User>().FirstOrDefault(t => t.Username == "admin");
+            }
 
 
 

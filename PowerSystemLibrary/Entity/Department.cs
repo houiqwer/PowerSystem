@@ -19,6 +19,10 @@ namespace PowerSystemLibrary.Entity
         [Required(ErrorMessage = "请输入部门名称")]
         [ExchangeType]
         public string Name { get; set; }
+        [Required(ErrorMessage = "请输入部门编号")]
+        [ExchangeType]
+        public string No { get; set; }
+        public int? ParentID { get; set; }
         public bool? IsDelete { get; set; }
     }
 }

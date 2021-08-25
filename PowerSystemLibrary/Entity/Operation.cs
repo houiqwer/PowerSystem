@@ -21,10 +21,11 @@ namespace PowerSystemLibrary.Entity
         public int UserID { get; set; }
         public int AHID { get; set; }
         //申请时间
-        public DateTime CreateDate { get; set; } = DateTime.Now;
-        public OperationType OperationType { get; set; }
+        public DateTime CreateDate { get; set; } = DateTime.Now;     
         public VoltageType VoltageType { get; set; }
         public OperationFlow OperationFlow { get; set; }
         public bool IsConfirm { get; set; }
+        [NotMapped]
+        public ApplicationSheet ApplicationSheet { get; set; }
     }
 }

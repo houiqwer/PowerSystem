@@ -25,11 +25,11 @@ namespace PowerSystemLibrary.Enum
         撤回 = 6
     }
 
-    public enum OperationType
-    {
-        停电 = 1,
-        送电 = 2
-    }
+    //public enum OperationType
+    //{
+    //    停电 = 1,
+    //    送电 = 2
+    //}
 
     public enum OperationFlow
     {

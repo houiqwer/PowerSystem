@@ -47,9 +47,12 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
@@ -65,9 +68,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\OperationBLL.cs" />
+    <Compile Include="DAO\LogDAO.cs" />
     <Compile Include="DBContext\PowerSystemDBContext.cs" />
     <Compile Include="Entity\AH.cs" />
     <Compile Include="Entity\ApplicationSheet.cs" />
+    <Compile Include="Entity\EnumEntity.cs" />
     <Compile Include="Entity\Log.cs" />
     <Compile Include="Entity\Menu.cs" />
     <Compile Include="Entity\Role.cs" />
@@ -76,6 +82,10 @@
     <Compile Include="Entity\ElectricalTask.cs" />
     <Compile Include="Entity\TaskUser.cs" />
     <Compile Include="Entity\User.cs" />
+    <Compile Include="Util\ApiResult.cs" />
+    <Compile Include="Util\BaseUtil.cs" />
+    <Compile Include="Util\ExceptionUtil.cs" />
+    <Compile Include="Util\LoginHelper.cs" />
     <Compile Include="Enum\OperationEnum.cs" />
     <Compile Include="Enum\ApiResultEnum.cs" />
     <Compile Include="Enum\AHEnum.cs" />
@@ -89,8 +99,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BLL\" />
-    <Folder Include="DAO\" />
     <Folder Include="Filter\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
