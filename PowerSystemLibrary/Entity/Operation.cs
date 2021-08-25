@@ -1,0 +1,30 @@
+﻿using PowerSystemLibrary.Enum;
+using PowerSystemLibrary.Util;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PowerSystemLibrary.Entity
+{
+    [Table("Tb_Operation")]
+    [Description("作业")]
+    public class Operation
+    {
+        [Key]
+        public int ID { get; set; }
+        //申请人
+        public int UserID { get; set; }
+        public int AHID { get; set; }
+        //申请时间
+        public DateTime CreateDate { get; set; } = DateTime.Now;
+        public OperationType OperationType { get; set; }
+        public VoltageType VoltageType { get; set; }
+        public OperationFlow OperationFlow { get; set; }
+        public bool IsConfirm { get; set; }
+    }
+}
