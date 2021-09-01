@@ -14,4 +14,13 @@ namespace PowerSystemLibrary.Enum
         停电 = 1,
         掉线 = 99
     }
+
+    public enum VoltageType
+    {
+        [Description("DY")]
+        低压 = 1,
+        [Description("GY")]
+        高压 = 2
+    }
+
 }

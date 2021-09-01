@@ -10,7 +10,7 @@ using PowerSystemLibrary.Enum;
 
 namespace PowerSystemLibrary.Entity
 {
-    [Table("Table_Log")]
+    [Table("Tb_Log")]
     [Description("日志")]
     public class Log
     {

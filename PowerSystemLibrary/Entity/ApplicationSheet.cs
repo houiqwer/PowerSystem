@@ -17,17 +17,21 @@ namespace PowerSystemLibrary.Entity
     {
         [Key]
         public int ID { get; set; }
-        public string No { get; set; }
+        public string NO { get; set; }
         public int OperationID { get; set; }
         public int UserID { get; set; }
         public int DepartmentID { get; set; }
-        public Audit Audit { get; set; }
         public DateTime BeginDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         [Required(ErrorMessage = "请输入工作内容")]
         [ExchangeType]
         public string WorkContent { get; set; }
+
+        public Audit Audit { get; set; } = Audit.待审核;
+        public int? AuditUserID { get; set; }
+        public DateTime? AuditDate { get; set; }
+        public string AuditMessage { get; set; }
         public bool? IsDelete { get; set; }
     }
 }

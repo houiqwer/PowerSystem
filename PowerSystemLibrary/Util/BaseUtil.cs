@@ -565,5 +565,21 @@ namespace PowerSystemLibrary.Util
             reader.Close();
             return (JObject)JsonConvert.DeserializeObject(content);
         }
+
+
+        public static string ToDescription(object enumeration)
+        {
+            Type type = enumeration.GetType();
+            MemberInfo[] memInfo = type.GetMember(enumeration.ToString());
+            if (null != memInfo && memInfo.Length > 0)
+            {
+                object[] attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+                if (null != attrs && attrs.Length > 0)
+                    return ((DescriptionAttribute)attrs[0]).Description;
+            }
+            return enumeration.ToString();
+        }
+
+
     }
 }

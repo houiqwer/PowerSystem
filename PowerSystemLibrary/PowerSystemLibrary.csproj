@@ -68,20 +68,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\ApplicationSheetBLL.cs" />
+    <Compile Include="BLL\ElectricalTaskBLL.cs" />
+    <Compile Include="BLL\AccountBLL.cs" />
     <Compile Include="BLL\OperationBLL.cs" />
     <Compile Include="DAO\LogDAO.cs" />
     <Compile Include="DBContext\PowerSystemDBContext.cs" />
     <Compile Include="Entity\AH.cs" />
     <Compile Include="Entity\ApplicationSheet.cs" />
+    <Compile Include="Entity\AuditProcess.cs" />
     <Compile Include="Entity\EnumEntity.cs" />
     <Compile Include="Entity\Log.cs" />
     <Compile Include="Entity\Menu.cs" />
-    <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\Operation.cs" />
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\ElectricalTask.cs" />
-    <Compile Include="Entity\TaskUser.cs" />
+    <Compile Include="Entity\ElectricalTaskUser.cs" />
+    <Compile Include="Entity\UserRole.cs" />
     <Compile Include="Entity\User.cs" />
+    <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Filter\LoginRequiredAttribute.cs" />
     <Compile Include="Util\ApiResult.cs" />
     <Compile Include="Util\BaseUtil.cs" />
     <Compile Include="Util\ExceptionUtil.cs" />
@@ -93,14 +99,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ClassUtil.cs" />
     <Compile Include="Util\ParaUtil.cs" />
+    <Compile Include="Util\RequestHelper.cs" />
+    <Compile Include="Util\RoleUtil.cs" />
+    <Compile Include="Util\SheetUtil.cs" />
+    <Compile Include="Util\WeChatAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Filter\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

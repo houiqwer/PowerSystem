@@ -13,5 +13,11 @@ namespace PowerSystem
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            if (Context.Request.FilePath == "/" && System.IO.File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + "Login.html"))
+                Context.RewritePath("Login.html");
+        }
     }
 }

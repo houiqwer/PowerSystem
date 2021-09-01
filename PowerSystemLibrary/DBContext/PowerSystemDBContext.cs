@@ -31,7 +31,7 @@ namespace PowerSystemLibrary.DBContext
 
         public DbSet<Log> Log { get; set; }
         public DbSet<User> User { get; set; }
-        public DbSet<Role> Role { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
         public DbSet<Department> Department { get; set; }
         public DbSet<Menu> Menu { get; set; }
         public DbSet<ElectricalTask> ElectricalTask { get; set; }
@@ -39,6 +39,7 @@ namespace PowerSystemLibrary.DBContext
         public DbSet<AH> AH { get; set; }
         public DbSet<ApplicationSheet> ApplicationSheet { get; set; }
         public DbSet<Operation> Operation { get; set; }
+        public DbSet<AuditProcess> AuditProcess { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -92,8 +93,7 @@ namespace PowerSystemLibrary.DBContext
                 context.SaveChanges();
                 user = context.Set<User>().FirstOrDefault(t => t.Username == "admin");
             }
-
-
+                    
 
         }
     }

@@ -10,16 +10,15 @@ using System.Threading.Tasks;
 
 namespace PowerSystemLibrary.Entity
 {
-    [Table("Tb_Role")]
-    [Description("权限")]
-    public class Role
+    [Table("Tb_ElectricalTaskUser")]
+    [Description("任务接收人")]
+    public class ElectricalTaskUser
     {
         [Key]
         public int ID { get; set; }
-        [Required(ErrorMessage = "请输入权限名称")]
-        [ExchangeType]
-        public string Name { get; set; }
-        public int Level { get; set; }
-        public bool? IsDelete { get; set; }
+        public int UserID { get; set; }
+        public int ElectricalTaskID { get; set; }
+        public DateTime Date { get; set; }
+        public bool IsConfirm { get; set; } = false;
     }
 }

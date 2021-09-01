@@ -21,7 +21,7 @@ namespace PowerSystemLibrary.Entity
         [ExchangeType]
         public string Name { get; set; }
         public VoltageType VoltageType { get; set; }
-        public OperationFlow OperationFlow { get; set; }
+        public AHState AHState { get; set; }
         public bool? IsDelete { get; set; }
     }
 }

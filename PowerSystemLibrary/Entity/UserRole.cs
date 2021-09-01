@@ -1,4 +1,5 @@
-﻿using PowerSystemLibrary.Util;
+﻿using PowerSystemLibrary.Enum;
+using PowerSystemLibrary.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,14 +11,13 @@ using System.Threading.Tasks;
 
 namespace PowerSystemLibrary.Entity
 {
-    [Table("Tb_ElectricalTaskUser")]
-    [Description("任务接收人")]
-    public class ElectricalTaskUser
+    [Table("Tb_UserRole")]
+    [Description("用户权限")]
+    public class UserRole
     {
         [Key]
         public int ID { get; set; }
         public int UserID { get; set; }
-        public int ElectricalTaskID { get; set; }
-        public bool IsConfirm { get; set; } = false;
+        public Role Role { get; set; }
     }
 }

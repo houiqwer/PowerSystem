@@ -26,9 +26,9 @@ namespace PowerSystemLibrary.Entity
         public string Cellphone { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public string Token { get; set; }
-        public DateTime Expire { get; set; }
+        public DateTime? Expire { get; set; }
         public bool? IsDelete { get; set; }
-        public string WeiXinID { get; set; }
+        public string WeChatID { get; set; }
         public int DepartmentID { get; set; }
     }
 }

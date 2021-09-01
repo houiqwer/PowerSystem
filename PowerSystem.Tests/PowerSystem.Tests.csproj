@@ -60,9 +60,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PowerSystemLibrary\PowerSystemLibrary.csproj">
+      <Project>{85d513ff-2dbe-47d7-b3bc-2f15deaba011}</Project>
+      <Name>PowerSystemLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PowerSystem\PowerSystem.csproj">
       <Project>{AD59ED2F-E113-4DFB-82DA-9B06095E1865}</Project>
       <Name>PowerSystem</Name>
