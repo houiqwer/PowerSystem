@@ -23,6 +23,8 @@ namespace PowerSystemLibrary.Entity
         [ExchangeType]
         public string Realname { get; set; }
         public string Password { get; set; }
+
+        [ExchangeType]
         public string Cellphone { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public string Token { get; set; }
@@ -33,5 +35,8 @@ namespace PowerSystemLibrary.Entity
 
         [NotMapped]
         public string NewPassword { get; set; }
+
+        [NotMapped]
+        public List<int> RoleIDList { get; set; }
     }
 }

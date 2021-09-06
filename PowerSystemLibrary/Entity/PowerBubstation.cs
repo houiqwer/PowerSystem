@@ -1,5 +1,4 @@
-﻿using PowerSystemLibrary.Enum;
-using PowerSystemLibrary.Util;
+﻿using PowerSystemLibrary.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,20 +10,17 @@ using System.Threading.Tasks;
 
 namespace PowerSystemLibrary.Entity
 {
-    [Table("Tb_AH")]
-    [Description("开关柜")]
-    public class AH
+    [Table("Tb_PowerBubstation")]
+    [Description("变电所")]
+    public class PowerBubstation
     {
         [Key]
         public int ID { get; set; }
-        [Required(ErrorMessage = "请输入开关柜名称")]
+
+        [Required(ErrorMessage = "请输入变电所名称")]
         [ExchangeType]
         public string Name { get; set; }
-        public VoltageType VoltageType { get; set; }
-        public AHState AHState { get; set; }
-        [Required(ErrorMessage = "请选择变电所")]
-        [ExchangeType]
-        public int PowerBubstationID { get; set; }
+
         public bool? IsDelete { get; set; }
     }
 }

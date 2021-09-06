@@ -104,10 +104,16 @@
     <Compile Include="App_Start\HttpHeaderFilter.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AHController.cs" />
     <Compile Include="Controllers\ApplicationSheetController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OperationController.cs" />
     <Compile Include="Controllers\ElectricalTaskController.cs" />
+    <Compile Include="Controllers\PowerBubstationController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\WeChatController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

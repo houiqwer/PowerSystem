@@ -24,6 +24,13 @@ namespace PowerSystemLibrary.Entity
         [Required(ErrorMessage = "请输入菜单地址")]
         [ExchangeType]
         public string URL { get; set; }
+
+        /// <summary>
+        /// 图标  
+        /// </summary>
+        [ExchangeType]
+        public string Icon { get; set; }
+
         public int? ParentID { get; set; }
         public int? Order { get; set; }
         public bool? IsDelete { get; set; }

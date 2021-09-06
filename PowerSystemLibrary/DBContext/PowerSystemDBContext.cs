@@ -40,6 +40,8 @@ namespace PowerSystemLibrary.DBContext
         public DbSet<ApplicationSheet> ApplicationSheet { get; set; }
         public DbSet<Operation> Operation { get; set; }
         public DbSet<AuditProcess> AuditProcess { get; set; }
+        public DbSet<PowerBubstation> PowerBubstation { get; set; }
+        public DbSet<Role_Right> Role_Right { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -100,6 +102,22 @@ namespace PowerSystemLibrary.DBContext
                 });
                 context.SaveChanges();
 
+            }
+
+            PowerBubstation powerBubstation = context.Set<PowerBubstation>().FirstOrDefault();
+            if (powerBubstation == null)
+            {
+                context.Set<PowerBubstation>().AddOrUpdate(t => t.Name, new PowerBubstation()
+                {
+                    Name = "4#变电所",
+                    
+                });
+                context.Set<PowerBubstation>().AddOrUpdate(t => t.Name, new PowerBubstation()
+                {
+                    Name = "5#变电所",
+
+                });
+                context.SaveChanges();
             }
 
 

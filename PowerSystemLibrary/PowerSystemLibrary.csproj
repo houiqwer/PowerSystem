@@ -68,14 +68,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\AHBLL.cs" />
     <Compile Include="BLL\ApplicationSheetBLL.cs" />
+    <Compile Include="BLL\DepartmentBLL.cs" />
     <Compile Include="BLL\ElectricalTaskBLL.cs" />
     <Compile Include="BLL\AccountBLL.cs" />
+    <Compile Include="BLL\MenuBLL.cs" />
     <Compile Include="BLL\OperationBLL.cs" />
+    <Compile Include="BLL\PowerBubstationBLL.cs" />
     <Compile Include="BLL\UserBLL.cs" />
+    <Compile Include="BLL\WeChatBLL.cs" />
+    <Compile Include="DAO\DepartmentDAO.cs" />
     <Compile Include="DAO\LogDAO.cs" />
     <Compile Include="DBContext\PowerSystemDBContext.cs" />
     <Compile Include="Entity\AH.cs" />
+    <Compile Include="Entity\AjaxPost.cs" />
     <Compile Include="Entity\ApplicationSheet.cs" />
     <Compile Include="Entity\AuditProcess.cs" />
     <Compile Include="Entity\EnumEntity.cs" />
@@ -85,6 +92,8 @@
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\ElectricalTask.cs" />
     <Compile Include="Entity\ElectricalTaskUser.cs" />
+    <Compile Include="Entity\PowerBubstation.cs" />
+    <Compile Include="Entity\Role_Right.cs" />
     <Compile Include="Entity\UserRole.cs" />
     <Compile Include="Entity\User.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
