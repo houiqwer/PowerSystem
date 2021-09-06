@@ -30,5 +30,8 @@ namespace PowerSystemLibrary.Entity
         public bool? IsDelete { get; set; }
         public string WeChatID { get; set; }
         public int DepartmentID { get; set; }
+
+        [NotMapped]
+        public string NewPassword { get; set; }
     }
 }

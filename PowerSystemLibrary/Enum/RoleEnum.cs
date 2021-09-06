@@ -14,6 +14,12 @@ namespace PowerSystemLibrary.Enum
         电工代班 = 2,
         部门副职 = 3,
         部门正职 = 4,
-        分管领导 = 5
+        分管领导 = 5,
+
+
+
+        系统管理员 = 99
+
+
     }
 }

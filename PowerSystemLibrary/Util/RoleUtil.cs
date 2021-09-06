@@ -20,11 +20,20 @@ namespace PowerSystemLibrary.Util
             return roleList;
         }
 
-        //申请单审核人
+        //电工
         public static List<Role> GetElectricianRoleList()
         {
             List<Role> roleList = new List<Role>();
             roleList.Add(Role.电工);
+
+            return roleList;
+        }
+
+        //系统管理员
+        public static List<Role> GetAdminRoleList()
+        {
+            List<Role> roleList = new List<Role>();
+            roleList.Add(Role.系统管理员);
 
             return roleList;
         }

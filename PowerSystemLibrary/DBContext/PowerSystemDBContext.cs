@@ -87,13 +87,21 @@ namespace PowerSystemLibrary.DBContext
                     Username = "admin",
                     Realname = "超级管理员",
                     Password = new BaseUtil().BuildPassword("admin", "admin"),
-                    Cellphone = "18888888888",                  
+                    Cellphone = "18888888888",
                     DepartmentID = department.ID
                 });
                 context.SaveChanges();
                 user = context.Set<User>().FirstOrDefault(t => t.Username == "admin");
+
+                context.Set<UserRole>().AddOrUpdate(t => t.UserID, new UserRole()
+                {
+                    UserID = user.ID,
+                    Role = Role.系统管理员
+                });
+                context.SaveChanges();
+
             }
-                    
+
 
         }
     }

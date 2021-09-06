@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
+using Newtonsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PowerSystemLibrary.Entity;
 using PowerSystemLibrary.Enum;
 
 namespace PowerSystemLibrary.Util
@@ -14,10 +18,41 @@ namespace PowerSystemLibrary.Util
         public class TemporaryAccessToken
         {
             public string AccessToken { get; set; }
+            public string Secret { get; set; }
             //企业微信为7200秒
             public DateTime Expire { get; set; }
         }
-        public static TemporaryAccessToken temporaryAccessToken = new TemporaryAccessToken();
+        public static List<TemporaryAccessToken> temporaryAccessTokenList = new List<TemporaryAccessToken>();
+
+        public static JObject BlindUser(string access_token, User user)
+        {
+            StringBuilder sBuilder = new StringBuilder();
+            sBuilder.Append("{");
+            sBuilder.Append("\"userid\": \"" + user.Cellphone + "\",");
+            sBuilder.Append("\"name\": \"" + user.Realname + "\",");
+            sBuilder.Append("\"department\": [1],");
+            sBuilder.Append("\"mobile\": \"" + user.Cellphone + "\",");
+            sBuilder.Append("\"enable\": " + 1 + ",");
+            sBuilder.Append("\"extattr\": {}");
+            sBuilder.Append("}");
+
+            string result = RequestHelper.Post(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token=", access_token), sBuilder.ToString());
+            return (JObject)JsonConvert.DeserializeObject(result);
+        }
+
+        public static JObject DeleteUser(string access_token, List<User> userList)
+        {
+            JObject userJObject = new JObject();
+            JArray userWeChatIDJArray = new JArray();
+            foreach (User user in userList)
+            {
+                userWeChatIDJArray.Add(user.WeChatID);
+            }
+            userJObject.Add("useridlist", userWeChatIDJArray);
+
+            string result = RequestHelper.RequestUrl(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/batchdelete?access_token=", access_token), JsonConvert.SerializeObject(userJObject));
+            return (JObject)JsonConvert.DeserializeObject(result);
+        }
 
         public static string GetUserInfo(string access_token, string code)
         {
@@ -27,6 +62,7 @@ namespace PowerSystemLibrary.Util
             else
                 return RequestHelper.Json(result, "errcode");
         }
+
         /// <summary>
         /// 获取微信用户信息
         /// </summary>
@@ -38,13 +74,14 @@ namespace PowerSystemLibrary.Util
             return RequestHelper.RequestUrl(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token={0}&userid={1}", access_token, userid));
             //return Json(user, "mobile");
         }
+
         /// <summary>
         /// 获取access_token
         /// </summary>
         /// <param name="CorpID"></param>
         /// <param name="CorpSecret"></param>
         /// <returns></returns>
-        public static string GetAccess_Token(string CorpID, string CorpSecret)
+        public static string GetAccessToken(string CorpID, string CorpSecret)
         {
             string access_Token = RequestHelper.RequestUrl(string.Format("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={0}&corpsecret={1}", CorpID, CorpSecret));
             return RequestHelper.Json(access_Token, "access_token");
@@ -110,24 +147,25 @@ namespace PowerSystemLibrary.Util
         public static string GetToken(string corpID, string secret)
         {
             DateTime date = DateTime.Now;
-         
+
             string accessToken = string.Empty;
 
+            TemporaryAccessToken temporaryAccessToken = temporaryAccessTokenList.FirstOrDefault(t => t.Secret == secret);
             if (temporaryAccessToken == null)
             {
                 temporaryAccessToken = new TemporaryAccessToken
                 {
-                    AccessToken = GetAccess_Token(corpID, secret),
+                    AccessToken = GetAccessToken(corpID, secret),
+                    Secret = secret,
                     //过期时间
                     Expire = date.AddSeconds(6800),
                 };
+                temporaryAccessTokenList.Add(temporaryAccessToken);
                 accessToken = temporaryAccessToken.AccessToken;
-
             }
             else
             {
                 //未过有效期
-
                 if (temporaryAccessToken.Expire > date)
                 {
                     accessToken = temporaryAccessToken.AccessToken;
@@ -136,13 +174,13 @@ namespace PowerSystemLibrary.Util
                 //过了有效期
                 else
                 {
-                    temporaryAccessToken.AccessToken = GetAccess_Token(corpID, secret);
+                    temporaryAccessToken.AccessToken = GetAccessToken(corpID, secret);
                     temporaryAccessToken.Expire = date.AddSeconds(6800);
                     accessToken = temporaryAccessToken.AccessToken;
                 }
             }
             return accessToken;
-        }        
+        }
 
 
 

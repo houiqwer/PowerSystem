@@ -19,5 +19,7 @@ namespace PowerSystemLibrary.Entity
         public int ID { get; set; }
         public int UserID { get; set; }
         public Role Role { get; set; }
+        [NotMapped]
+        public string RoleName { get; set; }
     }
 }

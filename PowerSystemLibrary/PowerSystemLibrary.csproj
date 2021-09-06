@@ -72,6 +72,7 @@
     <Compile Include="BLL\ElectricalTaskBLL.cs" />
     <Compile Include="BLL\AccountBLL.cs" />
     <Compile Include="BLL\OperationBLL.cs" />
+    <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="DAO\LogDAO.cs" />
     <Compile Include="DBContext\PowerSystemDBContext.cs" />
     <Compile Include="Entity\AH.cs" />
