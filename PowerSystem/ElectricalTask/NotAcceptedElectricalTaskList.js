@@ -57,7 +57,7 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/ElectricalTask/NotConfirmedList?ahID=' + ahID + '&electricalTaskType=' + electricalTaskType + "&beginDate=" + beginDate + "&endDate=" + endDate
+            , url: '/ElectricalTask/NotAcceptedList?ahID=' + ahID + '&electricalTaskType=' + electricalTaskType + "&beginDate=" + beginDate + "&endDate=" + endDate
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
@@ -142,8 +142,8 @@ function InitElectricalTaskType() {
         success: function (data) {
             if (data.code == 0) {
                 var html = "<option>所有作业</option>";
-                for (var i = 0; i < data.data.length; i++) {
-                    html += "<option value=\"" + data.data[i].EnumValue + "\">" + data.data[i].EnumName + "</option>";
+                for (var i = 0; i < data.data.List.length; i++) {
+                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
                 }
                 $("#electricalTaskType").html(html);
             }

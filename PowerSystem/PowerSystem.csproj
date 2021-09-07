@@ -97,6 +97,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AH\AHEdit.html" />
+    <Content Include="AH\AHEdit.js" />
     <Content Include="AH\AHList.js" />
     <Content Include="AH\AHList.html" />
     <Content Include="css\bootstrap.min.css" />
@@ -131,6 +133,8 @@
     <Content Include="Index.js" />
     <Content Include="Main.html" />
     <Content Include="Main.js" />
+    <Content Include="Operation\OperationAdd.html" />
+    <Content Include="Operation\OperationAdd.js" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\css\modules\code.css" />
     <Content Include="Scripts\css\modules\laydate\default\laydate.css" />
@@ -1094,7 +1098,6 @@
     <Content Include="SystemManage\MenuList.js" />
     <Content Include="SystemManage\RoleList.html" />
     <Content Include="SystemManage\RoleList.js" />
-    <Content Include="ElectricalTask\NoAcceptedElectricalTaskList.html" />
     <Content Include="SystemManage\RoleMenu.html" />
     <Content Include="SystemManage\UserList.html" />
     <Content Include="SystemManage\UserList.js" />

@@ -142,8 +142,8 @@ function InitElectricalTaskType() {
         success: function (data) {
             if (data.code == 0) {
                 var html = "<option>所有作业</option>";
-                for (var i = 0; i < data.data.length; i++) {
-                    html += "<option value=\"" + data.data[i].EnumValue + "\">" + data.data[i].EnumName + "</option>";
+                for (var i = 0; i < data.data.List.length; i++) {
+                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
                 }
                 $("#electricalTaskType").html(html);
             }

@@ -4,23 +4,20 @@
     GetLayui();
 })
 
-//JavaScript代码区域
+
 layui.use('element', function () {
     var element = layui.element;
 });
 
-//表单启用
 layui.use('form', function () {
-    var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+    var form = layui.form;
 })
 
-//表格
 var table = layui.table;
 
-//转换静态表格
 layui.use('table', function () {
     var table = layui.table;
-    //监听单元格事件
+
     table.on('tool(table)', function (obj) {
         var data = obj.data;
         if (obj.event === 'edit') {
@@ -31,10 +28,17 @@ layui.use('table', function () {
     });
 });
 
+function Add() {
+    window.location.href = "AHEdit.html";
+}
+
+function Edit(id) {
+    window.location.href = "AHEdit.html?id=" + id;
+}
 
 function Page() {
     var name = $("#name").val();
-    var voltageType = $("#voltageType").val();  
+    var voltageType = $("#voltageType").val();
 
     layui.use('table', function () {
         var table = layui.table;
@@ -42,15 +46,15 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/AH/List?name=' + ahID + '&voltageType=' + voltageType 
+            , url: '/AH/List?name=' + name + '&voltageType=' + voltageType
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
             , cols: [[
-                { field: 'AHName', align: 'center', title: '送电柜' }
-                , { field: 'ElectricalTaskTypeName', align: 'center', title: '作业类型' }
-                , { field: 'CreateDate', align: 'center', title: '发起日期' }
-                , { field: 'ReciveCount', align: 'center', title: '当前接收人数' }
+                { field: 'Name', align: 'center', title: '变电柜' }
+                , { field: 'VoltageTypeName', align: 'center', title: '电压' }
+                , { field: 'PowerSubstationName', align: 'center', title: '变电所' }
+                , { field: 'AHStateName', align: 'center', title: '当前状态' }
                 , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 160 }
             ]]
             , done: function (res, cur, count) {
@@ -72,9 +76,6 @@ $("#search").click(function () {
     Page();
 })
 
-
-
-
 function InitVoltageType() {
     var data = {
         type: "VoltageType"
@@ -90,9 +91,9 @@ function InitVoltageType() {
         },
         success: function (data) {
             if (data.code == 0) {
-                var html = "<option>所有作业</option>";
-                for (var i = 0; i < data.data.length; i++) {
-                    html += "<option value=\"" + data.data[i].EnumValue + "\">" + data.data[i].EnumName + "</option>";
+                var html = "<option>高压和低压</option>";
+                for (var i = 0; i < data.data.List.length; i++) {
+                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
                 }
                 $("#voltageType").html(html);
             }
@@ -111,21 +112,23 @@ function InitVoltageType() {
     })
 }
 
-
 function Delete(id) {
-    var path = "/AH/Delete";
-    var data = {
-        'ID': id,
-    };
-    if (basepost(data, path)) {
-        layer.alert("已删除", {
-            time: 0, //不自动关闭
-            btn: ['确定'],
-            title: "系统提示信息",
-            yes: function (index) {
-                layer.close(index);
-                Page();
-            }
-        });
-    }
+    layer.confirm("确认删除？", { title: "系统提示信息" }, function (index) {
+        var path = "/AH/Delete";
+        var data = {
+            'ID': id,
+        };
+        if (basepost(data, path)) {
+            layer.alert("已删除", {
+                time: 0, //不自动关闭
+                btn: ['确定'],
+                title: "系统提示信息",
+                yes: function (index) {
+                    layer.close(index);
+                    Page();
+                }
+            });
+        }
+    });
+   
 }
