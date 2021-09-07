@@ -49,5 +49,13 @@ namespace PowerSystemLibrary.BLL
                 return result;
             }
         }
+
+        public ApiResult RoleList()
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            result = ApiResult.NewSuccessJson(BaseUtil.EnumToList<Role>());
+            return result;
+        }
     }
 }

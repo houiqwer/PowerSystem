@@ -117,6 +117,8 @@
     <Content Include="css\w_safeindex.css" />
     <Content Include="css\w_safeindex2.css" />
     <Content Include="css\zTreeStyle.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="font\iconfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="HomePage1.html" />
@@ -142,6 +144,14 @@
     <Content Include="font\iconfont.eot" />
     <Content Include="font\iconfont.ttf" />
     <Content Include="font\iconfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <None Include="Scripts\jquery-3.6.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.6.0.js" />
     <Content Include="Scripts\jquery-3.6.0.min.js" />
@@ -552,8 +562,13 @@
     <Content Include="Scripts\UEditor\ueditor.parse.min.js" />
     <Content Include="Scripts\xm-select.js" />
     <Content Include="SystemManage\DepartmentList.html" />
+    <Content Include="SystemManage\DepartmentList.js" />
     <Content Include="SystemManage\LogList.html" />
     <Content Include="SystemManage\LogList.js" />
+    <Content Include="SystemManage\MenuList.html" />
+    <Content Include="SystemManage\MenuList.js" />
+    <Content Include="SystemManage\RoleList.html" />
+    <Content Include="SystemManage\RoleList.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
