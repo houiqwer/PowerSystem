@@ -117,7 +117,9 @@
     <Content Include="css\w_safeindex.css" />
     <Content Include="css\w_safeindex2.css" />
     <Content Include="css\zTreeStyle.css" />
-    <Content Include="ElectricalTask\NotConfirmedElectricalTaskList.js" />
+    <Content Include="ElectricalTask\AcceptedElectricalTaskList.html" />
+    <Content Include="ElectricalTask\AcceptedElectricalTaskList.js" />
+    <Content Include="ElectricalTask\NotAcceptedElectricalTaskList.js" />
     <Content Include="font\iconfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="HomePage1.html" />
@@ -555,7 +557,7 @@
     <Content Include="SystemManage\DepartmentList.html" />
     <Content Include="SystemManage\LogList.html" />
     <Content Include="SystemManage\LogList.js" />
-    <Content Include="ElectricalTask\NotConfirmedElectricalTaskList.html" />
+    <Content Include="ElectricalTask\NoAcceptedElectricalTaskList.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

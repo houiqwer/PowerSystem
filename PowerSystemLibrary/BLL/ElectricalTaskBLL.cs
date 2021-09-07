@@ -279,7 +279,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult NotConfirmedList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        public ApiResult NotAcceptedList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -350,9 +350,10 @@ namespace PowerSystemLibrary.BLL
                     endDate = endDate ?? DateTime.MaxValue;
                     User loginUser = LoginHelper.CurrentUser(db);
 
-                    IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>                   
+                    IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
                     (ahID == null || t.AHID == ahID) &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) != null &&
+                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && m.IsConfirm) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
                     (t.CreateDate >= beginDate && t.CreateDate <= endDate)
                     );
@@ -373,7 +374,7 @@ namespace PowerSystemLibrary.BLL
                             AHName = ahList.FirstOrDefault(t => t.ID == electricalTask.AHID).Name,
                             CreateDate = electricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"),
                             electricalTask.IsConfirm,
-                            //electricalTask.ReciveCount,
+                            electricalTask.ReciveCount,
                             ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType)
                         });
                     }

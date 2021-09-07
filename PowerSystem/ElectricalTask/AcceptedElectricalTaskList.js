@@ -33,8 +33,8 @@ layui.use('table', function () {
     //监听单元格事件
     table.on('tool(table)', function (obj) {
         var data = obj.data;
-        if (obj.event === 'accept') {
-            Accept(data.ID);
+        if (obj.event === 'confirm') {
+            Confirm(data.ID);
         }
     });
 });
@@ -57,7 +57,7 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/ElectricalTask/NotConfirmedList?ahID=' + ahID + '&electricalTaskType=' + electricalTaskType + "&beginDate=" + beginDate + "&endDate=" + endDate
+            , url: '/ElectricalTask/AcceptedList?ahID=' + ahID + '&electricalTaskType=' + electricalTaskType + "&beginDate=" + beginDate + "&endDate=" + endDate
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
@@ -163,18 +163,18 @@ function InitElectricalTaskType() {
 }
 
 
-function Accept(id) {
-    var path = "/ElectricalTask/Accept";
+function Confirm(id) {
+    var path = "/ElectricalTask/Confirm";
     var data = {
         'ID': id,
     };
     if (basepost(data, path)) {
-        layer.alert('领取成功！', {
+        layer.alert("已确认", {
             time: 0, //不自动关闭
             btn: ['确定'],
             title: "系统提示信息",
             yes: function (index) {
-                layer
+                layer.close(index);
                 Page();
             }
         });
