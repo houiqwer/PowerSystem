@@ -117,6 +117,9 @@
     <Content Include="css\w_safeindex.css" />
     <Content Include="css\w_safeindex2.css" />
     <Content Include="css\zTreeStyle.css" />
+    <Content Include="ElectricalTask\AcceptedElectricalTaskList.html" />
+    <Content Include="ElectricalTask\AcceptedElectricalTaskList.js" />
+    <Content Include="ElectricalTask\NotAcceptedElectricalTaskList.js" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="font\iconfont.svg" />
@@ -569,6 +572,7 @@
     <Content Include="SystemManage\MenuList.js" />
     <Content Include="SystemManage\RoleList.html" />
     <Content Include="SystemManage\RoleList.js" />
+    <Content Include="ElectricalTask\NoAcceptedElectricalTaskList.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -584,7 +588,7 @@
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OperationController.cs" />
     <Compile Include="Controllers\ElectricalTaskController.cs" />
-    <Compile Include="Controllers\PowerBubstationController.cs" />
+    <Compile Include="Controllers\PowerSubstationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WeChatController.cs" />
     <Compile Include="Global.asax.cs">

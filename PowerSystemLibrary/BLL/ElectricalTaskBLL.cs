@@ -259,7 +259,7 @@ namespace PowerSystemLibrary.BLL
                             CreateDate = electricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"),
                             electricalTask.ReciveCount,
                             electricalTask.IsConfirm,
-                            ElectricalTaskType = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType)
+                            ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType)
                         });
                     }
 
@@ -279,7 +279,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult NotConfirmedList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        public ApiResult NotAcceptedList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -295,6 +295,7 @@ namespace PowerSystemLibrary.BLL
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
                     t.IsConfirm != true &&
                     (ahID == null || t.AHID == ahID) &&
+                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
                     (t.CreateDate >= beginDate && t.CreateDate <= endDate)
                     );
@@ -305,7 +306,7 @@ namespace PowerSystemLibrary.BLL
 
                     List<object> returnList = new List<object>();
                     List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
-                    List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => electricalIDTaskList.Contains(t.ElectricalTaskID)).ToList();
+                    //List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => electricalIDTaskList.Contains(t.ElectricalTaskID)).ToList();
 
                     foreach (ElectricalTask electricalTask in electricalTaskList)
                     {
@@ -315,8 +316,66 @@ namespace PowerSystemLibrary.BLL
                             AHName = ahList.FirstOrDefault(t => t.ID == electricalTask.AHID).Name,
                             CreateDate = electricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"),
                             electricalTask.ReciveCount,
-                            ElectricalTaskType = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType),
-                            IsAccepted = electricalTaskUserList.Exists(t => t.ElectricalTaskID == electricalTask.ID && t.UserID == loginUser.ID)
+                            ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType),
+                            //IsAccepted = electricalTaskUserList.Exists(t => t.ElectricalTaskID == electricalTask.ID && t.UserID == loginUser.ID)
+                        });
+                    }
+
+                    result = ApiResult.NewSuccessJson(returnList, total);
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
+
+        public ApiResult AcceptedList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    beginDate = beginDate ?? DateTime.MinValue;
+                    endDate = endDate ?? DateTime.MaxValue;
+                    User loginUser = LoginHelper.CurrentUser(db);
+
+                    IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
+                    (ahID == null || t.AHID == ahID) &&
+                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) != null &&
+                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && m.IsConfirm) == null &&
+                    (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
+                    (t.CreateDate >= beginDate && t.CreateDate <= endDate)
+                    );
+                    int total = electricalTaskIQueryable.Count();
+                    List<ElectricalTask> electricalTaskList = electricalTaskIQueryable.OrderBy(t => t.IsConfirm).ThenByDescending(t => t.CreateDate).Skip((page - 1) * limit).Take(limit).ToList();
+                    List<int> ahIDList = electricalTaskList.Select(t => t.AHID).Distinct().ToList();
+                    List<int> electricalIDTaskList = electricalTaskList.Select(t => t.ID).ToList();
+
+                    List<object> returnList = new List<object>();
+                    List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
+                    //List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => electricalIDTaskList.Contains(t.ElectricalTaskID)).ToList();
+
+                    foreach (ElectricalTask electricalTask in electricalTaskList)
+                    {
+                        returnList.Add(new
+                        {
+                            electricalTask.ID,
+                            AHName = ahList.FirstOrDefault(t => t.ID == electricalTask.AHID).Name,
+                            CreateDate = electricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                            electricalTask.IsConfirm,
+                            electricalTask.ReciveCount,
+                            ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType)
                         });
                     }
 

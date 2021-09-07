@@ -29,6 +29,9 @@ namespace PowerSystemLibrary.BLL
                         case "Role":
                             enumList = BaseUtil.EnumToList<Role>();
                             break;
+                        case "ElectricalTaskType":
+                            enumList = BaseUtil.EnumToList<ElectricalTaskType>();
+                            break;
                         default:
                             message = "不存在该枚举数据";
                             break;
