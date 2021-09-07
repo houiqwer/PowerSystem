@@ -58,19 +58,19 @@ function list() {
                 var tree = $(".file-tree");
                 var html = "";
                 
-                for (var i = 0; i < data.data.returnList.length; i++) {
-                    html += "<li class='folder-root ' ><a href='javascript:;'  id=" + data.data.returnList[i].PModule.ID + ">" + data.data.returnList[i].PModule.Name + "</a><ul>";
-                    if (data.data.returnList[i].Module != null && data.data.returnList[i].Module.length > 0) {
-                        for (var j = 0; j < data.data.returnList[i].Module.length; j++) {
-                            if (data.data.returnList[i].Module[j].childlist != null && data.data.returnList[i].Module[j].childlist.length > 0) {
-                                html += "<li class='folder-root '><a href='javascript:;' id='" + data.data.returnList[i].Module[j].ID + "'>" + data.data.returnList[i].Module[j].Name + "</a><ul>";
-                                for (var k = 0; k < data.data.returnList[i].Module[j].childlist.length; k++) {
-                                    html += "<li><a href='javascript:;' name='child' id='" + data.data.returnList[i].Module[j].childlist[k].ID + "'>" + data.data.returnList[i].Module[j].childlist[k].Name + "</a></li>";
+                for (var i = 0; i < data.data.length; i++) {
+                    html += "<li class='folder-root ' ><a href='javascript:;'  id=" + data.data[i].PModule.ID + ">" + data.data[i].PModule.Name + "</a><ul>";
+                    if (data.data[i].Module != null && data.data[i].Module.length > 0) {
+                        for (var j = 0; j < data.data[i].Module.length; j++) {
+                            if (data.data[i].Module[j].childlist != null && data.data[i].Module[j].childlist.length > 0) {
+                                html += "<li class='folder-root '><a href='javascript:;' id='" + data.data[i].Module[j].ID + "'>" + data.data[i].Module[j].Name + "</a><ul>";
+                                for (var k = 0; k < data.data[i].Module[j].childlist.length; k++) {
+                                    html += "<li><a href='javascript:;' name='child' id='" + data.data[i].Module[j].childlist[k].ID + "'>" + data.data[i].Module[j].childlist[k].Name + "</a></li>";
                                 }
                                 html += "</ul></li>";
                             }
                             else
-                                html += "<li><a href='javascript:;' name='child' id='" + data.data.returnList[i].Module[j].ID + "'>" + data.data.returnList[i].Module[j].Name + "</a></li>";
+                                html += "<li><a href='javascript:;' name='child' id='" + data.data[i].Module[j].ID + "'>" + data.data[i].Module[j].Name + "</a></li>";
                         }
                     }
 

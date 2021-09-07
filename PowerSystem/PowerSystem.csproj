@@ -161,6 +161,9 @@
     <Content Include="Scripts\jquery-3.6.0.slim.js" />
     <Content Include="Scripts\jquery-3.6.0.slim.min.js" />
     <Content Include="Scripts\jquery.mousewheel.js" />
+    <Content Include="Scripts\laydate\laydate.js" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.svg" />
+    <Content Include="Scripts\laydate\theme\default\laydate.css" />
     <Content Include="Scripts\layer\layer.js" />
     <Content Include="Scripts\layer\layui.js" />
     <Content Include="Scripts\layer\skin\default\icon-ext.png" />
@@ -573,6 +576,7 @@
     <Content Include="SystemManage\RoleList.html" />
     <Content Include="SystemManage\RoleList.js" />
     <Content Include="ElectricalTask\NoAcceptedElectricalTaskList.html" />
+    <Content Include="SystemManage\RoleMenu.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -620,6 +624,9 @@
     <Content Include="Scripts\UEditor\third-party\video-js\font\vjs.eot" />
     <Content Include="Scripts\UEditor\third-party\video-js\font\vjs.ttf" />
     <Content Include="Scripts\UEditor\third-party\video-js\font\vjs.woff" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
