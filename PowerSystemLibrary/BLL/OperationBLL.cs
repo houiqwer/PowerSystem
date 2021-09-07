@@ -116,7 +116,65 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
+        public ApiResult Get(int id)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
 
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+
+                    Operation operation = db.Operation.FirstOrDefault(t => t.ID == id);
+
+                    if (operation == null)
+                    {
+                        throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new Operation()));
+                    }
+
+                    User user = db.User.FirstOrDefault(t => t.ID == operation.UserID);
+                    AH ah = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
+
+                    ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.OperationID == operation.ID);
+
+                    result = ApiResult.NewSuccessJson(new
+                    {
+                        operation.ID,
+                        user.Realname,
+                        AHName = ah.Name,
+                        CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                        VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                        OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                        operation.IsFinish,
+                        operation.IsConfirm,
+                        ApplicationSheet = new
+                        {
+                            applicationSheet.ID,
+                            user.Realname,
+                            AHName = ah.Name,
+                            CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                            BeginDate = applicationSheet.BeginDate.ToString("yyyy-MM-dd HH:mm"),
+                            EndDate = applicationSheet.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                            VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                            OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                            Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                        }
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
 
         public ApiResult List(int? departmentID = null, VoltageType? voltageType = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
         {
@@ -164,7 +222,7 @@ namespace PowerSystemLibrary.BLL
                             VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
                             OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
                             operation.IsFinish,
-                            operation.IsConfirm,                           
+                            operation.IsConfirm,
                             ApplicationSheet = new
                             {
                                 applicationSheet.ID,

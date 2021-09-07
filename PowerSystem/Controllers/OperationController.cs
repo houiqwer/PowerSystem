@@ -31,6 +31,17 @@ namespace PowerSystem.Controllers
         }
 
         /// <summary>
+        /// 获取停电申请
+        /// </summary>
+        /// <param name="id">停电申请id</param>
+        /// <returns></returns>
+        [HttpGet, Route("Get"), LoginRequired]
+        public ApiResult Get(int id)
+        {
+            return new OperationBLL().Get(id);
+        }
+
+        /// <summary>
         /// 停电申请列表
         /// </summary>
         /// <param name="departmentID">部门ID</param>
