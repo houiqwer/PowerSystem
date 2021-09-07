@@ -140,12 +140,17 @@ namespace PowerSystemLibrary.BLL
                     List<Operation> operationList = operationIQueryable.OrderByDescending(t => t.CreateDate).Skip((page - 1) * limit).Take(limit).ToList();
                     List<int> ahIDList = operationList.Select(t => t.AHID).Distinct().ToList();
                     List<int> userIDList = operationList.Select(t => t.UserID).Distinct().ToList();
+                    List<int> operationIDList = operationList.Select(t => t.ID).ToList();
 
                     List<object> returnList = new List<object>();
                     List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
                     List<User> userList = db.User.Where(t => userIDList.Contains(t.ID)).ToList();
+                    List<ApplicationSheet> applicationSheetList = db.ApplicationSheet.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
                     foreach (Operation operation in operationList)
                     {
+                        ApplicationSheet applicationSheet = applicationSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
+
                         returnList.Add(new
                         {
                             operation.ID,
@@ -155,7 +160,19 @@ namespace PowerSystemLibrary.BLL
                             VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
                             OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
                             operation.IsFinish,
-                            operation.IsConfirm
+                            operation.IsConfirm,                           
+                            ApplicationSheet = new
+                            {
+                                applicationSheet.ID,
+                                userList.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                                AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
+                                CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                                BeginDate = applicationSheet.BeginDate.ToString("yyyy-MM-dd HH:mm"),
+                                EndDate = applicationSheet.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                                VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                                OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                                Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                            }
                         });
                     }
 

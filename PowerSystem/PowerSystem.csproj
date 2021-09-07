@@ -133,6 +133,8 @@
     <Content Include="Index.js" />
     <Content Include="Main.html" />
     <Content Include="Main.js" />
+    <Content Include="Operation\OperationAdd.html" />
+    <Content Include="Operation\OperationAdd.js" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\css\modules\code.css" />
     <Content Include="Scripts\css\modules\laydate\default\laydate.css" />
