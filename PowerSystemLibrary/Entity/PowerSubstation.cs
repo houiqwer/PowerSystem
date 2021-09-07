@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace PowerSystemLibrary.Entity
 {
-    [Table("Tb_PowerBubstation")]
+    [Table("Tb_PowerSubstation")]
     [Description("变电所")]
-    public class PowerBubstation
+    public class PowerSubstation
     {
         [Key]
         public int ID { get; set; }

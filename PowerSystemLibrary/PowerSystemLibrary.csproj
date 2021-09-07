@@ -75,7 +75,7 @@
     <Compile Include="BLL\AccountBLL.cs" />
     <Compile Include="BLL\MenuBLL.cs" />
     <Compile Include="BLL\OperationBLL.cs" />
-    <Compile Include="BLL\PowerBubstationBLL.cs" />
+    <Compile Include="BLL\PowerSubstationBLL.cs" />
     <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="BLL\WeChatBLL.cs" />
     <Compile Include="DAO\DepartmentDAO.cs" />
@@ -92,7 +92,7 @@
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\ElectricalTask.cs" />
     <Compile Include="Entity\ElectricalTaskUser.cs" />
-    <Compile Include="Entity\PowerBubstation.cs" />
+    <Compile Include="Entity\PowerSubstation.cs" />
     <Compile Include="Entity\Role_Right.cs" />
     <Compile Include="Entity\UserRole.cs" />
     <Compile Include="Entity\User.cs" />

@@ -32,7 +32,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             throw new ExceptionUtil("请选择电压类型");
                         }
-                        if (db.PowerBubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerBubstationID) == null)
+                        if (db.PowerSubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerBubstationID) == null)
                         {
                             throw new ExceptionUtil("请选择所属变电所");
                         }
@@ -88,7 +88,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             throw new ExceptionUtil("请选择电压类型");
                         }
-                        if (db.PowerBubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerBubstationID) == null)
+                        if (db.PowerSubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerBubstationID) == null)
                         {
                             throw new ExceptionUtil("请选择所属变电所");
                         }
@@ -167,7 +167,7 @@ namespace PowerSystemLibrary.BLL
                         oldAH.ID,
                         oldAH.Name,
                         oldAH.PowerBubstationID,
-                        PowerBubstationName = db.PowerBubstation.FirstOrDefault(t=>t.ID == oldAH.PowerBubstationID).Name,
+                        PowerBubstationName = db.PowerSubstation.FirstOrDefault(t=>t.ID == oldAH.PowerBubstationID).Name,
                         oldAH.VoltageType,
                         VoltageTypeName = System.Enum.GetName(typeof(VoltageType), oldAH.VoltageType),
                         oldAH.AHState,
@@ -200,7 +200,7 @@ namespace PowerSystemLibrary.BLL
                     int total = aHList.Count;
                     aHList = aHList.Skip((page - 1) * limit).Take(limit).ToList();
                     List<int> powerBubstationIDList = aHList.Select(t => t.PowerBubstationID).Distinct().ToList();
-                    List<PowerBubstation> powerBubstationList = db.PowerBubstation.Where(t => powerBubstationIDList.Contains(t.ID)).ToList();
+                    List<PowerSubstation> powerBubstationList = db.PowerSubstation.Where(t => powerBubstationIDList.Contains(t.ID)).ToList();
 
                     List<object> returnList = new List<object>();
                     foreach (AH aH in aHList)
