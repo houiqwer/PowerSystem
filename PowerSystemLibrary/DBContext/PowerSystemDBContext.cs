@@ -74,11 +74,11 @@ namespace PowerSystemLibrary.DBContext
             {
                 context.Set<Department>().AddOrUpdate(t => t.Name, new Department()
                 {
-                    Name = "测试部门",
+                    Name = "安徽港口集团芜湖有限公司",
                     No = "1",
                 });
                 context.SaveChanges();
-                department = context.Set<Department>().FirstOrDefault(t => t.Name == "测试部门");
+                department = context.Set<Department>().FirstOrDefault(t => t.Name == "安徽港口集团芜湖有限公司");
             }
 
             User user = context.Set<User>().FirstOrDefault(t => t.Username == "admin");

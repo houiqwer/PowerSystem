@@ -83,5 +83,15 @@ namespace PowerSystem.Controllers
         {
             return new MenuBLL().RoleMenuAdd(ajaxPost.Role,ajaxPost.IDList);
         }
+
+        /// <summary>
+        /// 登陆页菜单
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, Route("MRoleList"), LoginRequired]
+        public ApiResult MRoleList()
+        {
+            return new MenuBLL().MRoleList();
+        }
     }
 }

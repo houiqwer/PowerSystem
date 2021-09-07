@@ -279,7 +279,7 @@ function del() {
                     , title: "系统提示信息"
                     , yes: function (index) {
                         layer.close(index);
-                        window.location.href = "Menu.html";
+                        window.location.href = "MenuList.html";
                     }
                 });
                 //dopage();

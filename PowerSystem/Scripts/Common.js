@@ -441,8 +441,8 @@ function ResetUserLogStatus(data) {
     store.expries = unity.dealWithDate(data.data.Expire);
 
 
-    localStorage.setItem("RealName", data.data.RealName);
-    localStorage.setItem("ProfilePicture", data.data.ProfilePicture);
+    localStorage.setItem("RealName", data.data.Realname);
+    //localStorage.setItem("ProfilePicture", data.data.ProfilePicture);
     localStorage.setItem("Expire", data.data.Expire); //token过期时间
     localStorage.setItem("Token", data.data.Token);
     localStorage.setItem("UserID", data.data.UserID);
@@ -462,12 +462,12 @@ function NewExtendToken() {
             if (data.code != 0) {
                 alert(data.msg);
                 localStorage.removeItem("Token");
-                window.location.href = "../../Login.html";
+                window.location.href = "../../Index.html";
             }
         },
         error: function() {
             alert("当前网络可能有错误");
-            window.location.href = "../../Login.html";
+            window.location.href = "../../Index.html";
         }
     });
 }

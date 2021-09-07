@@ -258,12 +258,6 @@ namespace PowerSystemLibrary.BLL
                             });
                         }
                         result = ApiResult.NewSuccessJson(returnList);
-
-                        //result = ApiResult.NewSuccessJson(new
-                        //{
-                        //    returnList,
-                        //    roleRightMenuIDList = roleRightList.Select(t => t.MenuID).ToList()
-                        //});
                     }
                     else
                     {
@@ -316,6 +310,54 @@ namespace PowerSystemLibrary.BLL
                 if (!string.IsNullOrEmpty(message))
                 {
                     result = ApiResult.NewErrorJson(LogCode.添加错误, message, db);
+                }
+            }
+            return result;
+        }
+
+
+        public ApiResult MRoleList()
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using(PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    User loginUser = LoginHelper.CurrentUser(db);
+                    List<UserRole> userRoleList = db.UserRole.Where(t => t.UserID == loginUser.ID).ToList();
+                    List<Role> roleList = userRoleList.Select(t => t.Role).ToList();
+                    List<int> menuIDList = db.Role_Right.Where(t => roleList.Contains(t.Role)).Select(t => t.MenuID).Distinct().ToList();
+                    List<Menu> menuList = db.Menu.Where(t => t.IsDelete != true && menuIDList.Contains(t.ID)).ToList();
+                    List<Menu> parentMenuList = menuList.Where(t => t.ParentID == 0 || t.ParentID == null).OrderBy(t=>t.Order).ToList();
+                    List<object> returnList = new List<object>();
+                    foreach (Menu menu in parentMenuList)
+                    {
+                        List<Menu> childMenuList = menuList.Where(t => t.ParentID == menu.ID).OrderBy(t=>t.Order).ToList();
+                        List<object> childList = new List<object>();
+                        foreach (Menu cMenu in childMenuList)
+                        {
+                            childList.Add(new
+                            {
+                                Module = cMenu,
+                                ChildModule = menuList.Where(t => t.ParentID == cMenu.ID).ToList(),
+                            });
+                        }
+                        returnList.Add(new
+                        {
+                            PModule = menu,
+                            Module = childList,
+                        });
+                    }
+                    result = ApiResult.NewSuccessJson(returnList);
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message;
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
                 }
             }
             return result;

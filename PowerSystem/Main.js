@@ -10,7 +10,7 @@
 function Menu() {
 
     $.ajax({
-        url: "/Menu/List",
+        url: "/Menu/MRoleList",
         type: "GET",
         async: false,
         dataType: "json",
@@ -26,16 +26,16 @@ function Menu() {
                         var dataUrl = "javascript:;"
                         if (data.data[i].PModule.URL.indexOf('html') > 0)
                             dataUrl = data.data[i].PModule.URL;
-                        html = html + " <a onclick=\"a('" + data.data[i].PModule.URL + "','" + data.data[i].PModule.Name + "')\" title='" + data.data[i].PModule.Name + "'    target=\"mainiframe\"><i class=\"" + data.data[i].PModule.Icon + "\"></i><span class=\"wext\">" + data.data[i].PModule.Name + "</span></a> ";
+                        html = html + " <a onclick=\"a('" + data.data[i].PModule.URL + "','" + data.data[i].PModule.Name + "')\" title='" + data.data[i].PModule.Name + "'    target=\"mainiframe\"><i class=\"" + data.data[i].PModule.ModuleIcon + "\"></i><span class=\"wext\">" + data.data[i].PModule.Name + "</span></a> ";
                         if (data.data[i].Module != null && data.data[i].Module.length > 0) {
                             html = html + "<dl class=\"layui-nav-child\">";
                             for (var j = 0; j < data.data[i].Module.length; j++) {
                                 html = html + "<dd>";
-                                html = html + "<a onclick=\"a('" + data.data[i].Module[j].URL + "','" + data.data[i].PModule.Name + ">" + data.data[i].Module[j].Name + "')\" target=\"mainiframe\">" + data.data[i].Module[j].Name + "</a>";
-                                if (data.data[i].Module[j].childlist != null && data.data[i].Module[j].childlist.length > 0) {
+                                html = html + "<a onclick=\"a('" + data.data[i].Module[j].Module.URL + "','" + data.data[i].PModule.Name + ">" + data.data[i].Module[j].Module.Name + "')\" target=\"mainiframe\">" + data.data[i].Module[j].Module.Name + "</a>";
+                                if (data.data[i].Module[j].ChildModule != null && data.data[i].Module[j].ChildModule.length > 0) {
                                     html = html + "<dl class=\"layui-nav-child\">";
-                                    for (var k = 0; k < data.data[i].Module[j].childlist.length; k++) {
-                                        html = html + "<dd><a onclick=\"a('" + data.data[i].Module[j].childlist[k].URL + "','" + data.data[i].PModule.Name + ">" + data.data[i].Module[j].ModuleName + ">" + data.data[i].Module[j].childlist[k].Name + "')\" target=\"mainiframe\">" + data.data[i].Module[j].childlist[k].Name + "</a></dd>";
+                                    for (var k = 0; k < data.data[i].Module[j].ChildModule.length; k++) {
+                                        html = html + "<dd><a onclick=\"a('" + data.data[i].Module[j].ChildModule[k].URL + "','" + data.data[i].PModule.Name + ">" + data.data[i].Module[j].Module.Name + ">" + data.data[i].Module[j].ChildModule[k].Name + "')\" target=\"mainiframe\">" + data.data[i].Module[j].ChildModule[k].Name + "</a></dd>";
                                     }
                                     html = html + "</dl>";
                                 }
@@ -46,6 +46,7 @@ function Menu() {
                         html = html + "</li>";
                     }
                     $("#menu").html(html);
+                    GetLayui();
                 }
             } else {
                 Failure(data);

@@ -153,6 +153,7 @@
     <Content Include="font\iconfont.woff" />
     <Content Include="Scripts\Select_menu_Checkbox.js" />
     <Content Include="SystemManage\DepartmentList.js" />
+    <Content Include="SystemManage\RoleMenu.js" />
     <Content Include="SystemManage\UserDetail.html" />
     <Content Include="SystemManage\UserDetail.js" />
     <Content Include="SystemManage\UserEdit.html" />
