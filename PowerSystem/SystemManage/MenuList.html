@@ -34,38 +34,53 @@
 
                                         <tbody>
                                             <tr id="parent">
-                                                <th><span>上级部门名称</span></th>
+                                                <th>上级菜单</th>
                                                 <td>
                                                     <div class="safe-grey">
-                                                        <input type="text" id="PDepName" name="title" lay-verify="title" autocomplete="off" disabled="disabled" class="layui-input ">
+                                                        <input type="text" id="ParentName" name="title" lay-verify="title" autocomplete="off"  disabled="disabled" class="layui-input" >
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th><span>部门名称</span></th>
+                                                <th><span>菜单名称</span></th>
                                                 <td>
                                                     <div class="safe-grey">
-                                                        <input type="text" id="DepName" name="title" lay-verify="title" autocomplete="off" placeholder="请输入部门名称" class="layui-input ">
+                                                        <input type="text" id="Name" name="title" lay-verify="title" autocomplete="off" placeholder="请输入菜单名称" class="layui-input" nullmsg="请输入菜单名称">
                                                     </div>
                                                 </td>
                                             </tr>
-                                            
                                             <tr>
-                                                <th><span>部门编号</span></th>
+                                                <th><span>链接地址</span></th>
                                                 <td>
                                                     <div class="safe-grey">
-                                                        <input type="text" id="No" name="title" lay-verify="title" autocomplete="off"  placeholder="请输入部门编号"  class="layui-input ">
+                                                        <input type="text" id="Url" name="title" lay-verify="title" autocomplete="off" placeholder="请输入链接地址" class="layui-input " nullmsg="请输入链接地址">
                                                     </div>
                                                 </td>
                                             </tr>
-                                            
+                                            <tr>
+                                                <th>图标</th>
+                                                <td>
+                                                    <div class="safe-grey">
+                                                        <input type="text" id="Icon" name="title" lay-verify="title" class="layui-input" placeholder="请输入图标">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>排序</th>
+                                                <td>
+                                                    <div class="safe-grey">
+                                                        <input type="text" id="Order" name="title" autocomplete="off"  placeholder="请输入排序号" class="layui-input ">
+                                                    </div>
+                                                </td>
+                                            </tr>
+
                                         </tbody>
                                     </table>
 
                                     <div class="safe-tijiao">
                                         <input type="button" value="立即提交" lay-submit lay-filter="formDemo" class="layui-btn bbl1">
-                                        <input type="button" value="添加下级部门" class="layui-btn bbl3" onclick="addChild()">
-                                        <input type="button" value="添加一级部门" class="layui-btn bg0" onclick="AddParent()">
+                                        <input type="button" value="添加下级菜单" class="layui-btn bbl3" onclick="addChild()">
+                                        <input type="button" value="添加一级菜单" class="layui-btn bg0" onclick="AddParent()">
                                         <input type="button" value="删除" class="layui-btn bred" onclick="del()">
                                     </div>
                                 </div>
@@ -87,7 +102,7 @@
 <script src="/Scripts/file-explore.js"></script>
 <script src="/Scripts/Common.js"></script>
 <script src="/Scripts/safe.js"></script>
-<script src="DepartmentList.js"></script>
+<script src="MenuList.js"></script>
 
 
 

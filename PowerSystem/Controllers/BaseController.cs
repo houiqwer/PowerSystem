@@ -25,5 +25,15 @@ namespace PowerSystem.Controllers
         {
             return new BaseBLL().GetEnum(type);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, Route("RoleList")]
+        public ApiResult RoleList()
+        {
+            return new BaseBLL().RoleList();
+        }
     }
 }
