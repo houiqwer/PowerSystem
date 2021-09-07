@@ -234,11 +234,7 @@ namespace PowerSystemLibrary.Util
         {
             List<EnumEntity> enumEntityList = new List<EnumEntity>();
             foreach (var e in System.Enum.GetValues(typeof(T)))
-            {
-                if (e.ToString().Contains("系统通知"))
-                {
-                    continue;
-                }
+            {               
                 EnumEntity enumEntity = new EnumEntity();
                 object[] objArr = e.GetType().GetField(e.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), true);
                 if (objArr != null && objArr.Length > 0)

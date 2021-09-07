@@ -72,5 +72,21 @@ namespace PowerSystem.Controllers
             return new ElectricalTaskBLL().NotConfirmedList(ahID, electricalTaskType, beginDate, endDate, page, limit);
         }
 
+        /// <summary>
+        /// 已接收任务列表
+        /// </summary>
+        /// <param name="ahID">开关柜ID</param>
+        /// <param name="electricalTaskType">停电作业1  送电作业2</param>
+        /// <param name="beginDate">创建日期最早时间</param>
+        /// <param name="endDate">创建日期最晚时间</param>
+        /// <param name="page">页码</param>
+        /// <param name="limit">单页条数</param>
+        /// <returns></returns>
+        [HttpGet, Route("AcceptedList"), LoginRequired]
+        public ApiResult AcceptedList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        {
+            return new ElectricalTaskBLL().AcceptedList(ahID, electricalTaskType, beginDate, endDate, page, limit);
+        }
+
     }
 }
