@@ -104,8 +104,8 @@ namespace PowerSystemLibrary.DBContext
 
             }
 
-            PowerSubstation powerBubstation = context.Set<PowerSubstation>().FirstOrDefault();
-            if (powerBubstation == null)
+            PowerSubstation powerSubstation = context.Set<PowerSubstation>().FirstOrDefault();
+            if (powerSubstation == null)
             {
                 context.Set<PowerSubstation>().AddOrUpdate(t => t.Name, new PowerSubstation()
                 {

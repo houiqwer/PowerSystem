@@ -32,13 +32,13 @@ namespace PowerSystemLibrary.BLL
                         {
                             throw new ExceptionUtil("请选择电压类型");
                         }
-                        if (db.PowerSubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerBubstationID) == null)
+                        if (db.PowerSubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerSubstationID) == null)
                         {
-                            throw new ExceptionUtil("请选择所属变电所");
+                            throw new ExceptionUtil("请选择所属" + ClassUtil.GetEntityName(new PowerSubstation()));
                         }
                         if (db.AH.FirstOrDefault(t => t.IsDelete != true && t.Name == aH.Name) != null)
                         {
-                            throw new ExceptionUtil("开关柜名称重复");
+                            throw new ExceptionUtil(ClassUtil.GetEntityName(new AH()) + "名称重复");
                         }
                         aH.IsDelete = false;
                         aH.AHState = AHState.正常;
@@ -78,7 +78,7 @@ namespace PowerSystemLibrary.BLL
                         AH oldAH = db.AH.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.ID);
                         if (oldAH == null)
                         {
-                            throw new ExceptionUtil("配电柜不存在");
+                            throw new ExceptionUtil(ClassUtil.GetEntityName(new AH()) + "不存在");
                         }
                         if (!ClassUtil.Validate(aH, ref message))
                         {
@@ -88,13 +88,13 @@ namespace PowerSystemLibrary.BLL
                         {
                             throw new ExceptionUtil("请选择电压类型");
                         }
-                        if (db.PowerSubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerBubstationID) == null)
+                        if (db.PowerSubstation.FirstOrDefault(t => t.IsDelete != true && t.ID == aH.PowerSubstationID) == null)
                         {
-                            throw new ExceptionUtil("请选择所属变电所");
+                            throw new ExceptionUtil("请选择所属" + ClassUtil.GetEntityName(new PowerSubstation()));
                         }
                         if (db.AH.FirstOrDefault(t => t.IsDelete != true && t.Name == aH.Name && t.ID != aH.ID) != null)
                         {
-                            throw new ExceptionUtil("开关柜名称重复");
+                            throw new ExceptionUtil(ClassUtil.GetEntityName(new AH()) + "名称重复");
                         }
                         new ClassUtil().EditEntity(oldAH, aH);
                         db.SaveChanges();
@@ -119,7 +119,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult Delete(List<int> IDList)
+        public ApiResult Delete(int id)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -127,15 +127,15 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    List<AH> aHList = db.AH.Where(t => IDList.Contains(t.ID)).ToList();
-                    if (aHList == null)
+                    AH ah = db.AH.FirstOrDefault(t => t.ID == id);
+                    if (ah == null)
                     {
-                        throw new ExceptionUtil("请至少选择一条" + ClassUtil.GetEntityName(new AH()));
+                        throw new ExceptionUtil(ClassUtil.GetEntityName(new AH()) + "不存在");
                     }
-                    aHList.ForEach(t => t.IsDelete = true);
+                    ah.IsDelete = true;
                     db.SaveChanges();
-                    new LogDAO().AddLog(LogCode.删除, "成功删除开关柜", db);
-                    result = ApiResult.NewSuccessJson("成功删除开关柜");
+                    new LogDAO().AddLog(LogCode.删除, "成功删除" + ClassUtil.GetEntityName(new AH()) + ":" + ah.Name, db);
+                    result = ApiResult.NewSuccessJson("成功删除" + ClassUtil.GetEntityName(new AH()));
                 }
                 catch (Exception ex)
                 {
@@ -157,21 +157,21 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    AH oldAH = db.AH.FirstOrDefault(t => t.IsDelete != true && t.ID == id);
-                    if(oldAH == null)
+                    AH ah = db.AH.FirstOrDefault(t => t.IsDelete != true && t.ID == id);
+                    if (ah == null)
                     {
-                        throw new ExceptionUtil("开关柜不存在");
+                        throw new ExceptionUtil(ClassUtil.GetEntityName(new AH()) + "不存在");
                     }
                     result = ApiResult.NewSuccessJson(new
                     {
-                        oldAH.ID,
-                        oldAH.Name,
-                        oldAH.PowerBubstationID,
-                        PowerBubstationName = db.PowerSubstation.FirstOrDefault(t=>t.ID == oldAH.PowerBubstationID).Name,
-                        oldAH.VoltageType,
-                        VoltageTypeName = System.Enum.GetName(typeof(VoltageType), oldAH.VoltageType),
-                        oldAH.AHState,
-                        AHStateName = System.Enum.GetName(typeof(AHState), oldAH.AHState)
+                        ah.ID,
+                        ah.Name,
+                        ah.PowerSubstationID,
+                        PowerSubstationName = db.PowerSubstation.FirstOrDefault(t => t.ID == ah.PowerSubstationID).Name,
+                        ah.VoltageType,
+                        VoltageTypeName = System.Enum.GetName(typeof(VoltageType), ah.VoltageType),
+                        ah.AHState,
+                        AHStateName = System.Enum.GetName(typeof(AHState), ah.AHState)
 
                     });
                 }
@@ -187,7 +187,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult List(string name="", VoltageType? voltageType = null, int page = 1, int limit = 10)
+        public ApiResult List(string name = "", VoltageType? voltageType = null, int page = 1, int limit = 10)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -199,8 +199,8 @@ namespace PowerSystemLibrary.BLL
                     List<AH> aHList = db.AH.Where(t => t.Name.Contains(name) && (voltageType == null || t.VoltageType == voltageType)).ToList();
                     int total = aHList.Count;
                     aHList = aHList.Skip((page - 1) * limit).Take(limit).ToList();
-                    List<int> powerBubstationIDList = aHList.Select(t => t.PowerBubstationID).Distinct().ToList();
-                    List<PowerSubstation> powerBubstationList = db.PowerSubstation.Where(t => powerBubstationIDList.Contains(t.ID)).ToList();
+                    List<int> powerSubstationIDList = aHList.Select(t => t.PowerSubstationID).Distinct().ToList();
+                    List<PowerSubstation> powerSubstationList = db.PowerSubstation.Where(t => powerSubstationIDList.Contains(t.ID)).ToList();
 
                     List<object> returnList = new List<object>();
                     foreach (AH aH in aHList)
@@ -211,7 +211,7 @@ namespace PowerSystemLibrary.BLL
                             aH.Name,
                             VoltageTypeName = System.Enum.GetName(typeof(VoltageType), aH.VoltageType),
                             AHStateName = System.Enum.GetName(typeof(AHState), aH.AHState),
-                            PowerBubstationName = powerBubstationList.FirstOrDefault(t => t.ID == aH.PowerBubstationID).Name
+                            PowerSubstationList = powerSubstationList.FirstOrDefault(t => t.ID == aH.PowerSubstationID).Name
                         });
                     }
                     result = ApiResult.NewSuccessJson(returnList, total);

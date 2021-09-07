@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 namespace PowerSystemLibrary.Entity
 {
     [Table("Tb_AH")]
-    [Description("开关柜")]
+    [Description("配电柜")]
     public class AH
     {
         [Key]
         public int ID { get; set; }
-        [Required(ErrorMessage = "请输入开关柜名称")]
+        [Required(ErrorMessage = "请输入配电柜名称")]
         [ExchangeType]
         public string Name { get; set; }
         public VoltageType VoltageType { get; set; }
         public AHState AHState { get; set; }
         [Required(ErrorMessage = "请选择变电所")]
         [ExchangeType]
-        public int PowerBubstationID { get; set; }
+        public int PowerSubstationID { get; set; }
         public bool? IsDelete { get; set; }
     }
 }
