@@ -34,7 +34,7 @@ layui.use('table', function () {
 
 function Page() {
     var name = $("#name").val();
-    var voltageType = $("#voltageType").val();  
+    var voltageType = $("#voltageType").val();
 
     layui.use('table', function () {
         var table = layui.table;
@@ -42,15 +42,15 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/AH/List?name=' + ahID + '&voltageType=' + voltageType 
+            , url: '/AH/List?name=' + ahID + '&voltageType=' + voltageType
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
             , cols: [[
-                { field: 'AHName', align: 'center', title: '送电柜' }
-                , { field: 'ElectricalTaskTypeName', align: 'center', title: '作业类型' }
-                , { field: 'CreateDate', align: 'center', title: '发起日期' }
-                , { field: 'ReciveCount', align: 'center', title: '当前接收人数' }
+                { field: 'Name', align: 'center', title: '变电柜' }
+                , { field: 'VoltageTypeName', align: 'center', title: '电压' }
+                , { field: 'PowerSubstationName', align: 'center', title: '变电所' }
+                , { field: 'AHStateName', align: 'center', title: '当前状态' }
                 , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 160 }
             ]]
             , done: function (res, cur, count) {
@@ -90,7 +90,7 @@ function InitVoltageType() {
         },
         success: function (data) {
             if (data.code == 0) {
-                var html = "<option>所有作业</option>";
+                var html = "<option>高压和低压</option>";
                 for (var i = 0; i < data.data.length; i++) {
                     html += "<option value=\"" + data.data[i].EnumValue + "\">" + data.data[i].EnumName + "</option>";
                 }

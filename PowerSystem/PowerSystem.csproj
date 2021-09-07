@@ -97,6 +97,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AH\AHEdit.html" />
+    <Content Include="AH\AHEdit.js" />
     <Content Include="AH\AHList.js" />
     <Content Include="AH\AHList.html" />
     <Content Include="css\bootstrap.min.css" />
