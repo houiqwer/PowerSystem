@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 charset=UTF-8">
+    <title>智慧停送电管理平台</title>
+    <link rel="stylesheet" href="/css/layui.css">
+    <link rel="stylesheet" href="/css/iconfont.css">
+    <link rel="stylesheet" href="/css/safemain.css">
+    <!--<link href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" /-->
+    <link href="/zTree_v3/css/metroStyle/metroStyle.css" rel="stylesheet" />
+    <style>
+        .layui-table img {
+            max-width: 200px;
+        }
+
+        ul.ztree {
+            background: #fff;
+            /*border-radius: 5px;*/
+            border: 2px solid #bbb;
+            width: 100% !important;
+        }
+
+        .ztree * {
+            font-size: 14px;
+        }
+
+        .tree-wrapper {
+            position: relative;
+        }
+
+        .menuContent {
+            position: absolute;
+            top: 42px !important;
+            left: 0px !important;
+            z-index: 100;
+            width: 100%;
+        }
+
+        .layui-layout-admin .layui-body {
+            left: 0px;
+            top: 0px;
+            background: #eeeff4;
+            bottom: 0;
+        }
+
+        .safe-form1 th {
+            color: #000;
+            text-align: center;
+        }
+
+        .safe-form1 td {
+            text-align: center;
+        }
+
+        .link1 {
+            color: #01AAED;
+        }
+
+            .link1:hover {
+                color: #0194ce;
+            }
+
+        .tanchu1-in .safe-form th {
+            width: 65px;
+        }
+
+        .tanchu1-in {
+            padding: 20px 0;
+        }
+
+            .tanchu1-in .safe-tijiao {
+                margin-top: 15px;
+            }
+
+        .layui-upload-img {
+            width: 92px;
+            height: 92px;
+            margin: 0 10px 10px 0;
+        }
+
+        .layui-upload {
+            position: relative;
+        }
+
+        #test4 {
+            background-color: rgba(54,141,126,.4);
+            position: absolute;
+            top: 34px;
+            padding: 0 9px;
+            left: 9px;
+        }
+
+        .layui-upload-img {
+            width: 92px;
+            height: 92px;
+            margin: 0 10px 10px 0;
+            vertical-align: top;
+        }
+    </style>
+</head>
+
+<body>
+    <!--class="layui-layout-body safe "-->
+
+    <div class="layui-body safe-body" style="left: 0; top:0">
+
+        <!-- 内容主体区域 -->
+        <div style="height: 100%;padding:68px 16px 20px;box-sizing: border-box">
+            <h1 class="safeh1 cbl2"><blockquote class="layui-elem-quote" id="head"></blockquote></h1>
+            <div class="layui-card safe-card1">
+                <div class="" style="height: 100%;">
+                    <!--overflow: auto;-->
+                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                        <ul class="layui-tab-title layui-card-header">
+                            <li class="">基本信息</li>
+                        </ul>
+                        <div class="layui-tab-content layui-card-body">
+                            <div class="layui-tab-item layui-show safe-item" style="padding-bottom: 25px">
+
+
+                                <form class="layui-form" action="">
+
+                                    <div class="layui-form safe-form">
+                                        <table border="0" class="layui-table">
+                                            <colgroup>
+                                                <col width="">
+                                                <col width="">
+                                                <col width="">
+                                                <col>
+                                            </colgroup>
+                                            <tbody>
+                                                <tr>
+                                                    <th><span>用户名</span></th>
+                                                    <td>
+                                                        <div class="safe-grey">
+                                                            <input type="text" id="SysUserName" name="title" lay-verify="title" autocomplete="off" placeholder="请输入用户名" class="layui-input ">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span>姓名</span></th>
+                                                    <td>
+                                                        <div class="safe-grey">
+                                                            <input type="text" id="RealName" name="title" lay-verify="title" autocomplete="off" placeholder="请输入姓名" class="layui-input ">
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <th><span>部门</span></th>
+                                                    <td>
+                                                        <div class="tree-wrapper">
+                                                            <div class="safe-grey">
+                                                                <input id="citySel" type="text" placeholder="请选择部门" name="title" lay-verify="title" autocomplete="off" class="layui-input " readonly onclick="showMenu();" />
+                                                                &nbsp;<!--<a id="menuBtn" href="#" onclick="showMenu(); return false;">select</a>-->
+                                                                <!--<select name="interest" lay-filter="aihao" id="DepID">
+                                                                    <option value="-2"></option>
+                                                                    <option value="1">铸管部</option>
+                                                                </select>-->
+                                                            </div>
+                                                            <div id="menuContent" class="menuContent" style="display:none; ">
+                                                                <ul id="treeDemo" class="ztree" style="margin-top:0; width:180px; height: 300px;"></ul>
+                                                            </div>
+                                                            <input type="hidden" id="depIDs" />
+                                                        </div>
+
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                    <th><span>手机号码</span></th>
+                                                    <td colspan="3">
+                                                        <div class="safe-grey">
+                                                            <input type="text" id="CellPhone" name="title" lay-verify="title" autocomplete="off" placeholder="请输入手机号码" class="layui-input ">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <th><span>角色</span></th>
+                                                    <td colspan="3" height="auto">
+                                                        <div class="safe-grey" id="Role">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div class="safe-tijiao">
+                                            <input type="button" value="立即提交" onclick="tj()" class="layui-btn bbl1">
+                                            <input type="button" value="取消" onclick="javascript: window.location.href = 'UserList.html';" class="layui-btn bred">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Scripts/layui.js"></script>
+    <script src="/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="/Scripts/safe.js"></script>
+    <script src="/Scripts/Common.js"></script>
+    <script src="/zTree_v3/js/jquery.ztree.core.min.js"></script>
+    <script src="/zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <script src="/Scripts/Select_menu_Checkbox.js"></script>
+    <script src="/Scripts/layer/layer.js"></script>
+    <script src="UserEdit.js"></script>
+</body>
+</html>

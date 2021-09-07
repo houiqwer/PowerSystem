@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title> ZTREE DEMO - checkbox select menu</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/demo.css" type="text/css">
+    <link rel="stylesheet" href="css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.excheck.js"></script>
+    <script src="../Scripts/Select_menu_Checkbox.js"></script>
+    <!--	<script type="text/javascript" src="../../../js/jquery.ztree.exedit.js"></script>-->
+    <script type="text/javascript">
+		
+        var zNodes = new Array();
+        //var zNodes = [
+		//	{ id: 1, pId: 0, name: "节点搜索演示 1", open: true },
+        //    { id: 2, pId: 0, name: "节点搜索演示 2", open: true },
+        //    { id: 3, pId: 0, name: "节点搜索演示 3", open: true },
+		//	{ id: 11, pId: 1, name: "关键字可以是名字" },
+		//	{ id: 12, pId: 1, name: "关键字可以是level" },
+		//	{ id: 13, pId: 1, name: "关键字可以是id" },
+		//	{ id: 14, pId: 1, name: "关键字可以是各种属性" },
+
+		//	{ id: 21, pId: 2, name: "可以只搜索一个节点" },
+		//	{ id: 22, pId: 2, name: "可以搜索节点集合" },
+		//	{ id: 23, pId: 2, name: "搜我吧", t: "id=23" },
+
+		//	{ id: 31, pId: 3, name: "我的 id 是: 31" },
+		//	{ id: 32, pId: 31, name: "我的 id 是: 32" },
+		//	{ id: 33, pId: 32, name: "我的 id 是: 33" }
+        //];
+        $(function () { list();})
+        function list() {
+
+            $.ajax({
+                url: "/department/list",
+                type: "GET",
+                dataType: "json",
+                async: false,
+                //beforeSend: function (XHR) {
+                //    XHR.setRequestHeader("Authorization", store.userInfo.token);
+                //},
+                success: function (data) {
+                    if (data.code == 0) {
+                        //console.log(data.data.ChildList);
+                        //填充table的数据
+                        showall(data.data.ChildList);
+                        console.log(zNodes);
+                        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                    } else {
+                        Failure(data);
+                    }
+                },
+                error: function () {
+                    layer.ready(function () {
+                        title: false
+                        layer.alert("数据提交存在问题，请检查当前网络", {
+                            title: false
+                        });
+                    });
+                }
+            });
+        }
+        function showall(menu_list) {
+            for (var menu in menu_list) {
+                //如果有子节点，则遍历该子节点
+                if (menu_list[menu].ChildList.length > 0) {
+                    //创建一个子节点li{ id: 1, pId: 0, name: "北京" },
+                    zNodes.push({ id: menu_list[menu].id, pId: (menu_list[menu].pid == null ? 0 : menu_list[menu].pid), name: menu_list[menu].DepName });
+                    showall(menu_list[menu].ChildList);
+                }
+                    //如果该节点没有子节点，则直接将该节点li以及文本创建好直接添加到父亲节点中
+                else {
+                    zNodes.push({ id: menu_list[menu].id, pId: (menu_list[menu].pid == null ? 0 : menu_list[menu].pid), name: menu_list[menu].DepName });
+                }
+            }
+        }
+
+		console.log(zNodes);
+    </script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <h1>带 checkbox 的多选下拉菜单  -- zTree</h1>
+    <h6>[ 文件路径: super/select_menu_checkbox.html ]</h6>
+    <div class="content_wrap">
+        <div class="zTreeDemoBackground left">
+            <ul class="list">
+                <li class="title">&nbsp;&nbsp;<span class="highlight_red">勾选 checkbox 或者 点击节点 进行选择</span></li>
+                <li class="title">
+                    &nbsp;&nbsp;Test: <input id="citySel" type="text" readonly value="" style="width:120px;" onclick="showMenu();" />
+                    &nbsp;<a id="menuBtn" href="#" onclick="showMenu(); return false;">select</a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul class="info">
+                <li class="title">
+                    <h2>实现方法说明</h2>
+                    <ul class="list">
+                        <li>用 checkbox 也可以轻松实现多选的下拉菜单</li>
+                        <li>此 Demo 主要用于 和 其他下拉菜单进行对比</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+        <ul id="treeDemo" class="ztree" style="margin-top:0; width:180px; height: 300px;"></ul>
+    </div>
+</body>
+</html>
