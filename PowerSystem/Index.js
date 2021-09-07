@@ -26,13 +26,13 @@ layui.use('form', function () {
 
 
 $(function () {
-    var MName = localStorage.getItem("UserName");
-    var Pwd = localStorage.getItem("PassWord");
-    if (MName != null && MName != "" && Pwd != null && Pwd != "") {
-        $("#username").val(MName);
-        $("#password").val(Pwd);
-        login();
-    }
+    //var MName = localStorage.getItem("UserName");
+    //var Pwd = localStorage.getItem("PassWord");
+    //if (MName != null && MName != "" && Pwd != null && Pwd != "") {
+    //    $("#username").val(MName);
+    //    $("#password").val(Pwd);
+    //    login();
+    //}
 });
 
 function login() {
@@ -66,8 +66,8 @@ function login() {
         success: function (data) {
             if (data.code == 0) {
                 ResetUserLogStatus(data);
-                localStorage.setItem("UserName", $("#username").val());
-                localStorage.setItem("PassWord", $("#password").val());
+                //localStorage.setItem("UserName", $("#username").val());
+                //localStorage.setItem("PassWord", $("#password").val());
 
                 window.location.href = "Main.html";
 

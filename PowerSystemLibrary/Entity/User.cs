@@ -31,6 +31,7 @@ namespace PowerSystemLibrary.Entity
         public DateTime? Expire { get; set; }
         public bool? IsDelete { get; set; }
         public string WeChatID { get; set; }
+        [ExchangeType]
         public int DepartmentID { get; set; }
 
         [NotMapped]

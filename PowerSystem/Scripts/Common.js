@@ -714,7 +714,7 @@ function GetChecked(type, name) {
     $("input[id^='" + type + "']").each(function() {
 
         if ($(this).get(0).checked) {
-            result.push($(this).attr("id").replace(type + "-", ""));
+            result.push(parseInt($(this).attr("id").replace(type + "-", "")));
         }
     });
     if (result.length === 0) {
