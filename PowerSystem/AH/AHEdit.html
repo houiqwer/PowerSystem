@@ -145,12 +145,12 @@
                                             <tbody>
                                                 <tr>
                                                     <th><span>变电柜名称</span></th>
-                                                    <td>
+                                                    <td colspan="2">
                                                         <div class="safe-grey">
                                                             <input type="text" id="name" name="title" lay-verify="empty" nullmsg="请输入变电柜名称" autocomplete="off" placeholder="请输入变电柜名称" class="layui-input ">
                                                         </div>
                                                     </td>
-                                                </tr>                                              
+                                                </tr>
                                                 <tr>
                                                     <th><span>变电柜电压类型</span></th>
                                                     <td>
@@ -158,8 +158,10 @@
                                                             <select id="voltageType" lay-verify="ddl" errmsg="请选择变电柜电压类型" lay-filter="voltageType"></select>
                                                         </div>
                                                     </td>
-                                                    <th>变电所</th>
-                                                    <td>                                                        
+                                                </tr>
+                                                <tr>
+                                                    <th><span>变电所</span></th>
+                                                    <td>
                                                         <div class="safe-grey">
                                                             <select id="powerSubstation" lay-verify="ddl" errmsg="请选择变电所" lay-filter="powerSubstation"></select>
                                                         </div>
@@ -168,7 +170,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="safe-tijiao"><button class="layui-btn bbl1" lay-submit lay-filter="formDemo" type="button" id="submitCompInfo">立即提交</button><button type="button" onclick="Cancle()" class="layui-btn bred">取消</button></div>
+                                    <div class="safe-tijiao"><button class="layui-btn bbl1" lay-submit lay-filter="submit" type="button" id="submit">立即提交</button><button type="button" onclick="Cancle()" class="layui-btn bred">取消</button></div>
                                 </form>
                             </div>
                         </div>

@@ -22,6 +22,10 @@ layui.use('element', function () {
 //表单启用
 layui.use('form', function () {
     var form = layui.form;
+
+    form.on('submit(submit)', function (data) {
+        Submit();
+    });
 });
 
 
@@ -125,7 +129,6 @@ function Cancle() {
 function InitPowerSubstation() {
     $.ajax({
         url: "/PowerSubstation/List",
-        //headers: { Authorization: store.userInfo.token },
         type: "get",
         dataType: "json",
         async: false,
@@ -138,7 +141,7 @@ function InitPowerSubstation() {
                 for (var i = 0; i < data.data.length; i++) {
                     html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Name + "</option>";
                 }
-                $("#hazardLevel").html(html);
+                $("#powerSubstation").html(html);
             }
             else {
                 Failure(data);
@@ -171,8 +174,8 @@ function InitVoltageType() {
         success: function (data) {
             if (data.code == 0) {
                 var html = "";
-                for (var i = 0; i < data.data.length; i++) {
-                    html += "<option value=\"" + data.data[i].EnumValue + "\">" + data.data[i].EnumName + "</option>";
+                for (var i = 0; i < data.data.List.length; i++) {
+                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
                 }
                 $("#voltageType").html(html);
             }
