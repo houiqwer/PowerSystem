@@ -569,7 +569,7 @@
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OperationController.cs" />
     <Compile Include="Controllers\ElectricalTaskController.cs" />
-    <Compile Include="Controllers\PowerBubstationController.cs" />
+    <Compile Include="Controllers\PowerSubstationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WeChatController.cs" />
     <Compile Include="Global.asax.cs">
