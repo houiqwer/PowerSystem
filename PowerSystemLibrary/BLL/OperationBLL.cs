@@ -151,6 +151,10 @@ namespace PowerSystemLibrary.BLL
                     {
                         ApplicationSheet applicationSheet = applicationSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
 
+                        //高压需要增加其他表单
+
+
+
                         returnList.Add(new
                         {
                             operation.ID,
