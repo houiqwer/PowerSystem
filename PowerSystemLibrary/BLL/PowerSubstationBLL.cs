@@ -20,8 +20,8 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    List<PowerSubstation> powerBubstationList = db.PowerSubstation.Where(t => t.IsDelete != true).ToList();
-                    result = ApiResult.NewSuccessJson(powerBubstationList);
+                    List<PowerSubstation> powerSubstationList = db.PowerSubstation.Where(t => t.IsDelete != true).ToList();
+                    result = ApiResult.NewSuccessJson(powerSubstationList);
                 }
                 catch (Exception ex)
                 {

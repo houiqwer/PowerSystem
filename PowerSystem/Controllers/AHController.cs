@@ -19,9 +19,9 @@ namespace PowerSystem.Controllers
     public class AHController : ApiController
     {
         /// <summary>
-        /// 添加开关柜
+        /// 添加变电柜
         /// </summary>
-        /// <param name="aH">开关柜实体</param>
+        /// <param name="aH">变电柜实体</param>
         /// <returns></returns>
         [HttpPost, Route("Add"), LoginRequired]
         public ApiResult Add(AH aH)
@@ -30,9 +30,9 @@ namespace PowerSystem.Controllers
         }
 
         /// <summary>
-        /// 编辑开关柜
+        /// 编辑变电柜
         /// </summary>
-        /// <param name="aH">开关柜实体</param>
+        /// <param name="aH">变电柜实体</param>
         /// <returns></returns>
         [HttpPost, Route("Edit"), LoginRequired]
         public ApiResult Edit(AH aH)
@@ -43,18 +43,18 @@ namespace PowerSystem.Controllers
         /// <summary>
         /// 删除
         /// </summary>
-        /// <param name="ajaxPost"></param>
+        /// <param name="ah">需要ID</param>
         /// <returns></returns>
         [HttpPost, Route("Delete"), LoginRequired]
-        public ApiResult Delete(AjaxPost ajaxPost)
+        public ApiResult Delete(AH ah)
         {
-            return new AHBLL().Delete(ajaxPost.IDList);
+            return new AHBLL().Delete(ah.ID);
         }
 
         /// <summary>
         /// 获取
         /// </summary>
-        /// <param name="ID"></param>
+        /// <param name="ID">变电柜ID</param>
         /// <returns></returns>
         [HttpGet, Route("Get"), LoginRequired]
         public ApiResult Get(int ID)
@@ -66,15 +66,15 @@ namespace PowerSystem.Controllers
         /// <summary>
         /// 列表
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="voltageType"></param>
+        /// <param name="name">变电柜名称</param>
+        /// <param name="voltageType">电压类型 低压1 高压2</param>
         /// <param name="page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet, Route("List"), LoginRequired]
         public ApiResult List(string name = "", VoltageType? voltageType = null, int page = 1, int limit = 10)
         {
-            return new AHBLL().List(name,voltageType,page,limit);
+            return new AHBLL().List(name, voltageType, page, limit);
         }
 
     }
