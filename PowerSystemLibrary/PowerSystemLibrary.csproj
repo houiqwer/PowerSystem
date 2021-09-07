@@ -70,9 +70,11 @@
   <ItemGroup>
     <Compile Include="BLL\AHBLL.cs" />
     <Compile Include="BLL\ApplicationSheetBLL.cs" />
+    <Compile Include="BLL\BaseBLL.cs" />
     <Compile Include="BLL\DepartmentBLL.cs" />
     <Compile Include="BLL\ElectricalTaskBLL.cs" />
     <Compile Include="BLL\AccountBLL.cs" />
+    <Compile Include="BLL\LogBLL.cs" />
     <Compile Include="BLL\MenuBLL.cs" />
     <Compile Include="BLL\OperationBLL.cs" />
     <Compile Include="BLL\PowerBubstationBLL.cs" />

@@ -1,0 +1,123 @@
+﻿.inline{display:inline-block;* display:inline;zoom:1;}.tabcell{display: table-cell}
+.bg1{background: #4184de}.bg3{background: #508be6}.bg2{background: #e44545}.bg4{background: #51dcb6}.bg5{background: #37b984}.bg6{background: #7380e0}.bg7{background: #5a98ea}.bg8{background: #c7d239}.bg9{background: #dcb830}.bg10{background: #f16060}  .bg11{background: #6f8dd0}.bg12{background: #6c6f71}.bg13{background: #02d9c7!important}
+.co1{color: #7b888c}.co2{color: #bfc2c5}.co3{color: #396270}.co4{color: #00394b}.co5{color: #3072c8}.co6{color: #707271}
+.fs18{font-size: 18px}.fs12{font-size: 12px}.fs30{font-size: 30px}.fs16{font-size: 16px}.fs55{font-size: 55px}.fs20{font-size: 20px}.fs45{font-size: 45px}.fs40{font-size: 40px}
+.hid2{ white-space: nowrap; text-overflow:ellipsis;}
+.mt5{margin-top:9px}
+.pore{position: relative}
+[class*="bgpic"]{background: url(../images/bgpic.png) no-repeat}
+.czmid{height: 100%;text-align: center;white-space:nowrap;}.czmid>*{display:inline-block;* display:inline;zoom:1;vertical-align: middle}.czmid::before{content:'' ;display:inline-block;* display:inline;zoom:1;height: 100%;vertical-align: middle}/*czmid是父级,垂直居中，子级不定高度*/
+.h100{height: 100%}
+/*==============================================*/
+
+
+/*首页*/
+.safeh2{border-radius: 5px;background: #fff;box-sizing: border-box;padding: 7px 0;margin: 0 8px;text-align: center!important;box-shadow: 0 0px 10px rgba(0,0,0,.1)}
+.sf_main{height: 100%}
+.w_space15>*{padding: 7.5px;box-sizing: border-box}
+.w_space30>*{padding: 8.5px;box-sizing: border-box}.w_space30{padding: 8.5px;box-sizing: border-box}
+.sf_main_line1{height: 29%;}
+.sf_main_line1 .layui-card-body{overflow:hidden}
+.sf_main .layui-col-xs4,.sf_main .layui-col-xs8{height: 100%}
+.sf_main .layui-col-xs4>div{}
+.sf_main_line2{height: 71%;}
+[class*="sf_main_box"]{position: relative;padding-top: 50px;box-sizing: border-box;}
+.sf_main .layui-card-header{position: absolute;width: 100%;top:0;padding: 0 15px;box-sizing: border-box}
+.sf_main .layui-card-header i{font-size: 20px;margin-right: 5px;font-weight: 500;color: #e9eef2}
+.sf_main .layui-card-body{height: 100%;box-sizing: border-box;overflow: visible;}
+.sfmain_box1_l{height: 100%;text-align: center;font-size: 24px}
+.main_num{font-size: 42px;}
+.mainsty01{font-size: 22px}
+.sfmain_box1_r{height: 100%}
+.rank{ width: 140px; height: 5px;background:#f3f4f6;border-radius:2.5px; position: relative; }
+@keyframes myfirst
+{   from { width: 0px;}
+    to {width: 100%;}
+}
+@-webkit-keyframes myfirst /* Safari ä¸Ž Chrome */
+{
+    from { width: 0px;}
+    to {width: 100%;}
+}
+.rkpmout{width: 40%; height: 100%;}
+.rank-pm{ background: linear-gradient(to top right, #0049b2 0%, #1dc6bf 60%);  height: 100%;border-radius:2.5px; animation: myfirst 3s;-webkit-animation: myfirst 1s; position: relative}
+.mainsty02{font-size: 12px;margin:9px 0 }
+.sfmain_box2_l{height: 100%}
+.sf_main .chart{width: 100%;height:100%}
+.tit2{position: absolute;width: 100%;text-align: center;font-size: 16px;top:50%;line-height: 18px;margin-top: -14px}
+.mainsty03{margin-left: 10px}
+.sf_main_box3 .layui-card-body *{line-height: normal}
+.touxiang{width: 46px;height: 46px;background: #e9eef2;border-radius: 50%;color: #fff;line-height: 46px;text-align: center;margin: 0 auto;}
+.touxiang i{font-size: 28px;line-height: 46px}
+.bgpic1{width: 15px;height: 17px;background-position: 0 0;margin-left: 5px}
+.sfmain_box3p1{margin: -5px 0}
+.tongzhi .layui-col-xs6{height: 33%;min-height:110px}
+.tongzhi .layui-card-body{overflow:auto;padding:0}
+.tongzhi .layui-card-body>div{}
+.sf_card2{min-height:93px;border-radius: 5px;box-shadow: 0 0px 7px  rgba(0,0,0,.1);background: #fff;height: 100%;border: 1px solid #e1e2e8;box-sizing: border-box;padding: 16px;font-size: 12px;position: relative}
+.sf_card2_head{border-left: 3px solid #2fdcc9;line-height: 13px;height: 13px;position: relative;padding:0 20px 0 10px;margin-bottom: 16px}
+.sf_card2_head span{position: absolute;right: 0}
+.sf_card2 p{line-height: 16px;color: #a3afb9;height: 45px;overflow: hidden}
+.biaoqian{position: absolute;width: 42px;height: 19px;z-index: 1;left: -3px;bottom: 4px}
+.jinji{background-position: 0px -17px;}.putong{background-position: 0 -36px}.zhongda{background-position: 0 -55px}
+.sf_card2_foot{padding-left: 30px;box-sizing: border-box;position: absolute;bottom: 7px;right: 16px;left: 16px}
+.bgpic2{width: 15px;height: 24px;background-position: 0 -76px;margin-right: 5px;margin-bottom: -4px}
+/*内部首页1*/
+.sf_mainin1_box1{padding: 7.5px}
+.sf_mainin1_box1 a{display: block}
+.sf_mainin1_box2>*{height: 50%}
+.sf_mainin1_box01{height: 33%!important;padding-top: 25px;box-sizing: border-box;position: relative}
+.tit3{position: absolute;text-align: center;font-size: 18px;font-weight: 700;width: 100%;top:19px;color: #a3afb9}
+.sf_mainin1_box01 [class^="chart"]{height: 100%}
+.boxx1{height: 40%!important}.boxx2{height: 60%!important}
+.sf_mainin1_box02{height: 50%;}.sf_mainin1_box02>div{border-radius: 5px;font-size: 16px;color: #fff;padding: 10px;box-sizing: border-box}
+.sf_mainin1_box02>div span{white-space: normal}
+.sf_mainin1_box02>div:hover{opacity: .8;filter: alpha(opacity=80);transition: .4s all}
+.sf_mainin1_box02 .wbadge{background: #fff;margin-left: 5px;white-space:nowrap;font-size: 12px;font-weight: 600}
+.co7{color: #07938d}.co8{color: #e60012}
+.sf_main_in1 .layui-carousel{width: 100%!important;height: 100%!important}
+.sf_main_in1 .layui-carousel img{max-height: 100%;max-width: 100%}
+.layui-carousel>[carousel-item]>*{background: #fff;border-radius: 5px;}
+.sf_mainin1_box03{padding: 20px;}
+.sf_mainin1_box04{padding: 56px 15px 15px 0}
+.sf_mainin1_table{overflow: auto}
+.sf_mainin1_table th,.sf_mainin1_table td{padding: 7px 3px!important}.sf_mainin1_table th{text-align: center}
+.sf_mainin1_table tr:nth-child(even){background: #fcfcfc}
+.sf_mainin1_table table{width: 100%!important}
+.sf_main_in1 .layui-card-header{position: absolute;width: 100%;top:0;padding: 0 15px;box-sizing: border-box}
+.sf_main_in1 .layui-card-header i{font-size: 20px;margin-right: 5px;font-weight: 500;color: #e9eef2}
+.sf_main_in1 .layui-card-body{height: 100%;box-sizing: border-box;overflow: visible;}
+.sf_mainin1_box4{position: relative;padding-top: 50px;box-sizing: border-box;}
+.aqzrs{padding: 30px 20px 20px;box-sizing: border-box;height: 100%}
+.aqzrs p{text-indent: 2em;height: 100%;overflow: hidden;background: #fef8d6;padding: 10px;box-sizing: border-box;border-radius: 5px;border: 4px groove #f7d89c;overflow: auto}
+.w_homepage1 .sf_mainin1_box04 {box-sizing: border-box;padding: 56px 15px 15px 15px}
+.w_homepage1 .layui-table{margin-top: 0px}
+@media only screen and (max-height: 889px){
+	.sf_card2 p{height: 33px}
+}
+@media only screen and (max-width: 1441px){
+	.fs45{font-size: 30px}
+	.fs40{font-size: 27px}
+	.fs30{font-size: 19px}
+	.fs20{font-size: 15px}
+	.main_num,.fs55{font-size: 27px}
+	.rank {width: 100%;}
+	.layui-card-header{height:35px;line-height:35px}
+	[class*="sf_main_box"] {padding-top:35px}
+.sf_mainin1_box02>div{font-size: 12px;}
+	
+}
+@media only screen and (max-height: 745px){
+	.sf_card2 p{height: 18px}
+	.mainsty02 {margin: -4px 0;}
+	.main_num,.fs55{font-size: 18px}
+	.fs45{font-size: 21px}
+	.fs40{font-size: 18px}
+	.fs20{font-size: 15px}
+	.layui-card-body{padding:8px}
+	.sf_mainin1_box03{padding:6px}
+	.w_homepage1 .sf_mainin1_box04 {padding:47px 8px 8px}
+	.tit2{font-size: 12px;line-height:14px}
+	.bgpic2{display:none}
+.sf_mainin1_box02>div{font-size: 12px;}
+}
