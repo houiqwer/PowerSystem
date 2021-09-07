@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PowerSystemLibrary.BLL
 {
-    public class PowerBubstationBLL
+    public class PowerSubstationBLL
     {
         public ApiResult List()
         {
@@ -20,7 +20,7 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    List<PowerBubstation> powerBubstationList = db.PowerBubstation.Where(t => t.IsDelete != true).ToList();
+                    List<PowerSubstation> powerBubstationList = db.PowerSubstation.Where(t => t.IsDelete != true).ToList();
                     result = ApiResult.NewSuccessJson(powerBubstationList);
                 }
                 catch (Exception ex)

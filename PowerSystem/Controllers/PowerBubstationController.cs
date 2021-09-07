@@ -13,8 +13,8 @@ namespace PowerSystem.Controllers
     /// <summary>
     /// 变电所
     /// </summary>
-    [RoutePrefix("PowerBubstation")]
-    public class PowerBubstationController : ApiController
+    [RoutePrefix("PowerSubstation")]
+    public class PowerSubstationController : ApiController
     {
         /// <summary>
         /// 列表
@@ -23,7 +23,7 @@ namespace PowerSystem.Controllers
         [HttpGet, Route("List"), LoginRequired]
         public ApiResult List()
         {
-            return new PowerBubstationBLL().List();
+            return new PowerSubstationBLL().List();
         }
     }
 }
