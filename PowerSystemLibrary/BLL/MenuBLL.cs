@@ -257,12 +257,13 @@ namespace PowerSystemLibrary.BLL
 
                             });
                         }
+                        result = ApiResult.NewSuccessJson(returnList);
 
-                        result = ApiResult.NewSuccessJson(new
-                        {
-                            returnList,
-                            roleRightMenuIDList = roleRightList.Select(t => t.MenuID).ToList()
-                        });
+                        //result = ApiResult.NewSuccessJson(new
+                        //{
+                        //    returnList,
+                        //    roleRightMenuIDList = roleRightList.Select(t => t.MenuID).ToList()
+                        //});
                     }
                     else
                     {
