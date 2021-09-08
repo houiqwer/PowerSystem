@@ -151,6 +151,7 @@ namespace PowerSystemLibrary.BLL
                         ApplicationSheet = new
                         {
                             applicationSheet.ID,
+                            applicationSheet.WorkContent,
                             user.Realname,
                             AHName = ah.Name,
                             CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
