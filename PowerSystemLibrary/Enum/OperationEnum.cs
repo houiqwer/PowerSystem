@@ -20,13 +20,13 @@ namespace PowerSystemLibrary.Enum
     public enum Audit
     {
         待审核 = 1,
-        审核中 = 2,
+        //审核中 = 2,
         通过 = 3,
         驳回 = 4,
         //这个不要页面列举
-        无需审核 = 5,
+        //无需审核 = 5,
         //撤回
-        撤回 = 6
+        //撤回 = 6
     }
 
     public enum ElectricalTaskType
