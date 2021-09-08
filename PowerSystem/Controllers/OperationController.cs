@@ -59,6 +59,22 @@ namespace PowerSystem.Controllers
         }
 
         /// <summary>
+        /// 我的停电申请列表
+        /// </summary>
+        /// <param name="voltageType">低压1 高压2</param>
+        /// <param name="ahID">开关柜ID</param>
+        /// <param name="beginDate">创建日期最早时间</param>
+        /// <param name="endDate">创建日期最晚时间</param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet, Route("MyList"), LoginRequired]
+        public ApiResult MyList(VoltageType? voltageType = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        {
+            return new OperationBLL().MyList(voltageType, ahID, beginDate, endDate, page, limit);
+        }
+
+        /// <summary>
         /// 挂牌
         /// </summary>
         /// <param name="operation">需要ID</param>

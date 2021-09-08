@@ -270,6 +270,83 @@ namespace PowerSystemLibrary.BLL
         }
 
 
+        public ApiResult MyList(VoltageType? voltageType = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    beginDate = beginDate ?? DateTime.MinValue;
+                    endDate = endDate ?? DateTime.MaxValue;
+                    User loginUser = LoginHelper.CurrentUser(db);
+
+                    IQueryable<Operation> operationIQueryable = db.Operation.Where(t =>
+                    t.UserID == loginUser.ID &&
+                    (ahID == null || t.AHID == ahID) &&
+                    (voltageType == null || t.VoltageType == voltageType) &&
+                    (t.CreateDate >= beginDate && t.CreateDate <= endDate));
+                    int total = operationIQueryable.Count();
+                    List<Operation> operationList = operationIQueryable.OrderByDescending(t => t.CreateDate).Skip((page - 1) * limit).Take(limit).ToList();
+                    List<int> ahIDList = operationList.Select(t => t.AHID).Distinct().ToList();
+                    List<int> userIDList = operationList.Select(t => t.UserID).Distinct().ToList();
+                    List<int> operationIDList = operationList.Select(t => t.ID).ToList();
+
+                    List<object> returnList = new List<object>();
+                    List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
+                    List<User> userList = db.User.Where(t => userIDList.Contains(t.ID)).ToList();
+                    List<ApplicationSheet> applicationSheetList = db.ApplicationSheet.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
+                    foreach (Operation operation in operationList)
+                    {
+                        ApplicationSheet applicationSheet = applicationSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
+
+                        //高压需要增加其他表单
+
+                        returnList.Add(new
+                        {
+                            operation.ID,
+                            userList.FirstOrDefault(t => t.ID == operation.UserID).Realname,
+                            AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
+                            CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                            VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                            OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                            operation.IsFinish,
+                            operation.IsConfirm,
+                            ApplicationSheet = new
+                            {
+                                applicationSheet.ID,
+                                userList.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                                AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
+                                CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                                BeginDate = applicationSheet.BeginDate.ToString("yyyy-MM-dd HH:mm"),
+                                EndDate = applicationSheet.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                                VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                                OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                                Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                            }
+                        });
+                    }
+
+                    result = ApiResult.NewSuccessJson(returnList, total);
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
+
+
         public ApiResult Hang(Operation operation)
         {
             ApiResult result = new ApiResult();

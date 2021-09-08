@@ -103,6 +103,10 @@
     <Content Include="AH\AHList.html" />
     <Content Include="ApplicationSheet\ApplicationSheetAuditList.html" />
     <Content Include="ApplicationSheet\ApplicationSheetAuditList.js" />
+    <Content Include="ApplicationSheet\MyApplicationSheetAuditList.html" />
+    <Content Include="ApplicationSheet\MyApplicationSheetAuditList.js" />
+    <Content Include="ApplicationSheet\MyFinishSheetAuditList.html" />
+    <Content Include="ApplicationSheet\MyFinishSheetAuditList.js" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\demo.css" />
     <Content Include="css\documentation.css" />
@@ -135,9 +139,12 @@
     <Content Include="Index.js" />
     <Content Include="Main.html" />
     <Content Include="Main.js" />
+    <Content Include="Operation\MyOperationList.html" />
+    <Content Include="Operation\MyOperationList.js" />
     <Content Include="Operation\OperationAdd.html" />
     <Content Include="Operation\OperationAdd.js" />
     <Content Include="Operation\OperationDetail.html" />
+    <Content Include="Operation\OperationDetail.js" />
     <Content Include="Operation\OperationList.html" />
     <Content Include="Operation\OperationList.js" />
     <Content Include="Scripts\Common.js" />

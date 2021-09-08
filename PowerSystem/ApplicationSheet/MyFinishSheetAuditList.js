@@ -36,12 +36,13 @@ layui.use('table', function () {
         var data = obj.data;
         if (obj.event === 'detail') {
             window.location.href = '../Operation/OperationDetail.html?id=' + data.ID;
-        }
+        } 
     });
 });
 
 
 function Page() {
+    var isAudit = true;
     var ahID = $("#ah").val();
     var voltageType = $("#voltageType").val();
     var date = $("#date").val();
@@ -60,11 +61,11 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/ApplicationSheet/List?ahID=' + ahID + '&voltageType=' + voltageType + "&beginDate=" + beginDate + "&endDate=" + endDate + "&departmentID=" + departmentID + "&no=" + no
+            , url: '/ApplicationSheet/MyAuditList?ahID=' + ahID + '&voltageType=' + voltageType + "&beginDate=" + beginDate + "&endDate=" + endDate + "&departmentID=" + departmentID + "&no=" + no + "&isAudit=" + isAudit
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
-            
+
             , cols: [[
                 { field: 'AHName', align: 'center', title: '送电柜' }
                 , { field: 'VoltageType', align: 'center', title: '电压类型' }
@@ -73,7 +74,7 @@ function Page() {
                 , { field: 'Realname', align: 'center', title: '发起人' }
                 , { field: 'BeginDate', align: 'center', title: '作业开始日期' }
                 , { field: 'EndDate', align: 'center', title: '作业结束日期' }
-                , { field: 'Audit', align: 'center', title: '审核状态',  }
+                , { field: 'Audit', align: 'center', title: '审核状态', }
                 , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 160 }
             ]]
             , done: function (res, cur, count) {

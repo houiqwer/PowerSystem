@@ -31,36 +31,7 @@
                             <div class="search">
                                 <form class="layui-form" action="">
                                     <div class="layui-inline">
-                                        <div class="layui-input-inline safe-sel">
-                                            <div class="tree-wrapper">
-                                                <div class="">
-                                                    <input id="citySel" type="text" placeholder="请选择部门" name="title" lay-verify="title" autocomplete="off" class="layui-input " readonly onclick="showMenu();" />
-
-                                                    <i style="" class="layui-icon layui-icon-close-fill inputdel"></i>
-                                                    <style>
-                                                        .inputdel {
-                                                            position: absolute;
-                                                            top: 4px;
-                                                            right: 10px;
-                                                            font-size: 18px;
-                                                            color: #C72C2E;
-                                                            cursor: pointer;
-                                                        }
-
-                                                            .inputdel:hover {
-                                                                color: #e04a4c;
-                                                            }
-                                                    </style>
-                                                </div>
-                                                <div id="menuContent" class="menuContent" style="display:none; ">
-                                                    <ul id="treeDemo" class="ztree" style="margin-top:0; width:180px; height: 300px;"></ul>
-                                                </div>
-                                                <input type="hidden" id="depIDs" value="" />
-                                            </div>
-                                        </div>
-                                        <div class="layui-input-inline safe-sel">
-                                            <input type="text" class="layui-input" id="no" placeholder="请输入部门编号">
-                                        </div>
+                                        
                                         <div class="layui-input-inline safe-sel">
                                             <select id="ah" name="ah"></select>
                                         </div>
@@ -102,8 +73,14 @@
 
     <script src="../zTree_v3/js/jquery.ztree.core.min.js"></script>
     <script src="../zTree_v3/js/jquery.ztree.excheck.js"></script>
-    <script src="ApplicationSheetAuditList.js"></script>
+    <script src="MyOperationList.js"></script>
     <script type="text/html" id="bar">
+        {{#  if(d.OperationFlow == '低压停电任务完成'){ }}
+        <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="Hang">挂停电牌</a>
+        {{#  } }}
+        {{#  if(d.OperationFlow == '低压挂停电牌作业'){ }}
+        <a class="layui-btn layui-btn-xs safe-btn3 bred" lay-event="Pick">取停电牌</a>
+        {{#  } }}
         <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
     </script>
 
