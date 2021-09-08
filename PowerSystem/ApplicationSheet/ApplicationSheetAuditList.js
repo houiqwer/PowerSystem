@@ -35,7 +35,7 @@ layui.use('table', function () {
     table.on('tool(table)', function (obj) {
         var data = obj.data;
         if (obj.event === 'detail') {
-            window.location.href = '../Operation/OperationDetail.html?id=' + data.ID;
+            window.location.href = '../Operation/OperationDetail.html?id=' + data.OperationID;
         }
     });
 });

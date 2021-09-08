@@ -217,6 +217,7 @@ namespace PowerSystemLibrary.BLL
                             OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
                             Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
                             //IsAuditUser = loginUser.ID == applicationSheet.AuditUserID
+                            OperationID = operation.ID,
                         });
                     }
 
@@ -287,6 +288,7 @@ namespace PowerSystemLibrary.BLL
                             VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
                             OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
                             Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                            OperationID = operation.ID,
                         });
                     }
 

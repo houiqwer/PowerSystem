@@ -29,6 +29,7 @@ layui.use('form', function () {
     var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
 })
 
+var applicationSheetID;
 //初始化数据
 function Init(id) {
 
@@ -54,7 +55,7 @@ function Init(id) {
 
                 $("#IsFinish").html(data.data.IsFinish ? "是" : "否");
                 $("#IsConfirm").html(data.data.IsConfirm ? "已确认" : "未确认");
-
+                applicationSheetID = data.data.ApplicationSheet.ID;
 
                 $('#BeginDate').html(data.data.ApplicationSheet.BeginDate);
                 $('#EndDate').html(data.data.ApplicationSheet.EndDate);
@@ -94,7 +95,7 @@ function tj() {
         layer.msg("请输入审批事由", { icon: 5 });
         return;
     }
-    if (id != null && id != "") {
+    if (applicationSheetID != null && applicationSheetID != "") {
         Audit();
     }
 }
@@ -102,7 +103,7 @@ function Audit() {
 
     var path = "/ApplicationSheet/Audit";
     var data = {
-        ID: id,
+        ID: applicationSheetID,
         AuditMessage: $("#AuditDesc").val(),
         Audit: $("#AuditState").val(),
 
