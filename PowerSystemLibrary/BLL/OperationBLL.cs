@@ -152,6 +152,9 @@ namespace PowerSystemLibrary.BLL
                         {
                             applicationSheet.ID,
                             applicationSheet.WorkContent,
+                            AuditUserName = db.User.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                            applicationSheet.AuditMessage,
+                            AuditDate = applicationSheet.AuditDate.HasValue ? applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd HH:mm") : null,
                             user.Realname,
                             AHName = ah.Name,
                             CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
