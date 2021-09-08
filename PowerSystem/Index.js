@@ -72,10 +72,11 @@ function login() {
                 window.location.href = "Main.html";
 
             } else {
+                
                 //alert(data.Status+":error");
                 layer.ready(function () {
                     title: false
-                    layer.alert(data.data, {
+                    layer.alert(data.msg, {
                         title: false
                     });
                 });

@@ -440,8 +440,9 @@ function ResetUserLogStatus(data) {
     store.userInfo.token = data.data.Token;
     store.expries = unity.dealWithDate(data.data.Expire);
 
-
+    
     localStorage.setItem("RealName", data.data.Realname);
+    localStorage.setItem("UserName", data.data.Username);
     //localStorage.setItem("ProfilePicture", data.data.ProfilePicture);
     localStorage.setItem("Expire", data.data.Expire); //token过期时间
     localStorage.setItem("Token", data.data.Token);

@@ -38,9 +38,10 @@ function Init(id) {
                 var role = "";
                 if (data.data.UserRoleList.length > 0) {
                     for (var i = 0; i < data.data.UserRoleList.length; i++) {
-                        role += data.data.UserRoleList[i].RoleName;
+                        role += data.data.UserRoleList[i].RoleName +",";
                     }
                 }
+                role = role.substring(0, role.length - 1);
                 $('#Role').text(role);
             }
             else {

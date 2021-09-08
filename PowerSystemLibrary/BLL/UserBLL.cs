@@ -528,7 +528,7 @@ namespace PowerSystemLibrary.BLL
                         throw new ExceptionUtil("原密码错误，请重新输入");
                     }
 
-                    user.Password = new BaseUtil().BuildPassword(loginUser.Username, user.NewPassword);
+                    loginUser.Password = new BaseUtil().BuildPassword(loginUser.Username, user.NewPassword);
 
                     db.SaveChanges();
                     new LogDAO().AddLog(LogCode.修改, "成功修改" + ClassUtil.GetEntityName(user) + user.Username + "登陆密码", db);

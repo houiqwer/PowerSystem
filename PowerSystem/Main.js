@@ -3,6 +3,7 @@
         var element = layui.element;
     });
     Menu();
+    $("#UserName").html(localStorage.getItem("RealName"));
 })
 
 
@@ -70,4 +71,13 @@ function a(e, t) {
     if (t != null && t != "") {
         localStorage.setItem("MName", t);
     }
+}
+
+function logout() {
+    layer.confirm("确认退出系统", { title: "系统提示信息" }, function (index) {
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload();
+        window.location.href = "/Index.html";
+    });
 }

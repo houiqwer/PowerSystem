@@ -135,6 +135,7 @@
     <Content Include="HomePage1.html" />
     <Content Include="images\bg-l.png" />
     <Content Include="images\logo.png" />
+    <Content Include="images\logout.png" />
     <Content Include="Index.html" />
     <Content Include="Index.js" />
     <Content Include="Main.html" />
@@ -164,6 +165,8 @@
     <Content Include="font\iconfont.ttf" />
     <Content Include="font\iconfont.woff" />
     <Content Include="Scripts\Select_menu_Checkbox.js" />
+    <Content Include="SystemManage\ChangePwd.html" />
+    <Content Include="SystemManage\ChangePwd.js" />
     <Content Include="SystemManage\DepartmentList.js" />
     <Content Include="SystemManage\RoleMenu.js" />
     <Content Include="SystemManage\UserDetail.html" />
