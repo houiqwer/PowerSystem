@@ -1,14 +1,8 @@
-﻿var urlID = unity.getURL('id');
-
-
+﻿
 $(function () {
-    InitVoltageType();
-    InitPowerSubstation();
-
-    if (urlID != null && urlID != '') {
-        Init(urlID);
-    }
-
+    
+    InitAH();
+    InitAudit();
     GetLayui();
 });
 
@@ -28,94 +22,75 @@ layui.use('form', function () {
     });
 });
 
+layui.use('laydate', function () {
+    var laydate = layui.laydate;
+    //日期范围
+    laydate.render({
+        elem: '#beginDate'
+        ,type: 'datetime'
+    });
 
-//初始化数据
-function Init(id) {
-    var data = {
-        ID: id
-    }
-    $.ajax({
-        url: "/AH/Get",
-        type: "get",
-        data: data,
-        async: false,
-        beforeSend: function (XHR) {
-            XHR.setRequestHeader("Authorization", store.userInfo.token);
-        },
-        success: function (data) {
-            if (data.code == 0) {
-                $("#name").val(data.data.Name);
-                $("#voltageType").val(data.data.VoltageType);
-                $("#powerSubstation").val(data.data.PowerSubstationID);
-            }
-            else {
-                Failure(data);
-            }
-        },
-        error: function () {
-            layer.ready(function () {
-                title: false
-                layer.alert("数据提交存在问题，请检查当前网络", {
-                    title: false
-                });
-            });
-        }
-    })
-}
+    laydate.render({
+        elem: '#endDate'
+        , type: 'datetime'
+    });
+})
+
+
+
 
 function Submit() {
-
-    if ($("#name").val() == null || $("#name").val() == "") {
-        alert("请输入变电柜名称");
-        $("#name").focus();
+    if ($('#ah').val() == null || $('#ah').val() == "") {
+        alert("请选择停电设备");
+        $("#ah").focus();
         return;
     }
 
-    if (urlID == null || urlID == '') {
-        AddAH($('#name').val(), $("#voltageType").val(), $("#powerSubstation").val());
+    if ($("#beginDate").val() == null || $("#beginDate").val() == "") {
+        alert("请输入开始时间");
+        $("#beginDate").focus();
+        return;
     }
-    else {
-        EditAH(urlID, $('#name').val(), $("#voltageType").val(), $("#powerSubstation").val());
+    if ($("#endDate").val() == null || $("#endDate").val() == "") {
+        alert("请输入结束时间");
+        $("#endDate").focus();
+        return;
+    }
+    if ($('#workContent').val() == null || $('#workContent').val() == "") {
+        alert("请输入作业内容");
+        $("#workContent").focus();
+        return;
     }
 
+    if ($('#auditUser').val() == null || $('#auditUser').val() == "") {
+        alert("请选择审核人");
+        $("#auditUser").focus();
+        return;
+    }
+
+    Add($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val());
 }
 
 
-function AddAH(Name, VoltageType, PowerSubstationID) {
-    var path = "/AH/Add";
+function Add(ah, beginDate, endDate, workContent, auditUser) {
+    
+    var path = "/Operation/Add";
     var data = {
-        'Name': Name,
-        'VoltageType': VoltageType,
-        'PowerSubstationID': PowerSubstationID
-    };
+        "AHID": ah,
+        "ApplicationSheet": {
+            "BeginDate": beginDate,
+            "EndDate": endDate,
+            "WorkContent": workContent,
+            "AuditUserID": auditUser
+        }
+    }
     if (basepost(data, path)) {
-        layer.alert('添加成功！', {
+        layer.alert('作业申请成功！', {
             time: 0, //不自动关闭
             btn: ['确定'],
             title: "系统提示信息",
             yes: function (index) {
-                window.location.href = 'AHList.html';
-            }
-        });
-    }
-}
-
-
-function EditHazard(id, Name, VoltageType, PowerSubstationID) {
-    var path = "/hazard/edit";
-    var data = {
-        'ID': id,
-        'Name': Name,
-        'VoltageType': VoltageType,
-        'PowerSubstationID': PowerSubstationID
-    };
-    if (basepost(data, path)) {
-        layer.alert('修改成功！', {
-            time: 0, //不自动关闭
-            btn: ['确定'],
-            title: "系统提示信息",
-            yes: function (index) {
-                window.location.href = 'AHList.html';
+                window.location.href = 'UserList.html';
             }
         });
     }
@@ -123,12 +98,12 @@ function EditHazard(id, Name, VoltageType, PowerSubstationID) {
 
 
 function Cancle() {
-    window.location.href = 'AHList.html';
+    window.location.href = 'UserList.html';
 }
 
-function InitPowerSubstation() {
+function InitAH() {
     $.ajax({
-        url: "/PowerSubstation/List",
+        url: "/AH/List?voltageType=1",
         type: "get",
         dataType: "json",
         async: false,
@@ -141,7 +116,7 @@ function InitPowerSubstation() {
                 for (var i = 0; i < data.data.length; i++) {
                     html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Name + "</option>";
                 }
-                $("#powerSubstation").html(html);
+                $("#ah").html(html);
             }
             else {
                 Failure(data);
@@ -158,14 +133,11 @@ function InitPowerSubstation() {
     })
 }
 
-function InitVoltageType() {
-    var data = {
-        type: "VoltageType"
-    }
+
+function InitAudit() {
     $.ajax({
-        url: "/Base/GetEnum",
+        url: "/User/GetUserListByRole",
         type: "get",
-        data: data,
         dataType: "json",
         async: false,
         beforeSend: function (XHR) {
@@ -174,10 +146,10 @@ function InitVoltageType() {
         success: function (data) {
             if (data.code == 0) {
                 var html = "";
-                for (var i = 0; i < data.data.List.length; i++) {
-                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
+                for (var i = 0; i < data.data.length; i++) {
+                    html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Realname + "</option>";
                 }
-                $("#voltageType").html(html);
+                $("#auditUser").html(html);
             }
             else {
                 Failure(data);
@@ -193,4 +165,6 @@ function InitVoltageType() {
         }
     })
 }
+
+
 

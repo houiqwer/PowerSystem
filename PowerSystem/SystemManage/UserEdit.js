@@ -27,7 +27,7 @@ var id = unity.getURL("id");
 $(function () {
     NewExtendToken();
     list();
-    InitRole(1, 9999);
+    InitRole();
     if (id != null && id != "") {
         Init(id);
     }
@@ -360,9 +360,6 @@ function onBodyDown(event) {
 
 function InitRole() {
     var data = new Array();
-
-
-
     $.ajax({
         url: "/Base/RoleList",
         type: "GET",

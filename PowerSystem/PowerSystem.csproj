@@ -101,6 +101,8 @@
     <Content Include="AH\AHEdit.js" />
     <Content Include="AH\AHList.js" />
     <Content Include="AH\AHList.html" />
+    <Content Include="ApplicationSheet\ApplicationSheetAuditList.html" />
+    <Content Include="ApplicationSheet\ApplicationSheetAuditList.js" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\demo.css" />
     <Content Include="css\documentation.css" />
@@ -135,6 +137,9 @@
     <Content Include="Main.js" />
     <Content Include="Operation\OperationAdd.html" />
     <Content Include="Operation\OperationAdd.js" />
+    <Content Include="Operation\OperationDetail.html" />
+    <Content Include="Operation\OperationList.html" />
+    <Content Include="Operation\OperationList.js" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\css\modules\code.css" />
     <Content Include="Scripts\css\modules\laydate\default\laydate.css" />

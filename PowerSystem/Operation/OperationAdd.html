@@ -152,13 +152,13 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th><span>计划停电开始时间</span></th>
+                                                    <th style="width:120px;"><span>计划停电开始时间</span></th>
                                                     <td>
                                                         <div class="safe-grey">
                                                             <input type="text" id="beginDate" lay-verify='empty' autocomplete="off" nullmsg='开始时间不能为空' class="layui-input" placeholder="请选择开始时间">
                                                         </div>
                                                     </td>
-                                                    <th><span>计划停电结束时间</span></th>
+                                                    <th style="width:120px;"><span>计划停电结束时间</span></th>
                                                     <td>
                                                         <div class="safe-grey">
                                                             <input type="text" id="endDate" lay-verify='empty' autocomplete="off" nullmsg='结束时间不能为空' class="layui-input" placeholder="请选择结束时间">
@@ -170,6 +170,14 @@
                                                     <td colspan="3">
                                                         <div class="safe-grey">
                                                             <textarea id="workContent" placeholder="请输入作业内容" class="layui-textarea" name="workContent"></textarea>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span>审核人</span></th>
+                                                    <td colspan="3">
+                                                        <div class="safe-grey">
+                                                            <select id="auditUser" lay-verify="ddl" errmsg="请选择审核人" ></select>
                                                         </div>
                                                     </td>
                                                 </tr>

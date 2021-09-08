@@ -98,5 +98,15 @@ namespace PowerSystem.Controllers
         {
             return new UserBLL().ChangePassword(user);
         }
+
+        /// <summary>
+        /// 部门副级以上的人员列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, Route("GetUserListByRole"), LoginRequired]
+        public ApiResult GetUserListByRole()
+        {
+            return new UserBLL().GetUserListByRole();
+        }
     }
 }

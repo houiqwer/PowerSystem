@@ -60,6 +60,16 @@ namespace PowerSystemLibrary.BLL
 
                         ApplicationSheet applicationSheet = new ApplicationSheet();
 
+                        string userWeChatIDString = "";
+                        if (operation.ApplicationSheet.AuditUserID == null || db.User.FirstOrDefault(t=>t.ID == operation.ApplicationSheet.AuditUserID && t.IsDelete!=true) == null)
+                        {
+                            throw new ExceptionUtil("请选择审核人");
+                        }
+                        else
+                        {
+                            userWeChatIDString = db.User.FirstOrDefault(t => t.ID == operation.ApplicationSheet.AuditUserID && t.IsDelete != true).WeChatID;
+                        }
+
                         applicationSheet.NO = SheetUtil.BuildNO(ah.VoltageType, SheetType.申请单, db.ApplicationSheet.Count(t => t.CreateDate >= nowDate) + 1);
                         applicationSheet.OperationID = operation.ID;
                         applicationSheet.UserID = loginUser.ID;
@@ -68,20 +78,23 @@ namespace PowerSystemLibrary.BLL
                         applicationSheet.EndDate = operation.ApplicationSheet.EndDate;
                         applicationSheet.WorkContent = operation.ApplicationSheet.WorkContent;
                         applicationSheet.CreateDate = now;
+                        applicationSheet.AuditUserID = operation.ApplicationSheet.AuditUserID;
                         db.ApplicationSheet.Add(applicationSheet);
                         db.SaveChanges();
 
                         //发送审核消息-部门副职及以上
-                        List<Role> roleList = RoleUtil.GetApplicationSheetAuditRoleList();
-                        List<UserRole> userRoleList = db.UserRole.Where(m => roleList.Contains(m.Role)).ToList();
+                        //List<Role> roleList = RoleUtil.GetApplicationSheetAuditRoleList();
+                        //List<UserRole> userRoleList = db.UserRole.Where(m => roleList.Contains(m.Role)).ToList();
 
-                        List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
-                        string userWeChatIDString = "";
-                        foreach (string userWeChatID in userWeChatIDList)
-                        {
-                            userWeChatIDString = userWeChatIDString + userWeChatID + "|";
-                        }
-                        userWeChatIDString.TrimEnd('|');
+                        //List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                        //string userWeChatIDString = "";
+                        //foreach (string userWeChatID in userWeChatIDList)
+                        //{
+                        //    userWeChatIDString = userWeChatIDString + userWeChatID + "|";
+                        //}
+                        //userWeChatIDString.TrimEnd('|');
+                        
+
                         string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                         string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, loginUser.Realname + "于" + now.ToString("yyyy-MM-dd HH:mm") + "申请" + ah.Name + "位置的" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation));
 
@@ -138,6 +151,8 @@ namespace PowerSystemLibrary.BLL
 
                     ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.OperationID == operation.ID);
 
+
+
                     result = ApiResult.NewSuccessJson(new
                     {
                         operation.ID,
@@ -159,6 +174,11 @@ namespace PowerSystemLibrary.BLL
                             VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
                             OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
                             Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                            applicationSheet.WorkContent,
+                            DepartmentName =db.Department.FirstOrDefault(t => t.ID == applicationSheet.DepartmentID).Name,
+                            AuditUserName = db.User.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname,
+                            applicationSheet.AuditMessage,
+                            AuditDate = applicationSheet.AuditDate!=null? applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd"):""
                         }
                     });
 
