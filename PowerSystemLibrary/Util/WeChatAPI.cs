@@ -50,7 +50,7 @@ namespace PowerSystemLibrary.Util
             }
             userJObject.Add("useridlist", userWeChatIDJArray);
 
-            string result = RequestHelper.RequestUrl(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/batchdelete?access_token={0}", access_token), JsonConvert.SerializeObject(userJObject));
+            string result = RequestHelper.Post(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/batchdelete?access_token={0}", access_token), JsonConvert.SerializeObject(userJObject));
             return (JObject)JsonConvert.DeserializeObject(result);
         }
 
