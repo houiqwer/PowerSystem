@@ -238,12 +238,12 @@ namespace PowerSystemLibrary.BLL
                         }
                         db.SaveChanges();
 
-                        //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.UserSecret);
-                        //JObject resultJObject = WeChatAPI.BlindUser(accessToken, user);
-                        //if (Convert.ToInt32(resultJObject["errcode"]) != 0)
-                        //{
-                        //    throw new ExceptionUtil("同步企业微信错误：" + resultJObject["errmsg"]);
-                        //}
+                        string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.UserSecret);
+                        JObject resultJObject = WeChatAPI.BlindUser(accessToken, user);
+                        if (Convert.ToInt32(resultJObject["errcode"]) != 0)
+                        {
+                            throw new ExceptionUtil("同步企业微信错误：" + resultJObject["errmsg"]);
+                        }
 
                         new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(user) + ":" + user.Username, db);
                         result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(user) + ":" + user.Username);

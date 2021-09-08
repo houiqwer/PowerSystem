@@ -36,7 +36,7 @@ namespace PowerSystemLibrary.Util
             sBuilder.Append("\"extattr\": {}");
             sBuilder.Append("}");
 
-            string result = RequestHelper.Post(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token=", access_token), sBuilder.ToString());
+            string result = RequestHelper.Post(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token={0}", access_token), sBuilder.ToString());
             return (JObject)JsonConvert.DeserializeObject(result);
         }
 
@@ -50,7 +50,7 @@ namespace PowerSystemLibrary.Util
             }
             userJObject.Add("useridlist", userWeChatIDJArray);
 
-            string result = RequestHelper.RequestUrl(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/batchdelete?access_token=", access_token), JsonConvert.SerializeObject(userJObject));
+            string result = RequestHelper.RequestUrl(string.Format("https://qyapi.weixin.qq.com/cgi-bin/user/batchdelete?access_token={0}", access_token), JsonConvert.SerializeObject(userJObject));
             return (JObject)JsonConvert.DeserializeObject(result);
         }
 
