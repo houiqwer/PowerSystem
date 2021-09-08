@@ -36,6 +36,7 @@ namespace PowerSystem.Controllers
         /// <param name="departmentID">部门ID</param>       
         /// <param name="no">申请单编号</param>
         /// <param name="voltageType">低压1 高压2</param>
+        /// <param name="audit">待审核1 通过3 驳回4</param>
         /// <param name="ahID">开关柜ID</param>
         /// <param name="beginDate">申请开始时间</param>
         /// <param name="endDate">申请结束时间</param>
@@ -43,9 +44,9 @@ namespace PowerSystem.Controllers
         /// <param name="limit">单页条数</param>
         /// <returns></returns>
         [HttpGet, Route("List"), LoginRequired]
-        public ApiResult List(int? departmentID = null, string no = "", VoltageType? voltageType = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        public ApiResult List(int? departmentID = null, string no = "", VoltageType? voltageType = null, Audit? audit = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
         {
-            return new ApplicationSheetBLL().List(departmentID, no, voltageType, ahID, beginDate, endDate, page, limit);
+            return new ApplicationSheetBLL().List(departmentID, no, voltageType, audit, ahID, beginDate, endDate, page, limit);
         }
 
     }
