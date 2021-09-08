@@ -158,6 +158,7 @@ namespace PowerSystemLibrary.BLL
                         CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
                         VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
                         OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                        OperationFlowID = operation.OperationFlow,
                         operation.IsFinish,
                         operation.IsConfirm,
                         ApplicationSheet = new
