@@ -115,6 +115,58 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
+
+        public ApiResult Get(int id)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    User loginUser = LoginHelper.CurrentUser(db);
+
+                    ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.ID == id);
+                    if (applicationSheet == null)
+                    {
+                        throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ApplicationSheet()));
+                    }
+
+                    Operation operation = db.Operation.FirstOrDefault(t => t.ID == applicationSheet.OperationID);
+                    result = ApiResult.NewSuccessJson(new
+                    {
+                        applicationSheet.ID,
+                        applicationSheet.WorkContent,
+                        AuditUserName = db.User.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                        applicationSheet.AuditMessage,
+                        AuditDate = applicationSheet.AuditDate.HasValue ? applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd HH:mm") : null,
+                        db.User.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                        AHName = db.AH.FirstOrDefault(t => t.ID == operation.AHID).Name,
+                        CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                        BeginDate = applicationSheet.BeginDate.ToString("yyyy-MM-dd HH:mm"),
+                        EndDate = applicationSheet.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                        VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                        OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                        Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+
+            }
+            return result;
+        }
+
         public ApiResult List(int? departmentID = null, string no = "", VoltageType? voltageType = null, Audit? audit = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
         {
             ApiResult result = new ApiResult();

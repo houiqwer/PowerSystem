@@ -31,6 +31,17 @@ namespace PowerSystem.Controllers
         }
 
         /// <summary>
+        /// 获取单条申请单信息
+        /// </summary>
+        /// <param name="id">申请单id</param>
+        /// <returns></returns>
+        [HttpGet, Route("List"), LoginRequired]
+        public ApiResult List(int id)
+        {
+            return new ApplicationSheetBLL().Get(id);
+        }
+
+        /// <summary>
         /// 申请单列表
         /// </summary>
         /// <param name="departmentID">部门ID</param>       
