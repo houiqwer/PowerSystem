@@ -166,6 +166,10 @@ namespace PowerSystemLibrary.BLL
                         ApplicationSheet = new
                         {
                             applicationSheet.ID,
+                            applicationSheet.WorkContent,
+                            AuditUserName = db.User.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                            applicationSheet.AuditMessage,
+                            AuditDate = applicationSheet.AuditDate.HasValue ? applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd HH:mm") : null,
                             user.Realname,
                             AHName = ah.Name,
                             CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
@@ -230,8 +234,6 @@ namespace PowerSystemLibrary.BLL
                         ApplicationSheet applicationSheet = applicationSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
 
                         //高压需要增加其他表单
-
-
 
                         returnList.Add(new
                         {
