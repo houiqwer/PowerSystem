@@ -150,9 +150,6 @@ namespace PowerSystemLibrary.BLL
                     AH ah = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
 
                     ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.OperationID == operation.ID);
-
-
-
                     result = ApiResult.NewSuccessJson(new
                     {
                         operation.ID,
@@ -178,11 +175,7 @@ namespace PowerSystemLibrary.BLL
                             VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
                             OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
                             Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
-                            applicationSheet.WorkContent,
                             DepartmentName =db.Department.FirstOrDefault(t => t.ID == applicationSheet.DepartmentID).Name,
-                            AuditUserName = db.User.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname,
-                            applicationSheet.AuditMessage,
-                            AuditDate = applicationSheet.AuditDate!=null? applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd"):""
                         }
                     });
 

@@ -126,6 +126,13 @@ namespace PowerSystemLibrary.BLL
                 try
                 {
                     User loginUser = LoginHelper.CurrentUser(db);
+
+                    ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.ID == id);
+                    if (applicationSheet == null)
+                    {
+                        throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ApplicationSheet()));
+                    }
+
                     Operation operation = db.Operation.FirstOrDefault(t => t.ID == applicationSheet.OperationID);
                     result = ApiResult.NewSuccessJson(new
                     {
@@ -169,6 +176,7 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
+                    User loginUser = LoginHelper.CurrentUser(db);
                     beginDate = beginDate ?? DateTime.MinValue;
                     endDate = endDate ?? DateTime.MaxValue;
                     no = no ?? string.Empty;
