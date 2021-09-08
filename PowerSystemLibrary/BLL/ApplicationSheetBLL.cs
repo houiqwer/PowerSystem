@@ -236,7 +236,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult MyAuditList(int? departmentID = null, string no = "", VoltageType? voltageType = null, Audit? audit = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
+        public ApiResult MyAuditList(int? departmentID = null, string no = "", VoltageType? voltageType = null, bool isAudit = false, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null, int page = 1, int limit = 10)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -252,7 +252,7 @@ namespace PowerSystemLibrary.BLL
                     IQueryable<ApplicationSheet> applicationSheetIQueryable = db.ApplicationSheet.Where(t => t.IsDelete != true &&
                     t.AuditUserID == loginUser.ID &&
                     (departmentID == null || t.DepartmentID == departmentID) &&
-                    (audit == null || t.Audit == audit) &&
+                    ((!isAudit && t.Audit == Enum.Audit.待审核) || (isAudit && (t.Audit == Enum.Audit.通过 || t.Audit == Enum.Audit.驳回))) &&
                     t.NO.Contains(no) &&
                     (ahID == null || db.Operation.Where(m => m.AHID == ahID).Select(m => m.ID).Contains(t.OperationID)) &&
                     (voltageType == null || db.Operation.Where(m => m.VoltageType == voltageType).Select(m => m.ID).Contains(t.OperationID)) &&
