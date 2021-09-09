@@ -293,7 +293,7 @@ namespace PowerSystemLibrary.BLL
                     User loginUser = LoginHelper.CurrentUser(db);
 
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
-                    t.IsConfirm != true &&
+                    t.IsConfirm != true && t.ReciveCount <2 &&
                     (ahID == null || t.AHID == ahID) &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
