@@ -100,6 +100,26 @@ function AddAH(Name, VoltageType, PowerSubstationID) {
     }
 }
 
+function EditAH(ID,Name, VoltageType, PowerSubstationID) {
+    var path = "/AH/Edit";
+    var data = {
+        'ID': ID,
+        'Name': Name,
+        'VoltageType': VoltageType,
+        'PowerSubstationID': PowerSubstationID
+    };
+    if (basepost(data, path)) {
+        layer.alert('修改成功！', {
+            time: 0, //不自动关闭
+            btn: ['确定'],
+            title: "系统提示信息",
+            yes: function (index) {
+                window.location.href = 'AHList.html';
+            }
+        });
+    }
+}
+
 
 function EditHazard(id, Name, VoltageType, PowerSubstationID) {
     var path = "/hazard/edit";
