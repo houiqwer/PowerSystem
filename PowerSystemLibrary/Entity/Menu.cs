@@ -32,6 +32,7 @@ namespace PowerSystemLibrary.Entity
         public string Icon { get; set; }
 
         public int? ParentID { get; set; }
+        [ExchangeType]
         public int? Order { get; set; }
         public bool? IsDelete { get; set; }
     }
