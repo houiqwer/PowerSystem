@@ -138,7 +138,7 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-
+                    User loginUser = LoginHelper.CurrentUser(db);
                     Operation operation = db.Operation.FirstOrDefault(t => t.ID == id);
 
                     if (operation == null)
@@ -161,6 +161,7 @@ namespace PowerSystemLibrary.BLL
                         OperationFlowID = operation.OperationFlow,
                         operation.IsFinish,
                         operation.IsConfirm,
+                        IsUser = user.ID == loginUser.ID,
                         ApplicationSheet = new
                         {
                             applicationSheet.ID,
