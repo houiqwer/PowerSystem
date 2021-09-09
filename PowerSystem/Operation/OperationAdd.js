@@ -90,7 +90,7 @@ function Add(ah, beginDate, endDate, workContent, auditUser) {
             btn: ['确定'],
             title: "系统提示信息",
             yes: function (index) {
-                window.location.href = 'UserList.html';
+                window.location.href = 'MyOperationList.html';
             }
         });
     }
@@ -98,7 +98,7 @@ function Add(ah, beginDate, endDate, workContent, auditUser) {
 
 
 function Cancle() {
-    window.location.href = 'UserList.html';
+    window.location.href = 'MyOperationList.html';
 }
 
 function InitAH() {
