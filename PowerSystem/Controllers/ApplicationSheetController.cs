@@ -79,5 +79,12 @@ namespace PowerSystem.Controllers
             return new ApplicationSheetBLL().MyAuditList(departmentID, no, voltageType, isAudit, ahID, beginDate, endDate, page, limit);
         }
 
+
+        [HttpGet, Route("Export"), LoginRequired]
+        public ApiResult Export(int ID)
+        {
+            return new ApplicationSheetBLL().Export(ID);
+        }
+
     }
 }

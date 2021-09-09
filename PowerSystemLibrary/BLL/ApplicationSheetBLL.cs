@@ -9,6 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using PowerSystemLibrary.DAO;
+using Aspose.Words.Tables;
+using Aspose.Words;
+using System.IO;
+using System.Web;
 
 namespace PowerSystemLibrary.BLL
 {
@@ -306,6 +310,153 @@ namespace PowerSystemLibrary.BLL
                     result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
                 }
 
+            }
+            return result;
+        }
+
+        public ApiResult Export(int id)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using(PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.IsDelete != true && t.ID == id);
+                    if (applicationSheet == null)
+                    {
+                        throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ApplicationSheet()));
+                    }
+                    Operation operation = db.Operation.FirstOrDefault(t => t.ID == applicationSheet.OperationID);
+                    Department department = db.Department.FirstOrDefault(t => t.ID == applicationSheet.DepartmentID);
+                    User createUser = db.User.FirstOrDefault(t => t.ID == applicationSheet.UserID);
+                    User auditUser = db.User.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID);
+                   
+                    AH aH = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
+                    Document doc = new Document();
+                    DocumentBuilder builder = new Aspose.Words.DocumentBuilder(doc);
+                    builder.MoveToBookmark("Title");
+                    builder.Font.Name = "黑体";
+                    builder.Font.Size = 18;
+                    builder.Write("裕溪口分公司停电作业申请单");
+
+                    builder.MoveToBookmark("Table");
+                    double width = 70;
+                    builder.CellFormat.Width = width;
+                    builder.CellFormat.PreferredWidth = Aspose.Words.Tables.PreferredWidth.FromPoints(width);
+                    builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;//垂直居中对齐
+                    builder.ParagraphFormat.Alignment = ParagraphAlignment.Center;//水平居中对齐
+                    builder.CellFormat.Borders.LineStyle = Aspose.Words.LineStyle.Single;
+
+
+                    //第一行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Font.Size = 9;
+                    builder.Font.Name = "黑体";
+                    builder.Write("申请停电单位:"+ department.Name);
+
+                    builder.CellFormat.Width = width;
+                    builder.CellFormat.PreferredWidth = Aspose.Words.Tables.PreferredWidth.FromPoints(width);
+                    builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;//垂直居中对齐
+                    builder.ParagraphFormat.Alignment = ParagraphAlignment.Left;//水平居中对齐
+                    builder.CellFormat.Borders.LineStyle = Aspose.Words.LineStyle.Single;
+
+                    //第一行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Write("申请人:"+ createUser.Realname);
+                    builder.EndRow();
+
+                    //第二行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Write("计划停电时间:"+ applicationSheet.BeginDate.ToString("yyyy年MM月dd日HH时mm分")+"至"+applicationSheet.EndDate.ToString("yyyy年MM月dd日HH时mm分"));
+
+                    //第二行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    //第三行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Write("停电设备:" + aH.Name);
+
+                    //第三行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    //第四行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Write("作业内容:" + applicationSheet.WorkContent);
+
+                    //第四行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    //第五行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Write("安全技术措施:" +"\r\n" + "1、将相关设备停电挂牌并验电；2、执行公司安全规程；3、执行登高作业的相关规定；4、执行起重作业的相关规定；5、执行烧焊的相关规定；6、作业完毕所有的防护均恢复后送电试车。");
+
+                    //第五行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+
+                    //第六行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.Write("批准人:" + auditUser.Realname+"("+ System.Enum.GetName(typeof(Audit),applicationSheet.Audit)+")");
+
+                    //第六行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    string FilePath =  "停电作业申请单" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".doc";
+                    doc.Save(ParaUtil.ResourcePath + FilePath, Aspose.Words.SaveFormat.Doc);
+
+                    using (FileStream fs = new FileStream(ParaUtil.ResourcePath + FilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[(int)fs.Length];
+                        fs.Read(bytes, 0, bytes.Length);
+                        fs.Close();
+                        HttpContext.Current.Response.ContentType = "application/octet-stream";
+                        HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(FilePath, Encoding.UTF8));
+                        HttpContext.Current.Response.BinaryWrite(bytes);
+                        HttpContext.Current.Response.Flush();
+                        HttpContext.Current.ApplicationInstance.CompleteRequest();
+                    }
+                    new LogDAO().AddLog(LogCode.导出, "成功导出停电作业申请单", db);
+                    result = ApiResult.NewSuccessJson("成功导出停电作业申请单");
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.导出错误, message, db);
+                }
             }
             return result;
         }
