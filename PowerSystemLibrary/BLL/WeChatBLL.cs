@@ -22,16 +22,15 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                   
                     string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.PowerSecret);
                     string userId = WeChatAPI.GetUserInfo(accessToken, code);
                     string UserJson = WeChatAPI.GetUser(accessToken, userId);
                     if (RequestHelper.Json(UserJson, "errcode") == "0")
                     {
-                        string mobile = RequestHelper.Json(UserJson, "mobile");
-                        if (!string.IsNullOrEmpty(mobile))
+                        string weChatID = RequestHelper.Json(UserJson, "userid");
+                        if (!string.IsNullOrEmpty(weChatID))
                         {
-                            User loginUser = db.User.FirstOrDefault(t => t.Cellphone == mobile);
+                            User loginUser = db.User.FirstOrDefault(t => t.WeChatID == weChatID);
                             if (loginUser != null)
                             {
                                 loginUser.Token = !string.IsNullOrEmpty(loginUser.Token) ? loginUser.Token : Guid.NewGuid().ToString();
@@ -49,7 +48,7 @@ namespace PowerSystemLibrary.BLL
                                     RoleList = db.UserRole.Where(t => t.UserID == loginUser.ID).Select(t => t.Role).ToList()
                                 });
 
-                               
+
                             }
                             else
                             {
@@ -70,7 +69,7 @@ namespace PowerSystemLibrary.BLL
                 {
                     message = ex.Message.ToString();
                 }
-               
+
                 if (!string.IsNullOrEmpty(message))
                 {
                     result = ApiResult.NewErrorJson(LogCode.系统错误, message, db);

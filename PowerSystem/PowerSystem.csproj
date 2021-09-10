@@ -1120,6 +1120,7 @@
     <Content Include="Web.config" />
     <Content Include="zTree_v3\css\awesomeStyle\awesome.less" />
     <Content Include="zTree_v3\css\awesomeStyle\fa.less" />
+    <Content Include="智慧停送电管理平台操作手册.docx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\HttpHeaderFilter.cs" />

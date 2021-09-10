@@ -17,7 +17,7 @@ namespace PowerSystemLibrary.BLL
             ApiResult result = new ApiResult();
             string message = string.Empty;
             List<EnumEntity> enumList = new List<EnumEntity>();
-            using(PowerSystemDBContext db = new PowerSystemDBContext())
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
             {
                 try
                 {
@@ -60,7 +60,7 @@ namespace PowerSystemLibrary.BLL
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
-            result = ApiResult.NewSuccessJson(BaseUtil.EnumToList<Role>());
+            result = ApiResult.NewSuccessJson(BaseUtil.EnumToList<Role>(), System.Enum.GetValues(typeof(Role)).Length);
             return result;
         }
     }

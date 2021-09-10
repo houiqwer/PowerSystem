@@ -69,7 +69,7 @@
                                     </div>
 
                                     <button type="button" class="layui-btn  ml20 safe-btn1" id="cx"><i class="iconfont icon-sousuo"></i></button>
-                                   
+
                                     <input type="button" value="添加" class="layui-btn  safe-btn2 bred ml20 frt" onclick="Add()">
                                 </form>
                             </div>
@@ -85,34 +85,30 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/layui.js"></script>
-    <script src="/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="/Scripts/layer/layer.js"></script>
-    <script src="/Scripts/Common.js"></script>
-    <script src="/Scripts/safe.js"></script>
-
-    <script src="../zTree_v3/js/jquery.ztree.core.min.js"></script>
-    <script src="../zTree_v3/js/jquery.ztree.excheck.js"></script>
-    <script src="UserList.js"></script>
-    
-    <script type="text/javascript">
-        $(".inputdel").click(function () {
-            $(this).siblings("input").attr("value", "");;
-            //$("#citySel").val("");
-            $("#depIDs").val('');
-        })
-    </script>
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-xs safe-btn3 shan" lay-event="del">删除</a>
-        <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
-        <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="reset">密码重置</a>
-        
-
-
-    </script>
-    <script>
-        
-    </script>
 </body>
 </html>
+<script src="/Scripts/layui.js"></script>
+<script src="/Scripts/jquery-3.3.1.min.js"></script>
+<script src="/Scripts/layer/layer.js"></script>
+<script src="/Scripts/Common.js"></script>
+<script src="/Scripts/safe.js"></script>
+<script src="/zTree_v3/js/jquery.ztree.core.min.js"></script>
+<script src="/zTree_v3/js/jquery.ztree.excheck.js"></script>
+<script src="UserList.js"></script>
+
+<script type="text/javascript">
+    $(".inputdel").click(function () {
+        $(this).siblings("input").attr("value", "");;
+        //$("#citySel").val("");
+        $("#depIDs").val('');
+    })
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs safe-btn3 shan" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="reset">密码重置</a>
+
+
+
+</script>

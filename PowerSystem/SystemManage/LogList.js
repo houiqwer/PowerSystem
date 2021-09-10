@@ -29,7 +29,7 @@ $(".sea-text").keydown(function (e) {
 
 $(function () {
     NewExtendToken();
-    InitEnum("LogCode", $("#LogCode"), true,"日志类型");
+    InitEnum("LogCode", $("#LogCode"), true, "日志类型");
 
     if (localStorage.getItem(window.location.pathname + "realName") != null) {
         $("#realName").val(localStorage.getItem(window.location.pathname + "realName"));
@@ -37,7 +37,7 @@ $(function () {
     if (localStorage.getItem(window.location.pathname + "LogCode") != null) {
         $("#LogCode").val(localStorage.getItem(window.location.pathname + "LogCode"));
     }
-    
+
     var date = $("#JoinDate").val();
     if (date != "") {
         var begindate = date.substring(0, 10);
@@ -72,7 +72,7 @@ function page(realName, LogCode, begindate, enddate) {
 
     layui.use('table', function () {
         var table = layui.table;
-        var seahei = $('.search').height() + 20;
+        var seahei = $('.search').height();
         var headhei = $('.layui-card-header').height() == undefined ? 0 : $('.layui-card-header').height();
         var hei = $('.safe-card1').height() - seahei - headhei;
         //展示已知数据
@@ -80,6 +80,7 @@ function page(realName, LogCode, begindate, enddate) {
             elem: '#demo'
             , url: '/Log/List'
             , where: { realName: realName, LogCode: LogCode, beginDate: begindate, endDate: enddate }
+            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , skin: 'line' //表格风格
             , even: true
             , page: {
@@ -106,6 +107,6 @@ function page(realName, LogCode, begindate, enddate) {
 
             }
         });
-
+        $(".layui-table-view").height(hei);
     });
 }

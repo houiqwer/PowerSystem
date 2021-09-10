@@ -318,7 +318,7 @@ namespace PowerSystemLibrary.BLL
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
-            using(PowerSystemDBContext db = new PowerSystemDBContext())
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
             {
                 try
                 {
@@ -331,11 +331,12 @@ namespace PowerSystemLibrary.BLL
                     Department department = db.Department.FirstOrDefault(t => t.ID == applicationSheet.DepartmentID);
                     User createUser = db.User.FirstOrDefault(t => t.ID == applicationSheet.UserID);
                     User auditUser = db.User.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID);
-                   
+
                     AH aH = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
                     Document doc = new Document();
-                    DocumentBuilder builder = new Aspose.Words.DocumentBuilder(doc);
+                    DocumentBuilder builder = new DocumentBuilder(doc);
                     builder.MoveToBookmark("Title");
+                    builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;
                     builder.Font.Name = "黑体";
                     builder.Font.Size = 18;
                     builder.Write("裕溪口分公司停电作业申请单");
@@ -343,10 +344,10 @@ namespace PowerSystemLibrary.BLL
                     builder.MoveToBookmark("Table");
                     double width = 70;
                     builder.CellFormat.Width = width;
-                    builder.CellFormat.PreferredWidth = Aspose.Words.Tables.PreferredWidth.FromPoints(width);
+                    builder.CellFormat.PreferredWidth = PreferredWidth.FromPoints(width);
                     builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;//垂直居中对齐
                     builder.ParagraphFormat.Alignment = ParagraphAlignment.Center;//水平居中对齐
-                    builder.CellFormat.Borders.LineStyle = Aspose.Words.LineStyle.Single;
+                    builder.CellFormat.Borders.LineStyle = LineStyle.Single;
 
 
                     //第一行第一列
@@ -355,26 +356,26 @@ namespace PowerSystemLibrary.BLL
                     builder.CellFormat.HorizontalMerge = CellMerge.None;
                     builder.Font.Size = 9;
                     builder.Font.Name = "黑体";
-                    builder.Write("申请停电单位:"+ department.Name);
+                    builder.Write("申请停电单位:" + department.Name);
 
                     builder.CellFormat.Width = width;
-                    builder.CellFormat.PreferredWidth = Aspose.Words.Tables.PreferredWidth.FromPoints(width);
+                    builder.CellFormat.PreferredWidth = PreferredWidth.FromPoints(width);
                     builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;//垂直居中对齐
                     builder.ParagraphFormat.Alignment = ParagraphAlignment.Left;//水平居中对齐
-                    builder.CellFormat.Borders.LineStyle = Aspose.Words.LineStyle.Single;
+                    builder.CellFormat.Borders.LineStyle = LineStyle.Single;
 
                     //第一行第二列
                     builder.InsertCell();
                     builder.CellFormat.VerticalMerge = CellMerge.None;
                     builder.CellFormat.HorizontalMerge = CellMerge.None;
-                    builder.Write("申请人:"+ createUser.Realname);
+                    builder.Write("申请人:" + createUser.Realname);
                     builder.EndRow();
 
                     //第二行第一列
                     builder.InsertCell();
                     builder.CellFormat.VerticalMerge = CellMerge.None;
-                    builder.CellFormat.HorizontalMerge = CellMerge.None;
-                    builder.Write("计划停电时间:"+ applicationSheet.BeginDate.ToString("yyyy年MM月dd日HH时mm分")+"至"+applicationSheet.EndDate.ToString("yyyy年MM月dd日HH时mm分"));
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("计划停电时间:" + applicationSheet.BeginDate.ToString("yyyy年MM月dd日HH时mm分") + "至" + applicationSheet.EndDate.ToString("yyyy年MM月dd日HH时mm分"));
 
                     //第二行第二列
                     builder.InsertCell();
@@ -385,7 +386,8 @@ namespace PowerSystemLibrary.BLL
                     //第三行第一列
                     builder.InsertCell();
                     builder.CellFormat.VerticalMerge = CellMerge.None;
-                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.RowFormat.Height = 30;                  
                     builder.Write("停电设备:" + aH.Name);
 
                     //第三行第二列
@@ -397,7 +399,7 @@ namespace PowerSystemLibrary.BLL
                     //第四行第一列
                     builder.InsertCell();
                     builder.CellFormat.VerticalMerge = CellMerge.None;
-                    builder.CellFormat.HorizontalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
                     builder.Write("作业内容:" + applicationSheet.WorkContent);
 
                     //第四行第二列
@@ -409,8 +411,9 @@ namespace PowerSystemLibrary.BLL
                     //第五行第一列
                     builder.InsertCell();
                     builder.CellFormat.VerticalMerge = CellMerge.None;
-                    builder.CellFormat.HorizontalMerge = CellMerge.None;
-                    builder.Write("安全技术措施:" +"\r\n" + "1、将相关设备停电挂牌并验电；2、执行公司安全规程；3、执行登高作业的相关规定；4、执行起重作业的相关规定；5、执行烧焊的相关规定；6、作业完毕所有的防护均恢复后送电试车。");
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.RowFormat.Height = 12;
+                    builder.Write("安全技术措施:" + "\r\n" + "1、将相关设备停电挂牌并验电；2、执行公司安全规程；3、执行登高作业的相关规定；4、执行起重作业的相关规定；5、执行烧焊的相关规定；6、作业完毕所有的防护均恢复后送电试车。");
 
                     //第五行第二列
                     builder.InsertCell();
@@ -422,8 +425,8 @@ namespace PowerSystemLibrary.BLL
                     //第六行第一列
                     builder.InsertCell();
                     builder.CellFormat.VerticalMerge = CellMerge.None;
-                    builder.CellFormat.HorizontalMerge = CellMerge.None;
-                    builder.Write("批准人:" + auditUser.Realname+"("+ System.Enum.GetName(typeof(Audit),applicationSheet.Audit)+")");
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("批准人:" + auditUser.Realname + "(" + System.Enum.GetName(typeof(Audit), applicationSheet.Audit) + ")");
 
                     //第六行第二列
                     builder.InsertCell();
@@ -431,7 +434,7 @@ namespace PowerSystemLibrary.BLL
                     builder.CellFormat.HorizontalMerge = CellMerge.Previous;
                     builder.EndRow();
 
-                    string FilePath =  "停电作业申请单" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".doc";
+                    string FilePath = "停电作业申请单" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".doc";
                     doc.Save(ParaUtil.ResourcePath + FilePath, Aspose.Words.SaveFormat.Doc);
 
                     using (FileStream fs = new FileStream(ParaUtil.ResourcePath + FilePath, FileMode.Open, FileAccess.Read))

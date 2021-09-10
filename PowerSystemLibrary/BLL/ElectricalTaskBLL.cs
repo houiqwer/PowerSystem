@@ -186,7 +186,7 @@ namespace PowerSystemLibrary.BLL
                                 //operationList.ForEach(t => t.OperationFlow = OperationFlow.低压送电任务完成);
 
 
-                                string userWeChatString = db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID;
+                                string userWeChatString = db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID + "|";
                                 List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => t.ElectricalTaskID == selectedElectricalTask.ID).ToList();
                                 List<int> userIDList = electricalTaskUserList.Select(t => t.UserID).ToList();
                                 List<string> weChatIDList = db.User.Where(t => userIDList.Contains(t.ID)).Select(t => t.WeChatID).ToList();
@@ -293,7 +293,7 @@ namespace PowerSystemLibrary.BLL
                     User loginUser = LoginHelper.CurrentUser(db);
 
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
-                    t.IsConfirm != true && t.ReciveCount <2 &&
+                    t.IsConfirm != true && t.ReciveCount < 2 &&
                     (ahID == null || t.AHID == ahID) &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&

@@ -16,8 +16,9 @@ $(function () {
 function dopage() {
     layui.use('table', function () {
         var table = layui.table;
-        var ssq = $(".search").val() == undefined ? 0 : $(".search").height();
-        var hei = $('.safe-card1').height() - 51 - ssq;
+        var seahei = $('.search').height() == undefined ? 0 : $('.layui-card-header').height();;
+        var headhei = $('.layui-card-header').height() == undefined ? 0 : $('.layui-card-header').height();
+        var hei = $('.safe-card1').height() - seahei - headhei;
         table.render({
             elem: '#demo',
             url: '/Base/RoleList',
