@@ -20,5 +20,12 @@ namespace PowerSystemLibrary.Entity
         public int ElectricalTaskID { get; set; }
         public DateTime Date { get; set; }
         public bool IsConfirm { get; set; } = false;
+
+        public bool IsBack { get; set; } = false;
+
+        [NotMapped]
+        public string RealName { get; set; }
+        [NotMapped]
+        public string CreateDate { get; set; }
     }
 }

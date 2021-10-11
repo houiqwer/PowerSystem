@@ -88,5 +88,15 @@ namespace PowerSystem.Controllers
             return new ElectricalTaskBLL().AcceptedList(ahID, electricalTaskType, beginDate, endDate, page, limit);
         }
 
+        /// <summary>
+        /// 退回任务
+        /// </summary>
+        /// <param name="electricalTask">需要ID</param>
+        /// <returns></returns>
+        [HttpPost, Route("Back"), LoginRequired]
+        public ApiResult Back(ElectricalTask electricalTask)
+        {
+            return new ElectricalTaskBLL().Back(electricalTask);
+        }
     }
 }

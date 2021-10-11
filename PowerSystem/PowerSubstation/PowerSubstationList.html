@@ -23,21 +23,9 @@
                             <div class="search">
                                 <form class="layui-form" action="">
                                     <div class="layui-inline">
-                                        <div class="layui-input-inline safe-sel">
-                                            <select id="ah" name="ah"></select>
-                                        </div>
-                                        <div class="layui-input-inline safe-sel">
-                                            <select id="electricalTaskType" name="electricalTaskType"></select>
-                                        </div>
-                                        <div class="layui-input-inline">
-                                            <div class="layui-input-inline safe-data">
-                                                <input type="text" class="layui-input" id="date" placeholder="请选择发起时间">
-                                                <i class="iconfont icon-rili"></i>
-                                                <i class=" layui-edge"></i>
-                                            </div>
-                                        </div>
+                                        
                                     </div>
-                                    <button type="button" class="layui-btn  ml20 safe-btn1" id="search"><i class="iconfont icon-sousuo"></i></button>
+                                    <button class="layui-btn  safe-btn2 bgr1 ml20 frt" type="button" onclick="Add()">添加</button>
                                 </form>
                             </div>
 
@@ -68,8 +56,7 @@
 <script src="../Scripts/Common.js"></script>
 <script src="../Scripts/safe.js"></script>
 <script type="text/html" id="bar">
-    <a class="layui-btn layui-btn-xs safe-btn3 bred" lay-event="back">退回</a>
-    <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="confirm">确认完成</a>
-    <!--<a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="detail">查看</a>-->
+    <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs safe-btn3 shan" lay-event="delete">删除</a>
 </script>
-<script src="AcceptedElectricalTaskList.js"></script>
+<script src="PowerSubstationList.js"></script>

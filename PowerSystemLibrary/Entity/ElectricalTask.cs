@@ -27,5 +27,9 @@ namespace PowerSystemLibrary.Entity
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public bool IsConfirm { get; set; } = false;
 
+        [NotMapped]
+        public List<ElectricalTaskUser> ElectricalTaskUserList { get; set; }
+
+        
     }
 }

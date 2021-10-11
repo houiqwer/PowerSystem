@@ -9,10 +9,12 @@ $(function () {
         if (sign != null && sign != "") {
             $("#myAudit").show();
             $(".sh").show();
+            $("#TaskUser").hide();
         }
         else {
             $("#myAudit").hide();
             $(".sh").hide();
+            $("#TaskUser").show();
         }
         Init(id);
     }
@@ -72,6 +74,28 @@ function Init(id) {
                 item += "<tr ><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
                 item += "<tr><td style='text-align:center'>" + data.data.ApplicationSheet.AuditUserName + "</td><td style='text-align:center'>" + data.data.ApplicationSheet.Audit + "</td><td style='text-align:center'>" + (data.data.ApplicationSheet.AuditDate == null ? "" : data.data.ApplicationSheet.AuditDate) + "</td><td style='text-align:center'>" + (data.data.ApplicationSheet.AuditMessage == null ? "" : data.data.ApplicationSheet.AuditMessage) + "</td></tr>";
                 $("#tbody").append(item);
+
+
+                var stop = "<tr ><th style='text-align:center'>停电电工</th><th style='text-align:center'>停电时间</th><th style='text-align:center'>是否确认</th></tr>";
+                if (data.data.stopElectricalTaskList.length > 0) {
+                    
+                    for (var i = 0; i < data.data.stopElectricalTaskList[0].ElectricalTaskUserList.length; i++) {
+                        stop += "<tr><td style='text-align:center'>" + data.data.stopElectricalTaskList[0].ElectricalTaskUserList[i].RealName + "</td><td style='text-align:center'>" + data.data.stopElectricalTaskList[0].ElectricalTaskUserList[i].CreateDate + "</td><td style='text-align:center'>" + (data.data.stopElectricalTaskList[0].ElectricalTaskUserList[i].IsConfirm ? '是' : '否') + "</td></tr>";
+                    }
+                }
+                
+                $("#stopElectricalTaskList").append(stop);
+
+                var send = "<tr ><th style='text-align:center'>送电电工</th><th style='text-align:center'>送电时间</th><th style='text-align:center'>是否确认</th></tr>";
+                if (data.data.sendElectricalTaskList.length > 0) {
+
+                    for (var i = 0; i < data.data.sendElectricalTaskList[0].ElectricalTaskUserList.length; i++) {
+                        
+                        send += "<tr><td style='text-align:center'>" + data.data.sendElectricalTaskList[0].ElectricalTaskUserList[i].RealName + "</td><td style='text-align:center'>" + data.data.sendElectricalTaskList[0].ElectricalTaskUserList[i].CreateDate + "</td><td style='text-align:center'>" + (data.data.sendElectricalTaskList[0].ElectricalTaskUserList[i].IsConfirm ? '是' : '否') + "</td></tr>";
+                    }
+                }
+
+                $("#sendElectricalTaskList").append(send);
             }
             else {
                 Failure(data);

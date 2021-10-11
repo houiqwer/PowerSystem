@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>智慧停送电管理平台</title>
+    <link href="../zTree_v3/css/demo.css" rel="stylesheet" />
+    <link href="../zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/layui.css">
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../css/safemain.css">
+    <style>
+        .layui-body {
+            left: 0px;
+            top: 0px;
+            background: #eeeff4;
+            bottom: 0;
+        }
+
+        .safe-form1 th {
+            color: #000;
+            text-align: center;
+        }
+
+        .safe-form1 td {
+            text-align: center;
+        }
+
+        .link1 {
+            color: #01AAED;
+        }
+
+            .link1:hover {
+                color: #0194ce;
+            }
+
+        .tanchu1-in .safe-form th {
+            width: 65px;
+        }
+
+        .tanchu1-in {
+            padding: 20px 0;
+        }
+
+            .tanchu1-in .safe-tijiao {
+                margin-top: 15px;
+            }
+
+        .layui-table, .layui-table-view {
+            margin-bottom: 20px;
+        }
+
+        .layui-form-selected dl {
+            z-index: 9999;
+        }
+
+        .link {
+            color: #01AAED;
+            cursor: pointer;
+        }
+
+        .xuanren {
+            padding: 3px 5px 3px 7px;
+            display: inline-block;
+            *display: inline;
+            zoom: 1;
+            background: #ece9e9;
+            border-radius: 2px;
+            margin: 4px 4px 4px 0px;
+        }
+
+            .xuanren i {
+                vertical-align: top;
+                border-radius: 100%;
+                width: 20px;
+                height: 20px;
+                background: #fff;
+                margin-left: 6px;
+                box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+                cursor: pointer;
+                text-align: center;
+            }
+
+                .xuanren i:hover {
+                    background: #01AAED;
+                    color: #fff;
+                }
+
+        .kuang_wapper {
+            width: 1500px;
+            position: relative;
+        }
+
+            .kuang_wapper img {
+                width: 100%;
+            }
+
+            .kuang_wapper svg {
+                width: 100%;
+                height: 100%;
+            }
+
+        .kuang {
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 2;
+        }
+
+        .yuan {
+            position: absolute;
+            z-index: 3;
+            left: 0;
+            top: 0;
+        }
+
+        .kuang_sub {
+            position: fixed; /*border-top: 1px solid #e6e6e6;*/
+            width: 100%;
+            left: 0;
+            bottom: 0px;
+            box-sizing: border-box;
+            z-index: 1000000;
+        }
+
+            .kuang_sub input[type="button"] {
+                border-radius: 2px;
+            }
+    </style>
+</head>
+
+<body class="layui-layout-body safe ">
+    <div class="layui-body safe-body ">
+        <div style="height: 100%;padding:68px 16px 20px;box-sizing: border-box">
+            <h1 class="safeh1 cbl2"><blockquote class="layui-elem-quote" id="head"></blockquote></h1>
+            <div class="layui-card safe-card1">
+                <div class="" style="height: 100%;">
+                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                        <div class="layui-tab-content layui-card-body">
+                            <div class="layui-tab-item layui-show safe-item" style="padding-bottom: 25px">
+                                <form class="layui-form" action="">
+                                    <h2>变电柜</h2>
+                                    <div class="layui-form safe-form">
+                                        <table border="0" class="layui-table">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span>变电所名称</span></th>
+                                                    <td colspan="2">
+                                                        <div class="safe-grey">
+                                                            <input type="text" id="name" name="title" lay-verify="empty" nullmsg="请输入变电所名称" autocomplete="off" placeholder="请输入变电所名称" class="layui-input ">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="safe-tijiao"><button class="layui-btn bbl1" lay-submit lay-filter="submit" type="button" id="submit">立即提交</button><button type="button" onclick="Cancle()" class="layui-btn bred">取消</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="../Scripts/layui.js"></script>
+<script src="../Scripts/jquery-3.3.1.min.js"></script>
+<script src="../Scripts/layer/layer.js"></script>
+<script src="../Scripts/Common.js?1"></script>
+<script src="../Scripts/safe.js"></script>
+<script src="PowerSubstationEdit.js"></script>

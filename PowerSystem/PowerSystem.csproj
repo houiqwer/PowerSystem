@@ -148,6 +148,10 @@
     <Content Include="Operation\OperationDetail.js" />
     <Content Include="Operation\OperationList.html" />
     <Content Include="Operation\OperationList.js" />
+    <Content Include="PowerSubstation\PowerSubstationEdit.html" />
+    <Content Include="PowerSubstation\PowerSubstationEdit.js" />
+    <Content Include="PowerSubstation\PowerSubstationList.html" />
+    <Content Include="PowerSubstation\PowerSubstationList.js" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\css\modules\code.css" />
     <Content Include="Scripts\css\modules\laydate\default\laydate.css" />

@@ -148,7 +148,7 @@ function Cancle() {
 
 function InitPowerSubstation() {
     $.ajax({
-        url: "/PowerSubstation/List",
+        url: "/PowerSubstation/List?limit=999",
         type: "get",
         dataType: "json",
         async: false,

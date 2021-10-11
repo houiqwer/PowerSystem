@@ -35,6 +35,8 @@ layui.use('table', function () {
         var data = obj.data;
         if (obj.event === 'confirm') {
             Confirm(data.ID);
+        } else if (obj.event === 'back') {
+            Back(data.ID);
         }
     });
 });
@@ -170,6 +172,24 @@ function Confirm(id) {
     };
     if (basepost(data, path)) {
         layer.alert("已确认", {
+            time: 0, //不自动关闭
+            btn: ['确定'],
+            title: "系统提示信息",
+            yes: function (index) {
+                layer.close(index);
+                Page();
+            }
+        });
+    }
+}
+
+function Back(id) {
+    var path = "/ElectricalTask/Back";
+    var data = {
+        'ID': id,
+    };
+    if (basepost(data, path)) {
+        layer.alert("已退回", {
             time: 0, //不自动关闭
             btn: ['确定'],
             title: "系统提示信息",

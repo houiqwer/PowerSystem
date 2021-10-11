@@ -42,7 +42,7 @@ namespace PowerSystemLibrary.BLL
                                 throw new ExceptionUtil(ClassUtil.GetEntityName(new ElectricalTask()) + "已有" + ParaUtil.MaxReciveCount + "人接收");
                             }
 
-                            if (db.ElectricalTaskUser.FirstOrDefault(t => t.UserID == loginUser.ID && t.ElectricalTaskID == selectedElectricalTask.ID) != null)
+                            if (db.ElectricalTaskUser.FirstOrDefault(t => t.UserID == loginUser.ID && t.ElectricalTaskID == selectedElectricalTask.ID && !t.IsBack) != null)
                             {
                                 throw new ExceptionUtil("您已接收该" + ClassUtil.GetEntityName(new ElectricalTask()));
                             }
@@ -295,7 +295,7 @@ namespace PowerSystemLibrary.BLL
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
                     t.IsConfirm != true && t.ReciveCount < 2 &&
                     (ahID == null || t.AHID == ahID) &&
-                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) == null &&
+                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && !m.IsBack) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
                     (t.CreateDate >= beginDate && t.CreateDate <= endDate)
                     );
@@ -352,7 +352,7 @@ namespace PowerSystemLibrary.BLL
 
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
                     (ahID == null || t.AHID == ahID) &&
-                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID) != null &&
+                     db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && !m.IsBack) != null &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && m.IsConfirm) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
                     (t.CreateDate >= beginDate && t.CreateDate <= endDate)
@@ -390,6 +390,64 @@ namespace PowerSystemLibrary.BLL
                 if (!string.IsNullOrEmpty(message))
                 {
                     result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
+
+
+        public ApiResult Back(ElectricalTask electricalTask)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using (TransactionScope ts = new TransactionScope())
+            {
+                using(PowerSystemDBContext db = new PowerSystemDBContext())
+                {
+                    try
+                    {
+                        User loginUser = LoginHelper.CurrentUser(db);
+
+                        ElectricalTask selectedElectricalTask = db.ElectricalTask.FirstOrDefault(t => t.ID == electricalTask.ID);
+                        if (selectedElectricalTask == null)
+                        {
+                            throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ElectricalTask()));
+                        }
+
+                        ElectricalTaskUser electricalTaskUser = db.ElectricalTaskUser.FirstOrDefault(t => t.ElectricalTaskID == selectedElectricalTask.ID && t.UserID == loginUser.ID && !t.IsBack);
+                        if (electricalTaskUser == null)
+                        {
+                            throw new ExceptionUtil("您未领取任务");
+                        }
+                        if (electricalTaskUser.IsConfirm)
+                        {
+                            throw new ExceptionUtil("任务已确认，无法退回");
+                        }
+                        if (electricalTaskUser.IsBack)
+                        {
+                            throw new ExceptionUtil("该任务已退回");
+                        }
+                        electricalTaskUser.IsBack = true;
+                        selectedElectricalTask.ReciveCount -= 1;
+                        db.SaveChanges();
+                        new LogDAO().AddLog(LogCode.退回任务, "已成功退回" + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "任务", db);
+                        result = ApiResult.NewSuccessJson("已成功退回" + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "任务");
+                        ts.Complete();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        message = ex.Message.ToString();
+                    }
+                    finally
+                    {
+                        ts.Dispose();
+                    }
+
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        result = ApiResult.NewErrorJson(LogCode.退回任务, message, db);
+                    }
                 }
             }
             return result;

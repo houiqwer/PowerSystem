@@ -24,6 +24,7 @@ namespace PowerSystemLibrary.Enum
         完成任务 = 12,
         挂牌 = 13,
         摘牌 = 14,
+        退回任务=15,
 
         登陆错误 = 10001,
         添加错误 = 10002,
