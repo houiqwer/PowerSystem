@@ -29,6 +29,16 @@ namespace PowerSystemLibrary.Util
             return roleList;
         }
 
+        //调度
+        public static List<Role> GetDispatcherRoleList()
+        {
+            List<Role> roleList = new List<Role>();
+            roleList.Add(Role.现场调度);
+
+            return roleList;
+        }
+
+
         //系统管理员
         public static List<Role> GetAdminRoleList()
         {

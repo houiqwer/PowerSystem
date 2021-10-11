@@ -16,6 +16,8 @@ namespace PowerSystemLibrary.Enum
         部门正职 = 4,
         分管领导 = 5,
 
+        现场调度 = 6,
+
 
 
         系统管理员 = 99

@@ -431,29 +431,32 @@ namespace PowerSystemLibrary.BLL
                         selectedOperation.IsConfirm = true;
                         db.SaveChanges();
 
+                        //发消息给巡检通知剩余牌数，若无剩余牌数则需要确认送电任务
+
+
                         //查看该设备是否有其他正在执行的作业和任务，若没有则申请送电
                         if (db.Operation.Count(t => t.ID != selectedOperation.ID && t.AHID == selectedOperation.AHID && t.IsConfirm != true) == 0)
                         {
-                            //增加送电任务
-                            //selectedOperation.OperationFlow = OperationFlow.低压送电任务领取;
-                            ElectricalTask electricalTask = new ElectricalTask();
-                            electricalTask.OperationID = selectedOperation.ID;
-                            electricalTask.AHID = selectedOperation.AHID;
-                            electricalTask.CreateDate = now;
-                            electricalTask.ElectricalTaskType = ElectricalTaskType.送电作业;
-                            db.ElectricalTask.Add(electricalTask);
+                            ////增加送电任务
+                            ////selectedOperation.OperationFlow = OperationFlow.低压送电任务领取;
+                            //ElectricalTask electricalTask = new ElectricalTask();
+                            //electricalTask.OperationID = selectedOperation.ID;
+                            //electricalTask.AHID = selectedOperation.AHID;
+                            //electricalTask.CreateDate = now;
+                            //electricalTask.ElectricalTaskType = ElectricalTaskType.送电作业;
+                            //db.ElectricalTask.Add(electricalTask);
 
-                            //发消息给所有电工
-                            List<Role> roleList = RoleUtil.GetElectricianRoleList();
-                            List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
-                            string userWeChatIDString = "";
-                            foreach (string userWeChatID in userWeChatIDList)
-                            {
-                                userWeChatIDString = userWeChatIDString + userWeChatID + "|";
-                            }
-                            userWeChatIDString.TrimEnd('|');
-                            string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                            string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务");
+                            ////发消息给所有电工
+                            //List<Role> roleList = RoleUtil.GetElectricianRoleList();
+                            //List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                            //string userWeChatIDString = "";
+                            //foreach (string userWeChatID in userWeChatIDList)
+                            //{
+                            //    userWeChatIDString = userWeChatIDString + userWeChatID + "|";
+                            //}
+                            //userWeChatIDString.TrimEnd('|');
+                            //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                            //string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务");
                         }
 
                         new LogDAO().AddLog(LogCode.摘牌, loginUser.Realname + "成功摘牌", db);

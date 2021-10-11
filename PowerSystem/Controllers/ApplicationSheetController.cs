@@ -24,10 +24,21 @@ namespace PowerSystem.Controllers
         /// </summary>
         /// <param name="applicationSheet">需要ID、Audit(通过3 驳回4)、AuditMessage</param>
         /// <returns></returns>
-        [HttpPost, Route("Audit"), LoginRequired]
+        [HttpPost, Route("Audit"), LoginRequired(Role = "ApplicationSheetAudit")]
         public ApiResult Audit([FromBody] ApplicationSheet applicationSheet)
         {
             return new ApplicationSheetBLL().Audit(applicationSheet);
+        }
+
+        /// <summary>
+        /// 调度申请单审核
+        /// </summary>
+        /// <param name="applicationSheet">需要ID、Audit(通过3 驳回4)、AuditMessage</param>
+        /// <returns></returns>
+        [HttpPost, Route("DispatcherAudit"), LoginRequired(Role = "Dispatcher")]
+        public ApiResult DispatcherAudit([FromBody] ApplicationSheet applicationSheet)
+        {
+            return new ApplicationSheetBLL().DispatcherAudit(applicationSheet);
         }
 
         /// <summary>
@@ -79,7 +90,11 @@ namespace PowerSystem.Controllers
             return new ApplicationSheetBLL().MyAuditList(departmentID, no, voltageType, isAudit, ahID, beginDate, endDate, page, limit);
         }
 
-
+        /// <summary>
+        /// 导出申请单
+        /// </summary>
+        /// <param name="ID">申请单ID</param>
+        /// <returns></returns>
         [HttpGet, Route("Export"), LoginRequired]
         public ApiResult Export(int ID)
         {

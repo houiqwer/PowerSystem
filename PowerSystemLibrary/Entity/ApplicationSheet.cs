@@ -32,6 +32,6 @@ namespace PowerSystemLibrary.Entity
         public int? AuditUserID { get; set; }
         public DateTime? AuditDate { get; set; }
         public string AuditMessage { get; set; }
-        public bool? IsDelete { get; set; }
+        public bool? IsDelete { get; set; }        
     }
 }

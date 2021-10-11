@@ -14,51 +14,69 @@ namespace PowerSystemLibrary.Filter
 {
     public class LoginRequiredAttribute : System.Web.Http.AuthorizeAttribute
     {
+        public string Role = string.Empty;
         public override void OnAuthorization(System.Web.Http.Controllers.HttpActionContext actionContext)
         {
-            bool hasAccess = false;
             string message = string.Empty;
-            if (actionContext.Request.Headers.Authorization != null)
+            try
             {
+                if (actionContext.Request.Headers.Authorization == null)
+                {
+                    throw new ExceptionUtil("没有找到相关用户信息，请重新登录");
+                }
+
                 actionContext.Request.GetRouteData();
                 string token = actionContext.Request.Headers.Authorization.Scheme;
-
 
                 //用户验证逻辑
                 using (PowerSystemDBContext db = new PowerSystemDBContext())
                 {
                     User user = db.User.FirstOrDefault(t => t.Token == token);
 
-                    if (user != null)
+                    if (user == null)
                     {
-                        //可判断用户是否有权限
-                        string absolutePath = actionContext.Request.RequestUri.AbsolutePath;
+                        throw new ExceptionUtil("没有找到相关用户信息，请重新登录");
+                    }
 
-                        // BaseUtil.GetFullRoute();
+                    //可判断用户是否有权限
+                    //string absolutePath = actionContext.Request.RequestUri.AbsolutePath;
 
-                        if (user.Expire > DateTime.Now)
+                    if (!string.IsNullOrEmpty(Role))
+                    {
+                        List<Role> roleList = new List<Role>();
+                        switch (Role)
                         {
-                            hasAccess = true;
-                            user.Expire = DateTime.Now.AddDays(7);
-                            db.SaveChanges();
+                            case "ApplicationSheetAudit":
+                                roleList = RoleUtil.GetApplicationSheetAuditRoleList();
+                                break;
+                            case "Dispatcher":
+                                roleList = RoleUtil.GetDispatcherRoleList();
+                                break;
+                            default:
+                                break;
                         }
-                        else
+
+                        UserRole userRole = db.UserRole.FirstOrDefault(m => roleList.Contains(m.Role) && m.UserID == user.ID);
+                        if (userRole == null)
                         {
-                            message = "登陆超时，请重新登陆";
+                            throw new ExceptionUtil("无权限使用该功能");
                         }
                     }
-                    else
+
+                    if (user.Expire < DateTime.Now)
                     {
-                        message = "没有找到相关用户信息，请重新登录";
+                        throw new ExceptionUtil("登陆超时，请重新登陆");
                     }
+
+                    user.Expire = DateTime.Now.AddDays(7);
+                    db.SaveChanges();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                message = "没有找到相关用户信息，请重新登录";
+                message = ex.Message;
             }
-
-            if (hasAccess == false)
+            if (!string.IsNullOrEmpty(message))
             {
                 ApiResult apiResult = new ApiResult
                 {
