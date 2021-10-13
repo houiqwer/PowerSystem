@@ -1,4 +1,6 @@
 ﻿var id = unity.getURL('id');
+var ElectricalTaskID = unity.getURL('ElectricalTaskID');
+
 var sign = unity.getURL('sign');
 
 $(function () {
@@ -12,12 +14,12 @@ $(function () {
         if (sign != null && sign != "") {
             $("#myAudit").show();
             $(".sh").show();
-            //$("#TaskUser").hide();
+           
         }
         else {
             $("#myAudit").hide();
             $(".sh").hide();
-            //$("#TaskUser").show();
+            
         }
         Init(id);
     }
@@ -34,7 +36,7 @@ layui.use('form', function () {
     var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
 })
 
-var applicationSheetID;
+
 //初始化数据
 function Init(id) {
 
@@ -60,7 +62,7 @@ function Init(id) {
 
                 $("#IsFinish").html(data.data.IsFinish ? "是" : "否");
                 $("#IsConfirm").html(data.data.IsConfirm ? "已确认" : "未确认");
-                applicationSheetID = data.data.ApplicationSheet.ID;
+               
 
                 $('#BeginDate').html(data.data.ApplicationSheet.BeginDate);
                 $('#EndDate').html(data.data.ApplicationSheet.EndDate);
@@ -77,24 +79,27 @@ function Init(id) {
                 $("#tbody").append(item);
 
 
-                
+               
                 if (data.data.stopElectricalTask != null && data.data.stopElectricalTask.Audit != 1) {
                     var stopDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
                     $('#stopDispatcherAudit').show();
                     stopDispatcherList += "<tr><td style='text-align:center'>" + data.data.stopElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.AuditMessage == null ? "" : data.data.stopElectricalTask.AuditMessage) + "</td></tr>";
                     $("#stopDispatcherList").append(stopDispatcherList);
 
+
                     $('#stopTaskUser').show();
                     var stop = "<tr ><th style='text-align:center'>停电电工</th><th style='text-align:center'>停电时间</th><th style='text-align:center'>是否确认</th></tr>";
                     for (var i = 0; i < data.data.stopElectricalTask.ElectricalTaskUserList.length; i++) {
                         stop += "<tr><td style='text-align:center'>" + data.data.stopElectricalTask.ElectricalTaskUserList[i].RealName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.ElectricalTaskUserList[i].CreateDate + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.ElectricalTaskUserList[i].IsConfirm ? '是' : '否') + "</td></tr>";
                     }
+
                     $("#stopElectricalTaskList").append(stop);
                 }
 
+
                 
                 if (data.data.sendElectricalTask != null && data.data.sendElectricalTask.Audit != 1) {
-                    $('#sendDispatcherAudit').show();
+                    $('#sendDispatcherAudit').show(); 
                     var sendDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
                     sendDispatcherList += "<tr><td style='text-align:center'>" + data.data.sendElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditMessage == null ? "" : data.data.sendElectricalTask.AuditMessage) + "</td></tr>";
                     $("#sendDispatcherList").append(sendDispatcherList);
@@ -107,7 +112,8 @@ function Init(id) {
                     }
                     $("#sendElectricalTaskList").append(send);
                 }
-
+               
+               
             }
             else {
                 Failure(data);
@@ -131,15 +137,15 @@ function tj() {
         layer.msg("请输入审批事由", { icon: 5 });
         return;
     }
-    if (applicationSheetID != null && applicationSheetID != "") {
+    if (ElectricalTaskID != null && ElectricalTaskID != "") {
         Audit();
     }
 }
 function Audit() {
 
-    var path = "/ApplicationSheet/Audit";
+    var path = "/ElectricalTask/DispatcherAudit";
     var data = {
-        ID: applicationSheetID,
+        ID: ElectricalTaskID,
         AuditMessage: $("#AuditDesc").val(),
         Audit: $("#AuditState").val(),
 
@@ -152,7 +158,7 @@ function Audit() {
             title: "系统提示信息",
             yes: function (index) {
                 layer.close(index);
-                window.location.href = '../ApplicationSheet/MyApplicationSheetAuditList.html';
+                window.location.href = 'MyDispatcherAuditList.html';
             }
         });
     }

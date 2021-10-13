@@ -98,5 +98,34 @@ namespace PowerSystem.Controllers
         {
             return new ElectricalTaskBLL().Back(electricalTask);
         }
+
+
+        /// <summary>
+        /// 调度人审核列表
+        /// </summary>
+        /// <param name="ahID"></param>
+        /// <param name="electricalTaskType"></param>
+        /// <param name="beginDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="isAudit"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet, Route("DispatcherAuditList"), LoginRequired]
+        public ApiResult DispatcherAuditList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, bool isAudit = false, int page = 1, int limit = 10)
+        {
+            return new ElectricalTaskBLL().DispatcherAuditList(ahID, electricalTaskType,beginDate, endDate, isAudit, page, limit);
+        }
+
+        /// <summary>
+        /// 审核
+        /// </summary>
+        /// <param name="electricalTask"></param>
+        /// <returns></returns>
+        [HttpPost, Route("DispatcherAudit"), LoginRequired]
+        public ApiResult DispatcherAudit(ElectricalTask electricalTask)
+        {
+            return new ElectricalTaskBLL().DispatcherAudit(electricalTask);
+        }
     }
 }

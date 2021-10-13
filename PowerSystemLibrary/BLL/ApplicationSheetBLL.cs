@@ -53,12 +53,12 @@ namespace PowerSystemLibrary.BLL
                             if (operation.VoltageType == VoltageType.低压)
                             {
                                 //发布停电任务
-                                //ElectricalTask electricalTask = new ElectricalTask();
-                                //electricalTask.OperationID = operation.ID;
-                                //electricalTask.AHID = operation.AHID;
-                                //electricalTask.CreateDate = now;
-                                //electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
-                                //db.ElectricalTask.Add(electricalTask);
+                                ElectricalTask electricalTask = new ElectricalTask();
+                                electricalTask.OperationID = operation.ID;
+                                electricalTask.AHID = operation.AHID;
+                                electricalTask.CreateDate = now;
+                                electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
+                                db.ElectricalTask.Add(electricalTask);
 
 
 
@@ -167,13 +167,29 @@ namespace PowerSystemLibrary.BLL
                             if (operation.VoltageType == VoltageType.低压)
                             {
                                 //发布停电任务
-                                ElectricalTask electricalTask = new ElectricalTask();
-                                electricalTask.OperationID = operation.ID;
-                                electricalTask.AHID = operation.AHID;
-                                electricalTask.CreateDate = now;
-                                electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
+                                //ElectricalTask electricalTask = new ElectricalTask();
+                                //electricalTask.OperationID = operation.ID;
+                                //electricalTask.AHID = operation.AHID;
+                                //electricalTask.CreateDate = now;
+                                //electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
+                                //electricalTask.AuditUserID = loginUser.ID;
+                                //db.ElectricalTask.Add(electricalTask);
+                                ElectricalTaskType electricalTaskType = new ElectricalTaskType();
+                                if(operation.OperationFlow == OperationFlow.低压停电作业审核)
+                                {
+                                    electricalTaskType = ElectricalTaskType.停电作业;
+                                }
+                                else
+                                {
+                                    electricalTaskType = ElectricalTaskType.送电作业;
+                                }
+                                
+                                ElectricalTask electricalTask = db.ElectricalTask.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskType == electricalTaskType);
                                 electricalTask.AuditUserID = loginUser.ID;
-                                db.ElectricalTask.Add(electricalTask);
+                                electricalTask.Audit = Enum.Audit.通过;
+                                electricalTask.AuditDate = now;
+                                electricalTask.AuditMessage = applicationSheet.AuditMessage;
+                                db.SaveChanges();
 
                                 //发消息给所有电工
                                 List<Role> roleList = RoleUtil.GetElectricianRoleList();
@@ -185,7 +201,7 @@ namespace PowerSystemLibrary.BLL
                                 }
                                 userWeChatIDString.TrimEnd('|');
                                 string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
+                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + System.Enum.GetName(typeof(ElectricalTaskType), electricalTaskType)+"任务");
 
                             }
                             else
@@ -198,11 +214,25 @@ namespace PowerSystemLibrary.BLL
                         }
                         else if (applicationSheet.Audit == Enum.Audit.驳回)
                         {
-                            selectedApplicationSheet.Audit = Enum.Audit.驳回;
-                            selectedApplicationSheet.AuditDate = now;
-                            selectedApplicationSheet.AuditUserID = loginUser.ID;
-                            selectedApplicationSheet.AuditMessage = applicationSheet.AuditMessage;
-
+                            ElectricalTaskType electricalTaskType = new ElectricalTaskType();
+                            if (operation.OperationFlow == OperationFlow.低压停电作业审核)
+                            {
+                                electricalTaskType = ElectricalTaskType.停电作业;
+                            }
+                            else
+                            {
+                                electricalTaskType = ElectricalTaskType.送电作业;
+                            }
+                            //selectedApplicationSheet.Audit = Enum.Audit.驳回;
+                            //selectedApplicationSheet.AuditDate = now;
+                            //selectedApplicationSheet.AuditUserID = loginUser.ID;
+                            //selectedApplicationSheet.AuditMessage = applicationSheet.AuditMessage;
+                            ElectricalTask electricalTask = db.ElectricalTask.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskType == electricalTaskType);
+                            electricalTask.AuditUserID = loginUser.ID;
+                            electricalTask.Audit = Enum.Audit.驳回;
+                            electricalTask.AuditDate = now;
+                            electricalTask.AuditMessage = applicationSheet.AuditMessage;
+                            
 
                             operation.OperationFlow = OperationFlow.作业终止;
                             operation.IsFinish = true;
@@ -586,5 +616,359 @@ namespace PowerSystemLibrary.BLL
             }
             return result;
         }
+
+        public ApiResult ExportAllSheet(int id)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    ApplicationSheet applicationSheet = db.ApplicationSheet.FirstOrDefault(t => t.IsDelete != true && t.ID == id);
+                    if (applicationSheet == null)
+                    {
+                        throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ApplicationSheet()));
+                    }
+                    Operation operation = db.Operation.FirstOrDefault(t => t.ID == applicationSheet.OperationID);
+                    Department department = db.Department.FirstOrDefault(t => t.ID == applicationSheet.DepartmentID);
+                    List<User> userList = db.User.ToList();
+                    User createUser = userList.FirstOrDefault(t => t.ID == applicationSheet.UserID);
+                    User auditUser = userList.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID);
+
+                    AH aH = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
+
+                    
+                    //停电电工信息
+                    ElectricalTask stopElectricalTask = db.ElectricalTask.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskType == ElectricalTaskType.停电作业 && t.Audit != Enum.Audit.待审核);
+                    if(stopElectricalTask != null)
+                    {
+                        stopElectricalTask.RealName = userList.FirstOrDefault(u => u.ID == stopElectricalTask.AuditUserID).Realname;
+                        stopElectricalTask.AuditDateString = stopElectricalTask.AuditDate.Value.ToString("yyyy-MM-dd HH:mm");
+                        stopElectricalTask.AuditName = System.Enum.GetName(typeof(Audit), stopElectricalTask.Audit);
+                        stopElectricalTask.ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), stopElectricalTask.ElectricalTaskType);
+                        List<ElectricalTaskUser> stopElectricalTaskUserList = db.ElectricalTaskUser.Where(t => t.ElectricalTaskID == stopElectricalTask.ID && t.IsBack != true).OrderByDescending(t => t.Date).ToList();
+                        stopElectricalTaskUserList.ForEach(t => t.CreateDate = t.Date.ToString("yyyy-MM-dd HH:mm"));
+                        stopElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(u => u.ID == t.UserID).Realname);
+
+                        stopElectricalTask.ElectricalTaskUserList = stopElectricalTaskUserList;
+                    }
+
+                    //送电电工信息
+                    ElectricalTask sendElectricalTask = db.ElectricalTask.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskType == ElectricalTaskType.送电作业 && t.Audit != Enum.Audit.待审核);
+                    if (sendElectricalTask != null)
+                    {
+                        sendElectricalTask.RealName = userList.FirstOrDefault(u => u.ID == stopElectricalTask.AuditUserID).Realname;
+                        sendElectricalTask.AuditDateString = sendElectricalTask.AuditDate.Value.ToString("yyyy-MM-dd HH:mm");
+                        sendElectricalTask.AuditName = System.Enum.GetName(typeof(Audit), sendElectricalTask.Audit);
+                        sendElectricalTask.ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), sendElectricalTask.ElectricalTaskType);
+                        List<ElectricalTaskUser> sendElectricalTaskUserList = db.ElectricalTaskUser.Where(t => t.ElectricalTaskID == sendElectricalTask.ID && t.IsBack != true).OrderByDescending(t => t.Date).ToList();
+                        sendElectricalTaskUserList.ForEach(t => t.CreateDate = t.Date.ToString("yyyy-MM-dd HH:mm"));
+                        sendElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(u => u.ID == t.UserID).Realname);
+
+                        sendElectricalTask.ElectricalTaskUserList = sendElectricalTaskUserList;
+                    }
+
+                    Document doc = new Document();
+                    DocumentBuilder builder = new DocumentBuilder(doc);
+                    builder.MoveToBookmark("Title");
+                    builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;
+                    builder.Font.Name = "黑体";
+                    builder.Font.Size = 18;
+                    builder.Write("裕溪口分公司停送电作业全流程表单");
+
+                    builder.MoveToBookmark("Table");
+                    double width = 70;
+                    builder.CellFormat.Width = width;
+                    builder.CellFormat.PreferredWidth = PreferredWidth.FromPoints(width);
+                    builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;//垂直居中对齐
+                    builder.ParagraphFormat.Alignment = ParagraphAlignment.Center;//水平居中对齐
+                    builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+
+                    //第一行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Font.Size = 9;
+                    builder.Font.Name = "黑体";
+                    builder.Write("申请停电单位:" + department.Name);
+
+                    builder.CellFormat.Width = width;
+                    builder.CellFormat.PreferredWidth = PreferredWidth.FromPoints(width);
+                    builder.CellFormat.VerticalAlignment = CellVerticalAlignment.Center;//垂直居中对齐
+                    builder.ParagraphFormat.Alignment = ParagraphAlignment.Left;//水平居中对齐
+
+                    //第一行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous ;
+                    builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                    //第一行第三列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("申请人:" + createUser.Realname);
+
+                    //第一行第四列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                    builder.EndRow();
+
+                    //第二行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("计划停电时间:" + applicationSheet.BeginDate.ToString("yyyy年MM月dd日HH时mm分") + "至" + applicationSheet.EndDate.ToString("yyyy年MM月dd日HH时mm分"));
+
+                    //第二行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                    //第二行第三列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                    //第二行第四列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    //第三行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.RowFormat.Height = 30;
+                    builder.Write("停电设备:" + aH.Name);
+
+                    //第三行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                    //第三行第三列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("作业状态:" + System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow));
+
+                    //第三行第四列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    //第四行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("作业内容:" + applicationSheet.WorkContent);
+
+                    //第四行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                    //第四行第三列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                    //第四行第四列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+                    //第五行第一列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("批准人:" + auditUser.Realname + "(" + applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd HH:mm") + System.Enum.GetName(typeof(Audit), applicationSheet.Audit) + ")");
+
+                    //第五行第二列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                    //第五行第三列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.First;
+                    builder.Write("审核理由:" + applicationSheet.AuditMessage);
+
+                    //第五行第四列
+                    builder.InsertCell();
+                    builder.CellFormat.VerticalMerge = CellMerge.None;
+                    builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                    builder.EndRow();
+
+
+                    
+
+                    //通过了才会有调度审核
+                    if (applicationSheet.Audit == Enum.Audit.通过)
+                    {
+                        //停电作业
+                        if (stopElectricalTask != null && stopElectricalTask.Audit!=Enum.Audit.待审核)
+                        {
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.First;
+
+                            builder.Write("停电调度审核:" + stopElectricalTask.RealName + "("+stopElectricalTask.AuditDateString + stopElectricalTask.AuditName + ")");
+
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                            builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.First;
+                            builder.Write("审核理由:" + stopElectricalTask.AuditMessage);
+
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                            builder.EndRow();
+
+                            
+                            foreach (ElectricalTaskUser stopTaskUser in stopElectricalTask.ElectricalTaskUserList)
+                            {
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+
+                                builder.Write("停电电工:");
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(stopTaskUser.RealName);
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(stopTaskUser.CreateDate);
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(stopTaskUser.IsConfirm?"已确认":"未确认");
+
+                                builder.EndRow();
+                            }
+
+
+                        }
+
+                        //送电作业
+                        if (sendElectricalTask != null && sendElectricalTask.Audit != Enum.Audit.待审核)
+                        {
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.First;
+
+                            builder.Write("送电调度审核:" + sendElectricalTask.RealName + "("+ sendElectricalTask.AuditDateString + sendElectricalTask.AuditName + ")");
+
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                            builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.First;
+                            builder.Write("审核理由:" + sendElectricalTask.AuditMessage);
+
+                            builder.InsertCell();
+                            builder.CellFormat.VerticalMerge = CellMerge.None;
+                            builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+
+                            builder.EndRow();
+
+
+                            foreach (ElectricalTaskUser sendTaskUser in sendElectricalTask.ElectricalTaskUserList)
+                            {
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+
+                                builder.Write("送电电工:");
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(sendTaskUser.RealName);
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(sendTaskUser.CreateDate);
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(sendTaskUser.IsConfirm ? "已确认" : "未确认");
+
+                                builder.EndRow();
+                            }
+
+
+                        }
+                    }
+
+
+                    string FilePath = "停送电作业全流程表单" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".doc";
+                    doc.Save(ParaUtil.ResourcePath + FilePath, Aspose.Words.SaveFormat.Doc);
+
+                    using (FileStream fs = new FileStream(ParaUtil.ResourcePath + FilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[(int)fs.Length];
+                        fs.Read(bytes, 0, bytes.Length);
+                        fs.Close();
+                        HttpContext.Current.Response.ContentType = "application/octet-stream";
+                        HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(FilePath, Encoding.UTF8));
+                        HttpContext.Current.Response.BinaryWrite(bytes);
+                        HttpContext.Current.Response.Flush();
+                        HttpContext.Current.ApplicationInstance.CompleteRequest();
+                    }
+                    new LogDAO().AddLog(LogCode.导出, "成功导出停送电作业全流程表单", db);
+                    result = ApiResult.NewSuccessJson("成功导出停送电作业全流程表单");
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.导出错误, message, db);
+                }
+            }
+            return result;
+        }
+
+        
     }
 }

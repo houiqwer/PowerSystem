@@ -40,6 +40,8 @@ layui.use('table', function () {
             Hang(data.ID);
         } else if (obj.event === 'Pick') {
             Pick(data.ID);
+        } else if (obj.event === 'export') {
+            Export(data.ApplicationSheet.ID);
         }
     });
 });
@@ -82,7 +84,7 @@ function Page() {
                 , { field: 'CreateDate', align: 'center', title: '发起日期' }
                 , { field: 'Realname', align: 'center', title: '发起人' }
                 , { field: 'title', align: 'center', title: '审核状态', templet: function (d) { return d.ApplicationSheet.Audit; } }
-                , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 180 }
+                , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 250 }
             ]]
             , done: function (res, cur, count) {
                 if (cur > 1 && res.data.length === 0) {
@@ -178,6 +180,51 @@ function Pick(id) {
                 }
             });
         }
+    });
+}
+
+function Export(id) {
+    layer.confirm("确认导出全流程表单？", { title: "系统提示信息" }, function (index) {
+
+
+        var par = "ID=" + id;
+        var path = "/ApplicationSheet/ExportAllSheet?" + par;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', path, true); // 也可以使用POST方式，根据接口
+        xhr.setRequestHeader("Authorization", localStorage.getItem("Token"));
+        xhr.responseType = "blob"; // 返回类型blob
+        // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+        xhr.onload = function (e) {
+            // 请求完成
+            if (this.status === 200) {
+                // 返回200
+                console.log(this.getResponseHeader('Content-Disposition'));
+                var blob = this.response;
+                var reader = new FileReader();
+                reader.readAsDataURL(blob); // 转换为base64，可以直接放入a表情href
+                reader.onload = function (e) {
+                    // 转换完成，创建一个a标签用于下载
+                    var a = document.createElement('a');
+                    var wpoInfo = { "Disposition": xhr.getResponseHeader('Content-Disposition'), };
+                    var name = "";
+                    var d = wpoInfo.Disposition;
+                    if (wpoInfo.Disposition.indexOf("filename=")) {
+                        name = wpoInfo.Disposition.split("filename=")[1];
+                        name = decodeURIComponent(name);
+                        console.log(decodeURIComponent(name));
+                    } else
+                        name = "停送电全流程表单" + new Date().Format("yyyyMMddHH") + ".doc";
+                    a.download = name;
+                    a.href = e.target.result;
+                    $("body").append(a); // 修复firefox中无法触发click
+                    a.click();
+                    $(a).remove();
+                }
+            }
+        };
+        // 发送ajax请求
+        xhr.send();
+        layer.closeAll();
     });
 }
 

@@ -127,6 +127,12 @@
     <Content Include="css\w_safeindex.css" />
     <Content Include="css\w_safeindex2.css" />
     <Content Include="css\zTreeStyle.css" />
+    <Content Include="DispatcherAudit\DispatcherAuditDetail.html" />
+    <Content Include="DispatcherAudit\DispatcherAuditDetail.js" />
+    <Content Include="DispatcherAudit\MyDispatcherAuditList.html" />
+    <Content Include="DispatcherAudit\MyDispatcherAuditList.js" />
+    <Content Include="DispatcherAudit\MyFinishDispatcherAuditList.html" />
+    <Content Include="DispatcherAudit\MyFinishDispatcherAuditList.js" />
     <Content Include="ElectricalTask\AcceptedElectricalTaskList.html" />
     <Content Include="ElectricalTask\AcceptedElectricalTaskList.js" />
     <Content Include="ElectricalTask\NotAcceptedElectricalTaskList.js" />

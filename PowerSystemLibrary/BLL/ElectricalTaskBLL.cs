@@ -293,7 +293,7 @@ namespace PowerSystemLibrary.BLL
                     User loginUser = LoginHelper.CurrentUser(db);
 
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
-                    t.IsConfirm != true && t.ReciveCount < 2 &&
+                    t.IsConfirm != true && t.ReciveCount < 2 && t.Audit == Audit.通过 &&
                     (ahID == null || t.AHID == ahID) &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && !m.IsBack) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
@@ -351,7 +351,7 @@ namespace PowerSystemLibrary.BLL
                     User loginUser = LoginHelper.CurrentUser(db);
 
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
-                    (ahID == null || t.AHID == ahID) &&
+                    (ahID == null || t.AHID == ahID) && t.Audit == Audit.通过 &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && !m.IsBack) != null &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && m.IsConfirm) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
@@ -453,5 +453,152 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
+
+        public ApiResult DispatcherAuditList(int? ahID = null, ElectricalTaskType? electricalTaskType = null, DateTime? beginDate = null, DateTime? endDate = null, bool isAudit = false, int page = 1, int limit = 10)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    beginDate = beginDate ?? DateTime.MinValue;
+                    endDate = endDate ?? DateTime.MaxValue;
+                    User loginUser = LoginHelper.CurrentUser(db);
+
+                    IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t => ((!isAudit && t.Audit == Enum.Audit.待审核) || (isAudit && t.AuditUserID == loginUser.ID && (t.Audit == Enum.Audit.通过 || t.Audit == Enum.Audit.驳回))) &&
+                    (ahID == null || t.AHID == ahID) &&
+                    (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
+                    (t.CreateDate >= beginDate && t.CreateDate <= endDate));
+                    int total = electricalTaskIQueryable.Count();
+                    List<ElectricalTask> electricalTaskList = electricalTaskIQueryable.OrderByDescending(t => t.CreateDate).Skip((page - 1) * limit).Take(limit).ToList();
+                    List<int> ahIDList = electricalTaskList.Select(t => t.AHID).Distinct().ToList();
+
+                    List<object> returnList = new List<object>();
+                    List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
+                    foreach (ElectricalTask electricalTask in electricalTaskList)
+                    {
+
+                        returnList.Add(new
+                        {
+                            electricalTask.ID,
+                            AHName = ahList.FirstOrDefault(t => t.ID == electricalTask.AHID).Name,
+                            CreateDate = electricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                            //electricalTask.ReciveCount,
+                            ElectricalTaskTypeName = System.Enum.GetName(typeof(ElectricalTaskType), electricalTask.ElectricalTaskType),
+                            electricalTask.OperationID,
+                            Audit = System.Enum.GetName(typeof(Audit), electricalTask.Audit),
+                           
+                        });
+                    }
+
+                    result = ApiResult.NewSuccessJson(returnList, total);
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
+
+
+        public ApiResult DispatcherAudit(ElectricalTask electricalTask)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using (TransactionScope ts = new TransactionScope())
+            {
+                using(PowerSystemDBContext db = new PowerSystemDBContext())
+                {
+                    try
+                    {
+                        DateTime now = DateTime.Now;
+                        ElectricalTask selectElectricalTask = db.ElectricalTask.FirstOrDefault(t => t.ID == electricalTask.ID);
+                        if(selectElectricalTask == null)
+                        {
+                            throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ElectricalTask()));
+                        }
+                        User loginUser = LoginHelper.CurrentUser(db);
+                        Operation operation = db.Operation.FirstOrDefault(t => t.ID == selectElectricalTask.OperationID);
+                        AH ah = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
+                        if (electricalTask.Audit == Audit.通过)
+                        {
+                            if (operation.VoltageType == VoltageType.低压)
+                            {
+                                selectElectricalTask.AuditUserID = loginUser.ID;
+                                selectElectricalTask.Audit = Audit.通过;
+                                selectElectricalTask.AuditDate = now;
+                                selectElectricalTask.AuditMessage = electricalTask.AuditMessage;
+                                db.SaveChanges();
+
+                                //发消息给所有电工
+                                List<Role> roleList = RoleUtil.GetElectricianRoleList();
+                                List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                                string userWeChatIDString = "";
+                                foreach (string userWeChatID in userWeChatIDList)
+                                {
+                                    userWeChatIDString = userWeChatIDString + userWeChatID + "|";
+                                }
+                                userWeChatIDString.TrimEnd('|');
+                                string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + System.Enum.GetName(typeof(ElectricalTaskType), selectElectricalTask.ElectricalTaskType) + "任务");
+                            }
+                            else
+                            {
+                                //检查其他是否审核均通过，通过则发布停电任务并发送消息
+                            }
+                            new LogDAO().AddLog(LogCode.审核成功, loginUser.Realname + "成功审核" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation), db);
+                        }
+                        else if (electricalTask.Audit == Enum.Audit.驳回)
+                        {
+                            selectElectricalTask.AuditUserID = loginUser.ID;
+
+                            selectElectricalTask.Audit = Audit.驳回;
+                            selectElectricalTask.AuditDate = now;
+                            selectElectricalTask.AuditMessage = electricalTask.AuditMessage;
+
+                            operation.OperationFlow = OperationFlow.作业终止;
+                            operation.IsFinish = true;
+                            db.SaveChanges();
+
+                            //发消息给发起人
+                            string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                            string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您的作业被驳回，原因为：" + electricalTask.AuditMessage);
+
+
+                            new LogDAO().AddLog(LogCode.审核驳回, loginUser.Realname + "成功审核" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation), db);
+                        }
+                        else
+                        {
+                            throw new ExceptionUtil("请选择正确的审核意见");
+                        }
+                        result = ApiResult.NewSuccessJson("成功审核" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation));
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        message = ex.Message.ToString();
+                    }
+                    finally
+                    {
+                        ts.Dispose();
+                    }
+
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        result = ApiResult.NewErrorJson(LogCode.审核错误, message, db);
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

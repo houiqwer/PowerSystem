@@ -21,15 +21,26 @@ namespace PowerSystemLibrary.Entity
         public int AHID { get; set; }
         public ElectricalTaskType ElectricalTaskType { get; set; }
         //调度审核
-        //public Audit Audit { get; set; } = Audit.待审核;
+        public Audit Audit { get; set; } = Audit.待审核;
         public int? AuditUserID { get; set; }
+        public DateTime? AuditDate { get; set; }
+        public string AuditMessage { get; set; }
+
         public int ReciveCount { get; set; } = 0;
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public bool IsConfirm { get; set; } = false;
 
         [NotMapped]
         public List<ElectricalTaskUser> ElectricalTaskUserList { get; set; }
+        [NotMapped]
+        public string RealName { get; set; }
 
-        
+        [NotMapped]
+        public string AuditName { get; set; }
+        [NotMapped]
+        public string AuditDateString { get; set; }
+        [NotMapped]
+        public string ElectricalTaskTypeName { get; set; }
+
     }
 }

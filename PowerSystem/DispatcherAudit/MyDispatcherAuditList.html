@@ -1,24 +1,16 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>智慧停送电管理平台</title>
-    <link href="/zTree_v3/css/demo.css" rel="stylesheet" />
-    <link href="/zTree_v3/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/layui.css">
-    <link rel="stylesheet" href="/css/iconfont.css">
-    <link rel="stylesheet" href="/css/safemain.css">
-
-    <style>
-        h1 {
-            line-height: normal;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/layui.css">
+    <link rel="stylesheet" href="../css/iconfont.css">
+    <link rel="stylesheet" href="../css/safemain.css">
 </head>
 
 <body class="layui-layout-body safe">
-    <!-- 内容主体区域 -->
+
     <div style="height: 100%;padding:68px 16px 20px;box-sizing: border-box">
         <h1 class="safeh1 cbl2"><blockquote class="layui-elem-quote" id="head"></blockquote></h1>
         <div class="layui-card safe-card1">
@@ -27,16 +19,15 @@
 
                     <div class="layui-tab-content layui-card-body">
                         <div class="layui-tab-item layui-show">
-                            <!--搜索区-->
+
                             <div class="search">
                                 <form class="layui-form" action="">
                                     <div class="layui-inline">
-                                        
                                         <div class="layui-input-inline safe-sel">
                                             <select id="ah" name="ah"></select>
                                         </div>
                                         <div class="layui-input-inline safe-sel">
-                                            <select id="voltageType" name="voltageType"></select>
+                                            <select id="electricalTaskType" name="electricalTaskType"></select>
                                         </div>
                                         <div class="layui-input-inline">
                                             <div class="layui-input-inline safe-data">
@@ -45,48 +36,39 @@
                                                 <i class=" layui-edge"></i>
                                             </div>
                                         </div>
-
                                     </div>
-
                                     <button type="button" class="layui-btn  ml20 safe-btn1" id="search"><i class="iconfont icon-sousuo"></i></button>
-
-
                                 </form>
                             </div>
-                            <!--表格区-->
+
                             <div style="text-align: center;">
                                 <div class="layui-inline" style="width:100%">
                                     <table lay-filter="table" id="table" class="demo"></table>
                                 </div>
                             </div>
+
                         </div>
+                        <div class="layui-tab-item"></div>
                     </div>
                 </div>
+
+
             </div>
         </div>
+
     </div>
-    <script src="/Scripts/layui.js"></script>
-    <script src="/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="/Scripts/layer/layer.js"></script>
-    <script src="/Scripts/Common.js"></script>
-    <script src="/Scripts/safe.js"></script>
 
-    <script src="../zTree_v3/js/jquery.ztree.core.min.js"></script>
-    <script src="../zTree_v3/js/jquery.ztree.excheck.js"></script>
-    <script src="MyOperationList.js"></script>
-    <script type="text/html" id="bar">
-        {{#  if(d.OperationFlow == '低压停电任务完成'){ }}
-        <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="Hang">挂停电牌</a>
-        {{#  } }}
-        {{#  if(d.OperationFlow == '低压挂停电牌作业'){ }}
-        <a class="layui-btn layui-btn-xs safe-btn3 bred" lay-event="Pick">取停电牌</a>
-        {{#  } }}
-
-        {{#  if(d.ApplicationSheet.Audit != '待审核'){ }}
-        <a class="layui-btn layui-btn-xs safe-btn3 edit" lay-event="export">导出</a>
-        {{#  } }}
-        <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
-    </script>
 
 </body>
 </html>
+
+<script src="../Scripts/layui.js"></script>
+<script src="../Scripts/jquery-3.3.1.min.js"></script>
+<script src="../Scripts/layer/layer.js"></script>
+<script src="../Scripts/Common.js"></script>
+<script src="../Scripts/safe.js"></script>
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="audit">审核</a>
+    <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
+</script>
+<script src="MyDispatcherAuditList.js"></script>

@@ -101,6 +101,9 @@
     <script src="../zTree_v3/js/jquery.ztree.excheck.js"></script>
     <script src="OperationList.js"></script>
     <script type="text/html" id="bar">
+        {{#  if(d.ApplicationSheet.Audit != '待审核'){ }}
+        <a class="layui-btn layui-btn-xs safe-btn3 edit" lay-event="export">导出</a>
+        {{#  } }}
         <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
     </script>
 

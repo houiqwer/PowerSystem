@@ -101,5 +101,16 @@ namespace PowerSystem.Controllers
             return new ApplicationSheetBLL().Export(ID);
         }
 
+        /// <summary>
+        /// 导出全流程表单
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        [HttpGet, Route("ExportAllSheet"), LoginRequired]
+        public ApiResult ExportAllSheet(int ID)
+        {
+            return new ApplicationSheetBLL().ExportAllSheet(ID);
+        }
+
     }
 }
