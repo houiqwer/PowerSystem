@@ -688,6 +688,7 @@ namespace PowerSystemLibrary.BLL
 
                     //第一行第一列
                     builder.InsertCell();
+                    builder.RowFormat.Height = 30;
                     builder.CellFormat.VerticalMerge = CellMerge.None;
                     builder.CellFormat.HorizontalMerge = CellMerge.First;
                     builder.Font.Size = 9;
@@ -720,6 +721,7 @@ namespace PowerSystemLibrary.BLL
 
                     //第二行第一列
                     builder.InsertCell();
+                    builder.RowFormat.Height = 30;
                     builder.CellFormat.VerticalMerge = CellMerge.None;
                     builder.CellFormat.HorizontalMerge = CellMerge.First;
                     builder.Write("计划停电时间:" + applicationSheet.BeginDate.ToString("yyyy年MM月dd日HH时mm分") + "至" + applicationSheet.EndDate.ToString("yyyy年MM月dd日HH时mm分"));

@@ -135,13 +135,13 @@ namespace PowerSystemLibrary.BLL
                             throw new ExceptionUtil("未达到开始" + ClassUtil.GetEntityName(new ElectricalTask()) + "的人数要求");
                         }
 
-                        ElectricalTaskUser electricalTaskUser = db.ElectricalTaskUser.FirstOrDefault(t => t.ElectricalTaskID == selectedElectricalTask.ID && t.UserID == loginUser.ID);
+                        ElectricalTaskUser electricalTaskUser = db.ElectricalTaskUser.FirstOrDefault(t => t.ElectricalTaskID == selectedElectricalTask.ID && t.UserID == loginUser.ID && !t.IsBack);
                         if (electricalTaskUser == null)
                         {
                             throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ElectricalTaskUser()));
                         }
 
-                        if (db.ElectricalTaskUser.FirstOrDefault(t => t.UserID == loginUser.ID && t.ElectricalTaskID == selectedElectricalTask.ID && t.IsConfirm) != null)
+                        if (db.ElectricalTaskUser.FirstOrDefault(t => t.UserID == loginUser.ID && t.ElectricalTaskID == selectedElectricalTask.ID && t.IsConfirm && !t.IsBack) != null)
                         {
                             throw new ExceptionUtil("您已完成该" + ClassUtil.GetEntityName(new ElectricalTask()));
                         }
@@ -151,7 +151,7 @@ namespace PowerSystemLibrary.BLL
                         db.SaveChanges();
 
                         //判断是否都完成了
-                        if (db.ElectricalTaskUser.Count(t => t.IsConfirm && t.ElectricalTaskID == selectedElectricalTask.ID) == ParaUtil.MaxReciveCount)
+                        if (db.ElectricalTaskUser.Count(t => t.IsConfirm && t.ElectricalTaskID == selectedElectricalTask.ID && !t.IsBack) == ParaUtil.MaxReciveCount)
                         {
                             selectedElectricalTask.IsConfirm = true;
                             if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.停电作业)
