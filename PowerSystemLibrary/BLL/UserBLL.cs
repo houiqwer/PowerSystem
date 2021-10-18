@@ -584,5 +584,77 @@ namespace PowerSystemLibrary.BLL
             }
             return result;
         }
+
+        //获取部门副职
+        public ApiResult GetDeputyAuditUser()
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    User loginUser = LoginHelper.CurrentUser(db);
+                    List<Role> roleList = RoleUtil.GetWorkSheetDeputyAuditRoleList();
+                    List<int> userIDList = db.UserRole.Where(m => roleList.Contains(m.Role)).Select(t => t.UserID).Distinct().ToList();
+                    List<User> userList = db.User.Where(t => t.IsDelete != true && userIDList.Contains(t.ID) && t.DepartmentID == loginUser.DepartmentID).ToList();
+                    List<object> returnList = new List<object>();
+                    foreach (User user in userList)
+                    {
+                        returnList.Add(new
+                        {
+                            user.ID,
+                            user.Realname
+                        });
+                    }
+                    result = ApiResult.NewSuccessJson(returnList);
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message;
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
+
+        //获取部门正职
+        public ApiResult GetChiefAuditUser()
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    User loginUser = LoginHelper.CurrentUser(db);
+                    List<Role> roleList = RoleUtil.GetWorkSheetChiefAuditRoleList();
+                    List<int> userIDList = db.UserRole.Where(m => roleList.Contains(m.Role)).Select(t => t.UserID).Distinct().ToList();
+                    List<User> userList = db.User.Where(t => t.IsDelete != true && userIDList.Contains(t.ID) && t.DepartmentID == loginUser.DepartmentID).ToList();
+                    List<object> returnList = new List<object>();
+                    foreach (User user in userList)
+                    {
+                        returnList.Add(new
+                        {
+                            user.ID,
+                            user.Realname
+                        });
+                    }
+                    result = ApiResult.NewSuccessJson(returnList);
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message;
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
     }
 }

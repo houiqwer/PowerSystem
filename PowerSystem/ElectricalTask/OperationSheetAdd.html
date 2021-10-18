@@ -131,97 +131,107 @@
 
 <body class="layui-layout-body safe ">
     <div class="layui-body safe-body ">
-        <div style="height: 100%;padding:68px 16px 20px;box-sizing: border-box">
-            <h1 class="safeh1 cbl2"><blockquote class="layui-elem-quote" id="head"></blockquote></h1>
+        <div style="height: 100%;box-sizing: border-box">
+           
             <div class="layui-card safe-card1">
                 <div class="" style="height: 100%;">
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <div class="layui-tab-content layui-card-body">
                             <div class="layui-tab-item layui-show safe-item" style="padding-bottom: 25px">
-                                <form class="layui-form" action="">
-                                    <h2>停电申请单</h2>
-                                    <div class="layui-form safe-form">
-                                        <table border="0" class="layui-table">
-                                            <tbody>
-                                                <tr>
-                                                    <th><span>停电设备</span></th>
-                                                    <td colspan="3">
-                                                        <div class="safe-grey">
-                                                            <select id="ah" lay-verify="ddl" errmsg="请选择停电设备" lay-filter="ah"></select>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th style="width:120px;"><span>计划停电开始时间</span></th>
-                                                    <td>
-                                                        <div class="safe-grey">
-                                                            <input type="text" id="beginDate" lay-verify='empty' autocomplete="off" nullmsg='开始时间不能为空' class="layui-input" placeholder="请选择开始时间">
-                                                        </div>
-                                                    </td>
-                                                    <th style="width:120px;"><span>计划停电结束时间</span></th>
-                                                    <td>
-                                                        <div class="safe-grey">
-                                                            <input type="text" id="endDate" lay-verify='empty' autocomplete="off" nullmsg='结束时间不能为空' class="layui-input" placeholder="请选择结束时间">
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th><span>作业内容</span></th>
-                                                    <td colspan="3">
-                                                        <div class="safe-grey">
-                                                            <textarea id="workContent" placeholder="请输入作业内容" class="layui-textarea" name="workContent"></textarea>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th><span>审核人</span></th>
-                                                    <td colspan="3">
-                                                        <div class="safe-grey">
-                                                            <select id="auditUser" lay-verify="ddl" errmsg="请选择审核人"></select>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </form>
-                                <div id="workSheet">
+                                <div id="operationSheetAdd">
                                     <form class="layui-form" action="">
-                                        <h2>高压工作票</h2>
+                                        <h2>高压操作票</h2>
                                         <div class="layui-form safe-form">
                                             <table border="0" class="layui-table">
                                                 <tbody>
 
                                                     <tr>
-                                                        <th><span>停电影响范围</span></th>
+                                                        <th><span>高压操作内容</span></th>
                                                         <td colspan="3">
                                                             <div class="safe-grey">
-                                                                <textarea id="Influence" placeholder="请输入停电影响范围" class="layui-textarea" name="Influence"></textarea>
+                                                                <textarea id="Content" placeholder="请输入高压操作内容" class="layui-textarea" name="Content"></textarea>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="operationSheetDetail">
+                                    <form class="layui-form" action="">
+                                        <h2>高压操作票</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <tbody>
+
+                                                    <tr>
+                                                        <th>操作人</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="Realname"></span>
+                                                            </div>
+                                                        </td>
+                                                        <th>操作时间</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="OperationDate"></span>
                                                             </div>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th><span>技术安全措施</span></th>
+                                                        <th>高压操作内容</th>
                                                         <td colspan="3">
                                                             <div class="safe-grey">
-                                                                <textarea id="SafetyMeasures" placeholder="请输入技术安全措施" class="layui-textarea" name="SafetyMeasures"></textarea>
+                                                                <textarea id="WorkContent" disabled  class="layui-textarea" name="WorkContent"></textarea>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="sendElectrialSheet">
+                                    <form class="layui-form" action="">
+                                        <h2>送电确认单</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <tbody>
+
+                                                    <tr>
+                                                        <th><span>工作完成情况</span></th>
+                                                        <td colspan="3">
+                                                            <div class="safe-grey">
+                                                                <textarea id="WorkFinishContent" placeholder="请输入工作完成情况" class="layui-textarea" name="WorkFinishContent"></textarea>
                                                             </div>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th><span>副职审核人</span></th>
-                                                        <td colspan="3">
+                                                        <th style="width:120px;"><span>要求送电时间</span></th>
+                                                        <td>
                                                             <div class="safe-grey">
-                                                                <select id="DeputyAuditUser" lay-verify="ddl" errmsg="请选择部门副职审核人"></select>
+                                                                <input type="text" id="SendElectricDate" lay-verify='empty' autocomplete="off" nullmsg='时间不能为空' class="layui-input" placeholder="请选择要求送电时间">
                                                             </div>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th><span>正职审核人</span></th>
-                                                        <td colspan="3">
+                                                        <th><span>地线是否拆除</span></th>
+                                                        <td>
                                                             <div class="safe-grey">
-                                                                <select id="ChiefAuditUser" lay-verify="ddl" errmsg="请选择部门正职审核人"></select>
+                                                                <input type="radio" value="1" name="GroundLine" lay-filter="type" title="是" checked="">
+                                                                <input type="radio" value="0" name="GroundLine" lay-filter="type" title="否">
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><span>人员是否全部撤离现场</span></th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <input type="radio" value="1" name="EvacuateAllPeople" lay-filter="type" title="是" checked="">
+                                                                <input type="radio" value="0" name="EvacuateAllPeople" lay-filter="type" title="否">
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -245,4 +255,4 @@
 <script src="../Scripts/layer/layer.js"></script>
 <script src="../Scripts/Common.js?1"></script>
 <script src="../Scripts/safe.js"></script>
-<script src="OperationAdd.js"></script>
+<script src="../ElectricalTask/OperationSheetAdd.js"></script>

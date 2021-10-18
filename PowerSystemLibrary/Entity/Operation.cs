@@ -28,5 +28,11 @@ namespace PowerSystemLibrary.Entity
         public bool IsFinish { get; set; } = false;
         [NotMapped]
         public ApplicationSheet ApplicationSheet { get; set; }
+
+        [NotMapped]
+        public WorkSheet WorkSheet { get; set; }
+
+        [NotMapped]
+        public OperationSheet OperationSheet { get; set; }
     }
 }

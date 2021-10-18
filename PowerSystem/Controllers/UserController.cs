@@ -108,5 +108,25 @@ namespace PowerSystem.Controllers
         {
             return new UserBLL().GetUserListByRole();
         }
+
+        /// <summary>
+        /// 部门副职
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, Route("GetDeputyAuditUser"), LoginRequired]
+        public ApiResult GetDeputyAuditUser()
+        {
+            return new UserBLL().GetDeputyAuditUser();
+        }
+
+        /// <summary>
+        /// 部门正职以上
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, Route("GetChiefAuditUser"), LoginRequired]
+        public ApiResult GetChiefAuditUser()
+        {
+            return new UserBLL().GetChiefAuditUser();
+        }
     }
 }

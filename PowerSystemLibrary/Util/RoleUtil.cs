@@ -20,6 +20,23 @@ namespace PowerSystemLibrary.Util
             return roleList;
         }
 
+        //工作票副职审核人
+        public static List<Role> GetWorkSheetDeputyAuditRoleList()
+        {
+            List<Role> roleList = new List<Role>();
+            roleList.Add(Role.部门副职);
+            return roleList;
+        }
+
+        //工作票正职及以上
+        public static List<Role> GetWorkSheetChiefAuditRoleList()
+        {
+            List<Role> roleList = new List<Role>();
+            roleList.Add(Role.部门正职);
+            roleList.Add(Role.分管领导);
+            return roleList;
+        }
+
         //电工
         public static List<Role> GetElectricianRoleList()
         {

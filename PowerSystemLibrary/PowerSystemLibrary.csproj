@@ -80,9 +80,11 @@
     <Compile Include="BLL\LogBLL.cs" />
     <Compile Include="BLL\MenuBLL.cs" />
     <Compile Include="BLL\OperationBLL.cs" />
+    <Compile Include="BLL\OperationSheetBLL.cs" />
     <Compile Include="BLL\PowerSubstationBLL.cs" />
     <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="BLL\WeChatBLL.cs" />
+    <Compile Include="BLL\WorkSheetBLL.cs" />
     <Compile Include="DAO\DepartmentDAO.cs" />
     <Compile Include="DAO\LogDAO.cs" />
     <Compile Include="DBContext\PowerSystemDBContext.cs" />
@@ -97,10 +99,13 @@
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\ElectricalTask.cs" />
     <Compile Include="Entity\ElectricalTaskUser.cs" />
+    <Compile Include="Entity\OperationSheet.cs" />
     <Compile Include="Entity\PowerSubstation.cs" />
     <Compile Include="Entity\Role_Right.cs" />
+    <Compile Include="Entity\SendElectricalSheet.cs" />
     <Compile Include="Entity\UserRole.cs" />
     <Compile Include="Entity\User.cs" />
+    <Compile Include="Entity\WorkSheet.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
     <Compile Include="Filter\LoginRequiredAttribute.cs" />
     <Compile Include="Util\ApiResult.cs" />

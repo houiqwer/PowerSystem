@@ -1,6 +1,7 @@
 ﻿$(function () {
+
     InitAH();
-    InitElectricalTaskType();
+    InitEnum("ElectricalTaskType", $("#electricalTaskType"), true, "任务类型");
     Page();
     GetLayui();
 })
@@ -33,9 +34,9 @@ layui.use('table', function () {
     //监听单元格事件
     table.on('tool(table)', function (obj) {
         var data = obj.data;
-        if (obj.event === 'accept') {
-            Accept(data.ID);
-        }
+        if (obj.event === 'export') {
+            Export(data.ID);
+        } 
     });
 });
 
@@ -50,6 +51,7 @@ function Page() {
         beginDate = date.substring(0, 10);
         endDate = date.substring(12, 23);
     }
+   
 
     layui.use('table', function () {
         var table = layui.table;
@@ -57,16 +59,16 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/ElectricalTask/NotAcceptedList?ahID=' + ahID + '&electricalTaskType=' + electricalTaskType + "&beginDate=" + beginDate + "&endDate=" + endDate
+            , url: '/OperationSheet/List?ahID=' + ahID + '&electricalTaskType=' + electricalTaskType + "&beginDate=" + beginDate + "&endDate=" + endDate
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
+
             , cols: [[
-                { field: 'AHName', align: 'center', title: '送电柜' }
-                , { field: 'VoltageTypeName', align: 'center', title: '电压类型' }
-                , { field: 'ElectricalTaskTypeName', align: 'center', title: '作业类型' }
+                { field: 'Name', align: 'center', title: '送电柜' }
+                , { field: 'VoltageType', align: 'center', title: '电压类型' }
+                , { field: 'ElectricalTaskType', align: 'center', title: '任务类型' }
                 , { field: 'CreateDate', align: 'center', title: '发起日期' }
-                , { field: 'ReciveCount', align: 'center', title: '当前接收人数' }
                 , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 160 }
             ]]
             , done: function (res, cur, count) {
@@ -127,57 +129,55 @@ function InitAH() {
 }
 
 
-function InitElectricalTaskType() {
-    var data = {
-        type: "ElectricalTaskType"
-    }
-    $.ajax({
-        url: "/Base/GetEnum",
-        type: "get",
-        data: data,
-        dataType: "json",
-        async: false,
-        beforeSend: function (XHR) {
-            XHR.setRequestHeader("Authorization", store.userInfo.token);
-        },
-        success: function (data) {
-            if (data.code == 0) {
-                var html = "<option>所有作业</option>";
-                for (var i = 0; i < data.data.List.length; i++) {
-                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
+
+
+
+
+
+
+function Export(id) {
+    layer.confirm("确认导出操作票？", { title: "系统提示信息" }, function (index) {
+
+
+        var par = "id=" + id;
+        var path = "/OperationSheet/Export?" + par;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', path, true); // 也可以使用POST方式，根据接口
+        xhr.setRequestHeader("Authorization", localStorage.getItem("Token"));
+        xhr.responseType = "blob"; // 返回类型blob
+        // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+        xhr.onload = function (e) {
+            // 请求完成
+            if (this.status === 200) {
+                // 返回200
+                console.log(this.getResponseHeader('Content-Disposition'));
+                var blob = this.response;
+                var reader = new FileReader();
+                reader.readAsDataURL(blob); // 转换为base64，可以直接放入a表情href
+                reader.onload = function (e) {
+                    // 转换完成，创建一个a标签用于下载
+                    var a = document.createElement('a');
+                    var wpoInfo = { "Disposition": xhr.getResponseHeader('Content-Disposition'), };
+                    var name = "";
+                    var d = wpoInfo.Disposition;
+                    if (wpoInfo.Disposition.indexOf("filename=")) {
+                        name = wpoInfo.Disposition.split("filename=")[1];
+                        name = decodeURIComponent(name);
+                        console.log(decodeURIComponent(name));
+                    } else
+                        name = "停送电操作票" + new Date().Format("yyyyMMddHH") + ".docx";
+                    a.download = name;
+                    a.href = e.target.result;
+                    $("body").append(a); // 修复firefox中无法触发click
+                    a.click();
+                    $(a).remove();
                 }
-                $("#electricalTaskType").html(html);
             }
-            else {
-                Failure(data);
-            }
-        },
-        error: function () {
-            layer.ready(function () {
-                title: false
-                layer.alert("数据提交存在问题，请检查当前网络", {
-                    title: false
-                });
-            });
-        }
-    })
+        };
+        // 发送ajax请求
+        xhr.send();
+        layer.closeAll();
+    });
 }
 
 
-function Accept(id) {
-    var path = "/ElectricalTask/Accept";
-    var data = {
-        'ID': id,
-    };
-    if (basepost(data, path)) {
-        layer.alert("已领取", {
-            time: 0, //不自动关闭
-            btn: ['确定'],
-            title: "系统提示信息",
-            yes: function (index) {
-                layer.close(index);
-                Page();
-            }
-        });
-    }
-}

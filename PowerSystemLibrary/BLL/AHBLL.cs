@@ -209,6 +209,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             aH.ID,
                             aH.Name,
+                            aH.VoltageType,
                             VoltageTypeName = System.Enum.GetName(typeof(VoltageType), aH.VoltageType),
                             AHStateName = System.Enum.GetName(typeof(AHState), aH.AHState),
                             PowerSubstationName = powerSubstationList.FirstOrDefault(t => t.ID == aH.PowerSubstationID).Name

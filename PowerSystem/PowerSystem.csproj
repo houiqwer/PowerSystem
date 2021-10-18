@@ -136,6 +136,8 @@
     <Content Include="ElectricalTask\AcceptedElectricalTaskList.html" />
     <Content Include="ElectricalTask\AcceptedElectricalTaskList.js" />
     <Content Include="ElectricalTask\NotAcceptedElectricalTaskList.js" />
+    <Content Include="ElectricalTask\OperationSheetAdd.html" />
+    <Content Include="ElectricalTask\OperationSheetAdd.js" />
     <Content Include="font\iconfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="HomePage1.html" />
@@ -146,6 +148,8 @@
     <Content Include="Index.js" />
     <Content Include="Main.html" />
     <Content Include="Main.js" />
+    <Content Include="OperationSheet\OperationSheetList.html" />
+    <Content Include="OperationSheet\OperationSheetList.js" />
     <Content Include="Operation\MyOperationList.html" />
     <Content Include="Operation\MyOperationList.js" />
     <Content Include="Operation\OperationAdd.html" />
@@ -183,6 +187,12 @@
     <Content Include="SystemManage\UserDetail.js" />
     <Content Include="SystemManage\UserEdit.html" />
     <Content Include="SystemManage\UserEdit.js" />
+    <Content Include="WorkSheet\MyWorkSheetAuditList.html" />
+    <Content Include="WorkSheet\MyWorkSheetAuditList.js" />
+    <Content Include="WorkSheet\WorkSheetAuditList.html" />
+    <Content Include="WorkSheet\WorkSheetAuditList.js" />
+    <Content Include="WorkSheet\WorkSheetDetail.html" />
+    <Content Include="WorkSheet\WorkSheetDetail.js" />
     <Content Include="zTree_v3\api\apiCss\api.js" />
     <Content Include="zTree_v3\api\apiCss\common.css" />
     <Content Include="zTree_v3\api\apiCss\common_ie6.css" />
@@ -1145,9 +1155,11 @@
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OperationController.cs" />
     <Compile Include="Controllers\ElectricalTaskController.cs" />
+    <Compile Include="Controllers\OperationSheetController.cs" />
     <Compile Include="Controllers\PowerSubstationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WeChatController.cs" />
+    <Compile Include="Controllers\WorkSheetController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1190,6 +1202,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="TempleteFile\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerSystemLibrary\PowerSystemLibrary.csproj">

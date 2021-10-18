@@ -43,6 +43,9 @@ namespace PowerSystemLibrary.DBContext
         public DbSet<PowerSubstation> PowerSubstation { get; set; }
         public DbSet<Role_Right> Role_Right { get; set; }
 
+        public DbSet<WorkSheet> WorkSheet { get; set; }
+        public DbSet<OperationSheet> OperationSheet { get; set; }
+        public DbSet<SendElectricalSheet> SendElectricalSheet { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

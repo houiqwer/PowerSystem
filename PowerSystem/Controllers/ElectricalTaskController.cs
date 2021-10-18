@@ -122,7 +122,7 @@ namespace PowerSystem.Controllers
         /// </summary>
         /// <param name="electricalTask"></param>
         /// <returns></returns>
-        [HttpPost, Route("DispatcherAudit"), LoginRequired]
+        [HttpPost, Route("DispatcherAudit"), LoginRequired(Role = "Dispatcher")]
         public ApiResult DispatcherAudit(ElectricalTask electricalTask)
         {
             return new ElectricalTaskBLL().DispatcherAudit(electricalTask);

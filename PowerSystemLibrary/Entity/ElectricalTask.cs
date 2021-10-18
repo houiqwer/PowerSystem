@@ -42,5 +42,10 @@ namespace PowerSystemLibrary.Entity
         [NotMapped]
         public string ElectricalTaskTypeName { get; set; }
 
+        [NotMapped]
+        public OperationSheet OperationSheet { get; set; }
+
+        [NotMapped]
+        public SendElectricalSheet SendElectricalSheet { get; set; }
     }
 }

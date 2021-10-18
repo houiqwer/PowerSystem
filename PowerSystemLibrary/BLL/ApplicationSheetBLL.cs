@@ -38,7 +38,7 @@ namespace PowerSystemLibrary.BLL
 
                         Operation operation = db.Operation.FirstOrDefault(t => t.ID == selectedApplicationSheet.OperationID);
                         AH ah = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
-
+                        string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                         if (applicationSheet.Audit == Enum.Audit.通过)
                         {
                             selectedApplicationSheet.Audit = Enum.Audit.通过;
@@ -71,7 +71,7 @@ namespace PowerSystemLibrary.BLL
                                     userWeChatIDString = userWeChatIDString + userWeChatID + "|";
                                 }
                                 userWeChatIDString.TrimEnd('|');
-                                string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                                
                                 string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
 
                                 ////发消息给所有电工
@@ -90,6 +90,28 @@ namespace PowerSystemLibrary.BLL
                             else
                             {
                                 //检查其他是否审核均通过，通过则发布停电任务并发送消息
+                                if(db.WorkSheet.FirstOrDefault(t=>t.OperationID == operation.ID).AuditLevel == AuditLevel.通过)
+                                {
+                                    //发布停电任务
+                                    ElectricalTask electricalTask = new ElectricalTask();
+                                    electricalTask.OperationID = operation.ID;
+                                    electricalTask.AHID = operation.AHID;
+                                    electricalTask.CreateDate = now;
+                                    electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
+                                    db.ElectricalTask.Add(electricalTask);
+
+                                    //发消息给所有调度
+                                    List<Role> roleList = RoleUtil.GetDispatcherRoleList();
+                                    List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                                    string userWeChatIDString = "";
+                                    foreach (string userWeChatID in userWeChatIDList)
+                                    {
+                                        userWeChatIDString = userWeChatIDString + userWeChatID + "|";
+                                    }
+                                    userWeChatIDString.TrimEnd('|');
+
+                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
+                                }
                             }
                             new LogDAO().AddLog(LogCode.审核成功, loginUser.Realname + "成功审核" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation), db);
 
@@ -108,8 +130,6 @@ namespace PowerSystemLibrary.BLL
                             db.SaveChanges();
 
                             //发消息给发起人
-
-                            string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                             string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您的作业被驳回，原因为：" + applicationSheet.AuditMessage);
 
 

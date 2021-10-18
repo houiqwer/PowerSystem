@@ -96,5 +96,16 @@ namespace PowerSystem.Controllers
             return new OperationBLL().Pick(operation);
         }
 
+
+        /// <summary>
+        /// 导出工作票
+        /// </summary>
+        /// <param name="ID">作业ID</param>
+        /// <returns></returns>
+        [HttpGet, Route("ExportWorkSheet"), LoginRequired]
+        public ApiResult ExportWorkSheet(int ID)
+        {
+            return new OperationBLL().ExportWorkSheet(ID);
+        }
     }
 }

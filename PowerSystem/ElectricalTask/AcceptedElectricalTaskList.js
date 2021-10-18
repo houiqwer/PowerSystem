@@ -34,7 +34,7 @@ layui.use('table', function () {
     table.on('tool(table)', function (obj) {
         var data = obj.data;
         if (obj.event === 'confirm') {
-            Confirm(data.ID);
+            Confirm(data.ID, data.VoltageType, data.ElectricalTaskType);
         } else if (obj.event === 'back') {
             Back(data.ID);
         }
@@ -65,6 +65,7 @@ function Page() {
             , headers: { "Authorization": store.userInfo.token }
             , cols: [[
                 { field: 'AHName', align: 'center', title: '送电柜' }
+                , { field: 'VoltageTypeName', align: 'center', title: '电压类型' }
                 , { field: 'ElectricalTaskTypeName', align: 'center', title: '作业类型' }
                 , { field: 'CreateDate', align: 'center', title: '发起日期' }
                 , { field: 'ReciveCount', align: 'center', title: '当前接收人数' }
@@ -165,23 +166,7 @@ function InitElectricalTaskType() {
 }
 
 
-function Confirm(id) {
-    var path = "/ElectricalTask/Confirm";
-    var data = {
-        'ID': id,
-    };
-    if (basepost(data, path)) {
-        layer.alert("已确认", {
-            time: 0, //不自动关闭
-            btn: ['确定'],
-            title: "系统提示信息",
-            yes: function (index) {
-                layer.close(index);
-                Page();
-            }
-        });
-    }
-}
+
 
 function Back(id) {
     var path = "/ElectricalTask/Back";
@@ -198,5 +183,39 @@ function Back(id) {
                 Page();
             }
         });
+    }
+}
+
+
+var w = ($(window).width()*0.7);
+var h = ($(window).height()*0.8);
+
+function Confirm(id, VoltageType, ElectricalTaskType) {
+    if (VoltageType == 1) {//低压
+        var path = "/ElectricalTask/Confirm";
+        var data = {
+            'ID': id,
+        };
+        if (basepost(data, path)) {
+            layer.alert("已确认", {
+                time: 0, //不自动关闭
+                btn: ['确定'],
+                title: "系统提示信息",
+                yes: function (index) {
+                    layer.close(index);
+                    Page();
+                }
+            });
+        }
+    } else {//高压
+        layer.open({
+            type: 2,
+            title: "操作票",
+            area: [w + 'px', h + 'px'],
+            shade: 0.4,
+            maxmin: true,
+            content: 'OperationSheetAdd.html?id=' + id + '&ElectricalTaskType='+ElectricalTaskType,
+        })
+        
     }
 }
