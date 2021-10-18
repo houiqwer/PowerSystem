@@ -216,7 +216,7 @@
                                         </table>
                                     </div>
 
-                                    <h2>审核信息</h2>
+                                    <h2>申请单审核信息</h2>
                                     <div class="layui-form safe-form">
                                         <table border="0" class="layui-table">
                                             <colgroup>
@@ -228,6 +228,49 @@
                                             <tbody id="tbody"></tbody>
                                         </table>
                                     </div>
+
+                                    <div id="workSheet">
+                                        <h2>工作票</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>停电影响范围</th>
+                                                        <td colspan="3">
+                                                            <div class="safe-grey">
+                                                                <textarea id="Influence"  class="layui-textarea" name="Influence" disabled></textarea>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>技术安全措施</th>
+                                                        <td colspan="3">
+                                                            <div class="safe-grey">
+                                                                <textarea id="SafetyMeasures" class="layui-textarea" name="SafetyMeasures" disabled></textarea>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+                                        <h2>工作票审核信息</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <colgroup>
+                                                    <col width="">
+                                                    <col width="">
+                                                    <col width="">
+                                                    <col>
+                                                </colgroup>
+                                                <tbody id="workSheetAudit"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+
                                     <div id="stopDispatcherAudit">
                                         <h2>停电调度审核</h2>
                                         <div class="layui-form safe-form">
@@ -242,6 +285,8 @@
                                             </table>
                                         </div>
                                     </div>
+
+
                                     <div id="stopTaskUser">
                                         <h2>停电电工</h2>
                                         <div class="layui-form safe-form">
@@ -256,6 +301,54 @@
                                             </table>
                                         </div>
 
+                                    </div>
+
+                                    <div id="stopOperationSheet">
+                                        <h2>停电操作单</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>操作人</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="stopOperationUserName"></span>
+                                                            </div>
+                                                        </td>
+                                                        <th>操作时间</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="stopOperationDate"></span>
+                                                            </div>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <th>监护人</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="stopGuardianUserName"></span>
+                                                            </div>
+                                                        </td>
+                                                        <th>确认时间</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="stopFinishDate"></span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>操作内容</th>
+                                                        <td colspan="3">
+                                                            <div class="safe-grey">
+                                                                <textarea id="stopOperationContent" class="layui-textarea" name="stopOperationContent" disabled></textarea>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div id="sendDispatcherAudit">
                                         <h2>送电调度审核</h2>
@@ -282,6 +375,53 @@
                                                     <col>
                                                 </colgroup>
                                                 <tbody id="sendElectricalTaskList"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div id="sendOperationSheet">
+                                        <h2>送电操作单</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>操作人</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="sendOperationUserName"></span>
+                                                            </div>
+                                                        </td>
+                                                        <th>操作时间</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="sendOperationDate"></span>
+                                                            </div>
+                                                        </td>
+                                                       
+                                                    </tr>
+                                                    <tr>
+                                                        <th>监护人</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="sendGuardianUserName"></span>
+                                                            </div>
+                                                        </td>
+                                                        <th>确认时间</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="sendFinishDate"></span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>操作内容</th>
+                                                        <td colspan="3">
+                                                            <div class="safe-grey">
+                                                                <textarea id="sendOperationContent" class="layui-textarea" name="sendOperationContent" disabled></textarea>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -323,6 +463,12 @@
                                 </form>
                                 <div class="safe-tijiao">
                                     <input type="button" value="立即提交" onclick="tj()" class="layui-btn bbl1 sh">
+
+                                    <input type="button" value="申请单" onclick="exportApplicationSheet()" class="layui-btn edit applicationSheet">
+                                    <input type="button" value="工作票" onclick="exportWorkSheet()" class="layui-btn bian workSheet">
+                                    <input type="button" value="停电操作单" onclick="exportStopOperationSheet()" class="layui-btn kan stopOperationSheet">
+                                    <input type="button" value="送电操作单" onclick="exportSendOperationSheet()" class="layui-btn bbl3 sendOperationSheet">
+                                   
                                     <input type="button" value="返回" onclick="cancle()" class="layui-btn bred">
                                 </div>
                             </div>

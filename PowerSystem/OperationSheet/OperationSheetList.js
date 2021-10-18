@@ -137,8 +137,6 @@ function InitAH() {
 
 function Export(id) {
     layer.confirm("确认导出操作票？", { title: "系统提示信息" }, function (index) {
-
-
         var par = "id=" + id;
         var path = "/OperationSheet/Export?" + par;
         var xhr = new XMLHttpRequest();

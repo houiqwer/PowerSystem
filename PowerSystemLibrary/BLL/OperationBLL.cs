@@ -224,6 +224,19 @@ namespace PowerSystemLibrary.BLL
                         stopElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(u => u.ID == t.UserID).Realname);
                         
                         stopElectricalTask.ElectricalTaskUserList = stopElectricalTaskUserList;
+
+                        //操作票
+                        OperationSheet stopOperationSheet = db.OperationSheet.FirstOrDefault(t => t.ElectricalTaskID == stopElectricalTask.ID);
+                        if (stopOperationSheet != null)
+                        {
+                            stopOperationSheet.OperationUserName = userList.FirstOrDefault(t => t.ID == stopOperationSheet.OperationUserID).Realname;
+                            stopOperationSheet.OperationDateString = stopOperationSheet.OperationDate.ToString("yyyy-MM-dd HH:ss");
+                            stopOperationSheet.GuardianUserName = userList.FirstOrDefault(t => t.ID == stopOperationSheet.GuardianUserID).Realname;
+                            stopOperationSheet.FinishDateString = stopOperationSheet.FinishDate.HasValue ? stopOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
+                        }
+
+                        stopElectricalTask.OperationSheet = stopOperationSheet;
+
                     }
 
                     //送电电工信息
@@ -237,9 +250,38 @@ namespace PowerSystemLibrary.BLL
                         List<ElectricalTaskUser> sendElectricalTaskUserList = db.ElectricalTaskUser.Where(t => t.ElectricalTaskID == sendElectricalTask.ID && t.IsBack != true).OrderByDescending(t => t.Date).ToList();
                         sendElectricalTaskUserList.ForEach(t => t.CreateDate = t.Date.ToString("yyyy-MM-dd HH:mm"));
                         sendElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(u => u.ID == t.UserID).Realname);
-                        
                         sendElectricalTask.ElectricalTaskUserList = sendElectricalTaskUserList;
+
+                        //操作票
+                        OperationSheet sendOperationSheet = db.OperationSheet.FirstOrDefault(t => t.ElectricalTaskID == sendElectricalTask.ID);
+                        if(sendOperationSheet != null)
+                        {
+                            sendOperationSheet.OperationUserName = userList.FirstOrDefault(t => t.ID == sendOperationSheet.OperationUserID).Realname;
+                            sendOperationSheet.OperationDateString = sendOperationSheet.OperationDate.ToString("yyyy-MM-dd HH:ss");
+                            sendOperationSheet.GuardianUserName = userList.FirstOrDefault(t => t.ID == sendOperationSheet.GuardianUserID).Realname;
+                            sendOperationSheet.FinishDateString = sendOperationSheet.FinishDate.HasValue ? sendOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
+                        }
+
+                        sendElectricalTask.OperationSheet = sendOperationSheet;
                     }
+
+                    //高压工作票
+                    WorkSheet workSheet = db.WorkSheet.FirstOrDefault(t => t.OperationID == operation.ID);
+                    if(workSheet != null)
+                    {
+                        //副职审核信息
+                        workSheet.DeputyAuditName = System.Enum.GetName(typeof(Audit), workSheet.DeputyAudit);
+                        workSheet.DeputyAuditDateString = workSheet.DeputyAuditDate.HasValue ? workSheet.DeputyAuditDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
+                        workSheet.DeputyAuditUserName = userList.FirstOrDefault(t => t.ID == workSheet.DeputyAuditUserID).Realname;
+
+                        //正职审核信息
+                        workSheet.ChiefAuditName = System.Enum.GetName(typeof(Audit), workSheet.ChiefAudit);
+                        workSheet.ChiefAuditDateString = workSheet.ChiefAuditDate.HasValue ? workSheet.ChiefAuditDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
+                        workSheet.ChiefAuditUserName = userList.FirstOrDefault(t => t.ID == workSheet.ChiefAuditUserID).Realname;
+                    }
+
+                    
+
 
                     result = ApiResult.NewSuccessJson(new
                     {
@@ -271,7 +313,8 @@ namespace PowerSystemLibrary.BLL
                             DepartmentName =db.Department.FirstOrDefault(t => t.ID == applicationSheet.DepartmentID).Name,
                         },
                         stopElectricalTask,
-                        sendElectricalTask
+                        sendElectricalTask,
+                        workSheet
                     });
 
                 }

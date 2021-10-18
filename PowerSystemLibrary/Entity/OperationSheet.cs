@@ -45,5 +45,15 @@ namespace PowerSystemLibrary.Entity
         public bool IsConfirm { get; set; } = false;
 
         public DateTime? FinishDate { get; set; }
+
+        [NotMapped]
+        public string OperationUserName { get; set; }
+        [NotMapped]
+        public string GuardianUserName { get; set; }
+
+        [NotMapped]
+        public string OperationDateString { get; set; }
+        [NotMapped]
+        public string FinishDateString { get; set; }
     }
 }

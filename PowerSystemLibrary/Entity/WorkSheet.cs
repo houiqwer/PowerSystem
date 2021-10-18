@@ -58,5 +58,25 @@ namespace PowerSystemLibrary.Entity
         [NotMapped]
         public string AuditMessage { get; set; }
 
+        [NotMapped]
+        public string DeputyAuditUserName { get; set; }
+
+        [NotMapped]
+        public string DeputyAuditDateString { get; set; }
+
+        [NotMapped]
+        public string DeputyAuditName { get; set; }
+
+        [NotMapped]
+        public string ChiefAuditUserName { get; set; }
+
+        [NotMapped]
+        public string ChiefAuditDateString { get; set; }
+
+        [NotMapped]
+        public string ChiefAuditName { get; set; }
+
+
+
     }
 }
