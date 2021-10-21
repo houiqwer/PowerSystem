@@ -111,7 +111,14 @@ function Init(id) {
                         $('#stopOperationDate').html(data.data.stopElectricalTask.OperationSheet.OperationDateString);
                         $('#stopFinishDate').html(data.data.stopElectricalTask.OperationSheet.FinishDateString);
                         $('#stopGuardianUserName').html(data.data.stopElectricalTask.OperationSheet.GuardianUserName);
-                        $('#stopOperationContent').html(data.data.stopElectricalTask.OperationSheet.Content);
+                        var html = "";
+                        for (var i = 0; i < data.data.stopElectricalTask.OperationSheet.OperationContentList.length; i++) {
+                            if (i == 0)
+                                html += " <tr class='anquan'><th  rowspan='" + data.data.stopElectricalTask.OperationSheet.OperationContentList.length + 1 + "'>停电操作内容</th> <td colspan='4'><div class='safe-grey'>" + data.data.stopElectricalTask.OperationSheet.OperationContentList[i].Content + "</div></td></tr>";
+                            else
+                                html += " <tr class='anquan'> <td colspan='4'><div class='safe-grey'>" + data.data.stopElectricalTask.OperationSheet.OperationContentList[i].Content + "</div></td></tr>";
+                        }
+                        $('#stopOperationContent').after(html);
                     }
 
                 }
@@ -141,7 +148,15 @@ function Init(id) {
                         $('#sendOperationDate').html(data.data.sendElectricalTask.OperationSheet.OperationDateString);
                         $('#sendFinishDate').html(data.data.sendElectricalTask.OperationSheet.FinishDateString);
                         $('#sendGuardianUserName').html(data.data.sendElectricalTask.OperationSheet.GuardianUserName);
-                        $('#sendOperationContent').html(data.data.sendElectricalTask.OperationSheet.Content);
+                        //$('#sendOperationContent').html(data.data.sendElectricalTask.OperationSheet.Content);
+                        var html = "";
+                        for (var i = 0; i < data.data.sendElectricalTask.OperationSheet.OperationContentList.length; i++) {
+                            if (i == 0)
+                                html += " <tr class='anquan'><th  rowspan='" + data.data.sendElectricalTask.OperationSheet.OperationContentList.length + 1 + "'>送电操作内容</th> <td colspan='4'><div class='safe-grey'>" + data.data.sendElectricalTask.OperationSheet.OperationContentList[i].Content + "</div></td></tr>";
+                            else
+                                html += " <tr class='anquan'> <td colspan='4'><div class='safe-grey'>" + data.data.sendElectricalTask.OperationSheet.OperationContentList[i].Content + "</div></td></tr>";
+                        }
+                        $('#sendOperationContent').after(html);
                     }
                 }
 
@@ -159,7 +174,7 @@ function Init(id) {
                     workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.ChiefAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.ChiefAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.ChiefAuditDate == null ? "" : data.data.workSheet.ChiefAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.ChiefAuditMessage == null ? "" : data.data.workSheet.ChiefAuditMessage) + "</td></tr>";
                     $("#workSheetAudit").append(workAudit);
                     $('#Influence').html(data.data.workSheet.Influence);
-                    $('#SafetyMeasures').html(data.data.workSheet.SafetyMeasures);
+                   
                 }
                 GetLayui();
             }

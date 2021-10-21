@@ -188,7 +188,7 @@ function Back(id) {
 
 
 var w = ($(window).width()*0.7);
-var h = ($(window).height()*0.8);
+var h = ($(window).height()*0.6);
 
 function Confirm(id, VoltageType, ElectricalTaskType) {
     if (VoltageType == 1) {//低压

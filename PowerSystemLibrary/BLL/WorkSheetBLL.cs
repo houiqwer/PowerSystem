@@ -262,6 +262,7 @@ namespace PowerSystemLibrary.BLL
 
                             operation.OperationFlow = OperationFlow.作业终止;
                             operation.IsFinish = true;
+                            operation.FinishDate = now;
                             db.SaveChanges();
 
                             //发消息给发起人
@@ -321,7 +322,7 @@ namespace PowerSystemLibrary.BLL
                         workSheet.WorkContent,
                         
                         workSheet.Influence,
-                        workSheet.SafetyMeasures,
+                        //workSheet.SafetyMeasures,
                         DepartmentName = db.Department.FirstOrDefault(t => t.ID == createUser.DepartmentID).Name,
                         createUser.Realname,
                         AHName = db.AH.FirstOrDefault(t => t.ID == operation.AHID).Name,

@@ -47,7 +47,7 @@ namespace PowerSystemLibrary.BLL
                             selectedApplicationSheet.AuditMessage = applicationSheet.AuditMessage;
 
 
-                            operation.OperationFlow = OperationFlow.低压停电作业审核;
+                            operation.OperationFlow = operation.VoltageType == VoltageType.低压? OperationFlow.低压停电作业审核:OperationFlow.高压停电作业审核;
                             db.SaveChanges();
 
                             if (operation.VoltageType == VoltageType.低压)
@@ -127,6 +127,7 @@ namespace PowerSystemLibrary.BLL
 
                             operation.OperationFlow = OperationFlow.作业终止;
                             operation.IsFinish = true;
+                            operation.FinishDate = now;
                             db.SaveChanges();
 
                             //发消息给发起人
@@ -256,6 +257,7 @@ namespace PowerSystemLibrary.BLL
 
                             operation.OperationFlow = OperationFlow.作业终止;
                             operation.IsFinish = true;
+                            operation.FinishDate = now;
                             db.SaveChanges();
 
                             //发消息给发起人

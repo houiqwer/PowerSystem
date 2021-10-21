@@ -18,6 +18,7 @@ using System.Xml;
 using PowerSystemLibrary.Entity;
 using System.Drawing;
 using System.Drawing.Imaging;
+using NPOI.HSSF.UserModel;
 
 namespace PowerSystemLibrary.Util
 {
@@ -576,6 +577,38 @@ namespace PowerSystemLibrary.Util
             return enumeration.ToString();
         }
 
+        public static void ExportByWeb(string strFileName, HSSFWorkbook workbook)
+        {
+            try
+            {
+                HttpContext curContext = HttpContext.Current;
+                // 设置编码和附件格式
+                curContext.Response.ContentType = "application/ms-excel";
+                curContext.Response.ContentEncoding = Encoding.UTF8;
+                curContext.Response.Charset = "";
+                curContext.Response.AppendHeader("Content-Disposition",
+                    "attachment;filename=" + HttpUtility.UrlEncode(strFileName, Encoding.UTF8));
+                //调用导出具体方法Export()
+                curContext.Response.BinaryWrite(Export(workbook).GetBuffer());
+                curContext.Response.End();
+            }
+            catch (Exception ex)
+            {
+                string aa = ex.Message;
+            }
+        }
+
+        public static MemoryStream Export(HSSFWorkbook workbook)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Write(ms);
+                ms.Flush();
+                ms.Position = 0;
+                ms.Dispose();
+                return ms;
+            }
+        }
 
     }
 }

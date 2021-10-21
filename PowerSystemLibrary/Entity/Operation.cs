@@ -26,6 +26,7 @@ namespace PowerSystemLibrary.Entity
         public OperationFlow OperationFlow { get; set; }
         public bool IsConfirm { get; set; } = false;
         public bool IsFinish { get; set; } = false;
+        public DateTime? FinishDate { get; set; }
         [NotMapped]
         public ApplicationSheet ApplicationSheet { get; set; }
 

@@ -13,6 +13,9 @@ using Aspose.Words;
 using Aspose.Words.Tables;
 using System.IO;
 using System.Web;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 
 namespace PowerSystemLibrary.BLL
 {
@@ -82,7 +85,7 @@ namespace PowerSystemLibrary.BLL
                             userWeChatIDString = db.User.FirstOrDefault(t => t.ID == operation.ApplicationSheet.AuditUserID && t.IsDelete != true).WeChatID;
                         }
 
-                        applicationSheet.NO = SheetUtil.BuildNO(ah.VoltageType, SheetType.申请单, db.ApplicationSheet.Count(t => t.CreateDate >= nowDate) + 1);
+                        applicationSheet.NO = Util.SheetUtil.BuildNO(ah.VoltageType, SheetType.申请单, db.ApplicationSheet.Count(t => t.CreateDate >= nowDate) + 1);
                         applicationSheet.OperationID = operation.ID;
                         applicationSheet.UserID = loginUser.ID;
                         applicationSheet.DepartmentID = loginUser.DepartmentID;
@@ -140,8 +143,8 @@ namespace PowerSystemLibrary.BLL
                             {
                                 throw new ExceptionUtil("请选择工作票正职审核人");
                             }
-                            var a = db.WorkSheet.Count(t => t.CreateDate >= nowDate) + 1;
-                            workSheet.NO = SheetUtil.BuildNO(ah.VoltageType, SheetType.工作票, db.WorkSheet.Count(t => t.CreateDate >= nowDate) + 1);
+                            
+                            workSheet.NO = Util.SheetUtil.BuildNO(ah.VoltageType, SheetType.工作票, db.WorkSheet.Count(t => t.CreateDate >= nowDate) + 1);
                             workSheet.OperationID = operation.ID;
                             workSheet.UserID = loginUser.ID;
                             workSheet.AuditLevel = AuditLevel.副职审核;
@@ -150,7 +153,7 @@ namespace PowerSystemLibrary.BLL
                             workSheet.EndDate = operation.ApplicationSheet.EndDate;
                             workSheet.WorkContent = operation.ApplicationSheet.WorkContent;
                             workSheet.CreateDate = now;
-                            workSheet.SafetyMeasures = operation.WorkSheet.SafetyMeasures;
+                            //workSheet.SafetyMeasures = operation.WorkSheet.SafetyMeasures;
                             workSheet.DeputyAuditUserID = operation.WorkSheet.DeputyAuditUserID;
                             workSheet.DeputyAudit = Audit.待审核;
                             workSheet.ChiefAuditUserID = operation.WorkSheet.ChiefAuditUserID;
@@ -233,6 +236,7 @@ namespace PowerSystemLibrary.BLL
                             stopOperationSheet.OperationDateString = stopOperationSheet.OperationDate.ToString("yyyy-MM-dd HH:ss");
                             stopOperationSheet.GuardianUserName = userList.FirstOrDefault(t => t.ID == stopOperationSheet.GuardianUserID).Realname;
                             stopOperationSheet.FinishDateString = stopOperationSheet.FinishDate.HasValue ? stopOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
+                            stopOperationSheet.OperationContentList = db.OperationContent.Where(o => db.OperationSheet_Content.Where(t => t.OperationSheetID == stopOperationSheet.ID).Select(t => t.OperationContentID).Contains(o.ID)).ToList();
                         }
 
                         stopElectricalTask.OperationSheet = stopOperationSheet;
@@ -260,6 +264,7 @@ namespace PowerSystemLibrary.BLL
                             sendOperationSheet.OperationDateString = sendOperationSheet.OperationDate.ToString("yyyy-MM-dd HH:ss");
                             sendOperationSheet.GuardianUserName = userList.FirstOrDefault(t => t.ID == sendOperationSheet.GuardianUserID).Realname;
                             sendOperationSheet.FinishDateString = sendOperationSheet.FinishDate.HasValue ? sendOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
+                            sendOperationSheet.OperationContentList = db.OperationContent.Where(o => db.OperationSheet_Content.Where(t => t.OperationSheetID == sendOperationSheet.ID).Select(t => t.OperationContentID).Contains(o.ID)).ToList();
                         }
 
                         sendElectricalTask.OperationSheet = sendOperationSheet;
@@ -615,6 +620,13 @@ namespace PowerSystemLibrary.BLL
                             //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                             //string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务");
                         }
+                        else
+                        {
+                            selectedOperation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压停电流程结束 : OperationFlow.高压停电流程结束;
+                            selectedOperation.IsFinish = true;
+                            selectedOperation.FinishDate = now;
+                            db.SaveChanges();
+                        }
 
                         new LogDAO().AddLog(LogCode.摘牌, loginUser.Realname + "成功摘牌", db);
                         result = ApiResult.NewSuccessJson("成功摘牌");
@@ -708,7 +720,7 @@ namespace PowerSystemLibrary.BLL
 
 
                     doc.Range.Replace("@deputyAuditUser", userList.FirstOrDefault(t=>t.ID == workSheet.DeputyAuditUserID).Realname+"("+System.Enum.GetName(typeof(Audit), workSheet.DeputyAudit)+")", false, false);
-                    doc.Range.Replace("@safetyMeasures", workSheet.SafetyMeasures, false, false);
+                    //doc.Range.Replace("@safetyMeasures", workSheet.SafetyMeasures, false, false);
                     doc.Range.Replace("@chiefAuditUser", userList.FirstOrDefault(t=>t.ID == workSheet.ChiefAuditUserID).Realname+"("+System.Enum.GetName(typeof(Audit), workSheet.ChiefAudit)+")", false, false);
 
                     SendElectricalSheet sendElectricalSheet = db.SendElectricalSheet.FirstOrDefault(t => t.OperationID == selectOperation.ID);
@@ -769,5 +781,486 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
+
+        public ApiResult ExportByList(int? departmentID = null, VoltageType? voltageType = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    beginDate = beginDate ?? DateTime.MinValue;
+                    endDate = endDate ?? DateTime.MaxValue;
+                    User loginUser = LoginHelper.CurrentUser(db);
+
+                    List<Operation> operationList = db.Operation.Where(t =>
+                    (departmentID == null || db.User.Where(m => m.DepartmentID == departmentID).Select(m => m.ID).Contains(t.UserID)) &&
+                    (ahID == null || t.AHID == ahID) &&
+                    (voltageType == null || t.VoltageType == voltageType) &&
+                    (t.CreateDate >= beginDate && t.CreateDate <= endDate)).OrderByDescending(t=>t.CreateDate).ThenBy(t=>t.AHID).ToList();
+
+                    List<User> userList = db.User.ToList();
+                    List<Department> departmentList = db.Department.ToList();
+
+                    List<int> createUserIDList = operationList.Select(t => t.UserID).Distinct().ToList();
+                    List<User> createUserList = userList.Where(t => createUserIDList.Contains(t.ID)).ToList();
+
+
+
+                    List<int> operationIDList = operationList.Select(t => t.ID).ToList();
+
+                    List<int> ahIDList = operationList.Select(t => t.AHID).Distinct().ToList();
+
+                    //变电柜
+                    List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
+
+                    //作业申请单
+                    List<ApplicationSheet> applicationSheetList = db.ApplicationSheet.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
+                    //工作票
+                    List<WorkSheet> workSheetList = db.WorkSheet.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
+                    //操作票
+                    List<OperationSheet> operationSheetList = db.OperationSheet.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
+                    //任务
+                    List<ElectricalTask> electricalTaskList = db.ElectricalTask.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
+                    List<int> electricalTaskIDList = electricalTaskList.Select(t => t.ID).ToList();
+                    List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => electricalTaskIDList.Contains(t.ElectricalTaskID) && !t.IsBack).ToList();
+
+
+                    #region 创建excel
+                    HSSFWorkbook wb = new HSSFWorkbook();
+                    ICellStyle cellStyle = wb.CreateCellStyle();
+                    cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    cellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    //水平对齐
+                    cellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    //垂直对齐
+                    cellStyle.VerticalAlignment = VerticalAlignment.Center;
+                    //设置字体
+                    IFont font = wb.CreateFont();
+                    font.FontHeightInPoints = 11;
+                    font.FontName = "宋体";
+
+                    font.Color = NPOI.HSSF.Util.HSSFColor.Black.Index;
+                    font.IsBold = false;
+                    cellStyle.SetFont(font);
+
+                    ISheet sh = wb.CreateSheet("sheet1");
+                    sh.SetColumnWidth(0, 40 * 150);
+                    sh.SetColumnWidth(1, 40 * 150);
+                    sh.SetColumnWidth(2, 75 * 150);
+                    sh.SetColumnWidth(3, 40 * 150);
+                    sh.SetColumnWidth(4, 40 * 150);
+                    sh.SetColumnWidth(5, 40 * 150);
+                    sh.SetColumnWidth(6, 40 * 150);
+                    sh.SetColumnWidth(7, 40 * 150);
+                    sh.SetColumnWidth(8, 40 * 150);
+                    sh.SetColumnWidth(9, 40 * 150);
+                    sh.SetColumnWidth(10, 70 * 150);
+                    sh.SetColumnWidth(11, 40 * 150);
+                    sh.SetColumnWidth(12, 40 * 150);
+                    sh.SetColumnWidth(13, 40 * 150);
+                    sh.SetColumnWidth(14, 60 * 150);
+                    
+                    IRow row = sh.CreateRow(0);
+                    row.Height = 400;
+
+                    //创建15个单元格
+                    ICell rowICell0 = row.CreateCell(0);
+                    ICell rowICell1 = row.CreateCell(1);
+                    ICell rowICell2 = row.CreateCell(2);
+                    ICell rowICell3 = row.CreateCell(3);
+                    ICell rowICell4 = row.CreateCell(4);
+                    ICell rowICell5 = row.CreateCell(5);
+                    ICell rowICell6 = row.CreateCell(6);
+                    ICell rowICell7 = row.CreateCell(7);
+                    ICell rowICell8 = row.CreateCell(8);
+                    ICell rowICell9 = row.CreateCell(9);
+                    ICell rowICell10 = row.CreateCell(10);
+                    ICell rowICell11 = row.CreateCell(11);
+                    ICell rowICell12 = row.CreateCell(12);
+                    ICell rowICell13 = row.CreateCell(13);
+                    ICell rowICell14 = row.CreateCell(14);
+
+                    //创建第一行
+                    rowICell0.SetCellValue("停电");
+                    rowICell0.CellStyle = cellStyle;
+
+                    rowICell1.SetCellValue("");
+                    rowICell1.CellStyle = cellStyle;
+                    rowICell2.SetCellValue("");
+                    rowICell2.CellStyle = cellStyle;
+
+                    rowICell3.SetCellValue("");
+                    rowICell3.CellStyle = cellStyle;
+                    rowICell4.SetCellValue("");
+                    rowICell4.CellStyle = cellStyle;
+                    rowICell5.SetCellValue("");
+                    rowICell5.CellStyle = cellStyle;
+                    rowICell6.SetCellValue("");
+                    rowICell6.CellStyle = cellStyle;
+                    rowICell7.SetCellValue("");
+                    rowICell7.CellStyle = cellStyle;
+
+                    
+
+                    rowICell8.SetCellValue("送电");
+                    rowICell8.CellStyle = cellStyle;
+                    rowICell9.SetCellValue("");
+                    rowICell9.CellStyle = cellStyle;
+                    rowICell10.SetCellValue("");
+                    rowICell10.CellStyle = cellStyle;
+                    rowICell11.SetCellValue("");
+                    rowICell11.CellStyle = cellStyle;
+                    rowICell12.SetCellValue("");
+                    rowICell12.CellStyle = cellStyle;
+                    rowICell13.SetCellValue("");
+                    rowICell13.CellStyle = cellStyle;
+                    rowICell14.SetCellValue("");
+                    rowICell14.CellStyle = cellStyle;
+                    sh.AddMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+                    sh.AddMergedRegion(new CellRangeAddress(0, 0, 8, 14));
+
+                    //创建第二行
+                    IRow row0 = sh.CreateRow(1);
+                    row0.Height = 400;
+                    ICell row0ICell0 = row0.CreateCell(0);
+                    ICell row0ICell1 = row0.CreateCell(1);
+                    ICell row0ICell2 = row0.CreateCell(2);
+                    ICell row0ICell3 = row0.CreateCell(3);
+                    ICell row0ICell4 = row0.CreateCell(4);
+                    ICell row0ICell5 = row0.CreateCell(5);
+                    ICell row0ICell6 = row0.CreateCell(6);
+                    ICell row0ICell7 = row0.CreateCell(7);
+                    ICell row0ICell8 = row0.CreateCell(8);
+                    ICell row0ICell9 = row0.CreateCell(9);
+                    ICell row0ICell10 = row0.CreateCell(10);
+                    ICell row0ICell11 = row0.CreateCell(11);
+                    ICell row0ICell12 = row0.CreateCell(12);
+                    ICell row0ICell13 = row0.CreateCell(13);
+                    ICell row0ICell14 = row0.CreateCell(14);
+
+                    row0ICell0.SetCellValue("停电日期");
+                    row0ICell0.CellStyle = cellStyle;
+
+                    row0ICell1.SetCellValue("停电申请时间");
+                    row0ICell1.CellStyle = cellStyle;
+                    row0ICell2.SetCellValue("停电操作时间");
+                    row0ICell2.CellStyle = cellStyle;
+                    row0ICell3.SetCellValue("停电部门");
+                    row0ICell3.CellStyle = cellStyle;
+                    row0ICell4.SetCellValue("停电申请人");
+                    row0ICell4.CellStyle = cellStyle;
+                    row0ICell5.SetCellValue("停电原因");
+                    row0ICell5.CellStyle = cellStyle;
+
+                    row0ICell6.SetCellValue("停电操作人");
+                    row0ICell6.CellStyle = cellStyle;
+
+                    row0ICell7.SetCellValue("调度");
+                    row0ICell7.CellStyle = cellStyle;
+                    row0ICell8.SetCellValue("送电日期");
+                    row0ICell8.CellStyle = cellStyle;
+                    row0ICell9.SetCellValue("送电申请时间");
+                    row0ICell9.CellStyle = cellStyle;
+                    row0ICell10.SetCellValue("送电操作时间");
+                    row0ICell10.CellStyle = cellStyle;
+                    row0ICell11.SetCellValue("送电申请人");
+                    row0ICell11.CellStyle = cellStyle;
+                    row0ICell12.SetCellValue("送电操作人");
+                    row0ICell12.CellStyle = cellStyle;
+                    row0ICell13.SetCellValue("调度");
+                    row0ICell13.CellStyle = cellStyle;
+                    row0ICell14.SetCellValue("备注");
+                    row0ICell14.CellStyle = cellStyle;
+                    #endregion
+
+                    int i = 0;
+                    #region 表格赋值
+                    foreach (Operation operation in operationList)
+                    {
+                        string desc = System.Enum.GetName(typeof(OperationFlow),operation.OperationFlow);
+                        ApplicationSheet applicationSheet = applicationSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
+
+                        AH ah = ahList.FirstOrDefault(t => t.ID == operation.AHID);
+
+                        User createUser = createUserList.FirstOrDefault(t => t.ID == operation.UserID);
+
+                        //停电任务
+                        ElectricalTask stopElectricalTask = electricalTaskList.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskType == ElectricalTaskType.停电作业 && t.Audit != Audit.待审核);
+
+                        //送电
+                        ElectricalTask sendElectricalTask = electricalTaskList.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskType == ElectricalTaskType.送电作业 && t.Audit != Audit.待审核);
+
+                        //创建行
+                        //创建13个单元格
+                        IRow rowTemp = sh.CreateRow(i+2);
+                        i++;
+                        rowTemp.Height = 400;
+                        ICell Cell0 = rowTemp.CreateCell(0);
+                        ICell Cell1 = rowTemp.CreateCell(1);
+                        ICell Cell2 = rowTemp.CreateCell(2);
+                        ICell Cell3 = rowTemp.CreateCell(3);
+                        ICell Cell4 = rowTemp.CreateCell(4);
+                        ICell Cell5 = rowTemp.CreateCell(5);
+                        ICell Cell6 = rowTemp.CreateCell(6);
+                        ICell Cell7 = rowTemp.CreateCell(7);
+                        ICell Cell8 = rowTemp.CreateCell(8);
+                        ICell Cell9 = rowTemp.CreateCell(9);
+                        ICell Cell10 = rowTemp.CreateCell(10);
+                        ICell Cell11 = rowTemp.CreateCell(11);
+                        ICell Cell12 = rowTemp.CreateCell(12);
+                        ICell Cell13 = rowTemp.CreateCell(13);
+                        ICell Cell14 = rowTemp.CreateCell(14);
+
+                        //备注
+                        Cell14.SetCellValue(desc);
+                        Cell14.CellStyle = cellStyle;
+
+                       
+                        //停电申请时间
+                        Cell1.SetCellValue(operation.CreateDate.ToString("yyyy-MM-dd HH:mm"));
+                        Cell1.CellStyle = cellStyle;
+                        
+                        //停电部门
+                        Cell3.SetCellValue(departmentList.FirstOrDefault(t=>t.ID == createUser.DepartmentID).Name);
+                        Cell3.CellStyle = cellStyle;
+                        //停电申请人
+                        Cell4.SetCellValue(createUser.Realname);
+                        Cell4.CellStyle = cellStyle;
+                        //停电原因(变电柜+高低压)
+                        Cell5.SetCellValue(ah.Name+"("+ System.Enum.GetName(typeof(VoltageType),ah.VoltageType)+")");
+                        Cell5.CellStyle = cellStyle;
+
+                        //申请单
+                        if(applicationSheet.Audit == Audit.驳回)
+                        {
+                            Cell14.SetCellValue("申请单审核驳回(" + userList.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname + ")");
+                            continue;
+                        }
+
+                        if(ah.VoltageType == VoltageType.高压)
+                        {
+                            WorkSheet workSheet = workSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
+                            if(workSheet.AuditLevel == AuditLevel.驳回)
+                            {
+                                desc = workSheet.ChiefAudit == Audit.驳回 ? ("高压工作票正职审核驳回(" + userList.FirstOrDefault(t => t.ID == workSheet.ChiefAuditUserID).Realname + ")") : ("高压工作票副职审核驳回(" + userList.FirstOrDefault(t => t.ID == workSheet.DeputyAuditUserID).Realname + ")");
+                                Cell14.SetCellValue(desc);
+                                continue;
+                            }
+                        }
+
+                        //没有停电任务
+                        if(stopElectricalTask == null)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            //调度
+                            Cell7.SetCellValue(userList.FirstOrDefault(t=>t.ID == stopElectricalTask.AuditUserID).Realname+"("+ System.Enum.GetName(typeof(Audit),stopElectricalTask.Audit)+")");
+                            Cell7.CellStyle = cellStyle;
+
+                            if(stopElectricalTask.Audit == Audit.驳回)
+                            {
+                                Cell14.SetCellValue("停电调度审核驳回("+ userList.FirstOrDefault(t => t.ID == stopElectricalTask.AuditUserID).Realname+")");
+                                continue;
+                            }
+
+                            List< ElectricalTaskUser> stopElectricalTaskUserList = electricalTaskUserList.Where(t => t.ElectricalTaskID == stopElectricalTask.ID).OrderBy(t => t.Date).ToList();
+                            stopElectricalTaskUserList.ForEach(t => t.CreateDate = t.Date.ToString("yyyy-MM-dd HH:mm"));
+                            stopElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(d => d.ID == t.UserID).Realname);
+                            //停电操作时间
+                            Cell2.SetCellValue(string.Join(",", stopElectricalTaskUserList.Select(t=>t.CreateDate).ToArray()));
+                            Cell2.CellStyle = cellStyle;
+                            //停电操作人
+                            Cell6.SetCellValue(string.Join(",", stopElectricalTaskUserList.Select(t => t.RealName).ToArray()));
+                            Cell6.CellStyle = cellStyle;
+
+                            //停电日期 取停电操作日期
+                            Cell0.SetCellValue(stopElectricalTaskUserList.FirstOrDefault()!=null? stopElectricalTaskUserList.FirstOrDefault().Date.ToString("yyyy-MM-dd"):"");
+                            Cell0.CellStyle = cellStyle;
+                        }
+
+                        //没有送电任务
+                        if(sendElectricalTask == null)
+                        {
+                            //状态流程结束说明有并行作业
+                            if(operation.OperationFlow == OperationFlow.低压停电流程结束 || operation.OperationFlow == OperationFlow.高压停电流程结束)
+                            {
+                                Cell14.SetCellValue(ah.Name+"存在并行作业,停电任务结束");
+
+                                //最近的送电完成的任务
+                                ElectricalTask latestSendElectricalTask = electricalTaskList.Where(e => operationList.Where(t => t.AHID == ah.ID).Select(t => t.ID).Contains(e.OperationID) && e.ElectricalTaskType == ElectricalTaskType.送电作业 && e.Audit == Audit.通过 && e.CreateDate >= operation.FinishDate).OrderBy(t => t.CreateDate).FirstOrDefault();
+                                if(latestSendElectricalTask != null)
+                                {
+                                    Cell9.SetCellValue(latestSendElectricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"));
+                                    Cell9.CellStyle = cellStyle;
+
+                                    //调度
+                                    Cell13.SetCellValue(userList.FirstOrDefault(t => t.ID == latestSendElectricalTask.AuditUserID).Realname + "(" + System.Enum.GetName(typeof(Audit), latestSendElectricalTask.Audit) + ")");
+                                    Cell13.CellStyle = cellStyle;
+
+                                    if (latestSendElectricalTask.Audit == Audit.驳回)
+                                    {
+                                        Cell14.SetCellValue(ah.Name + "存在并行作业,送电调度审核驳回(" + userList.FirstOrDefault(t => t.ID == latestSendElectricalTask.AuditUserID).Realname + ")");
+                                        continue;
+                                    }
+
+                                    List<ElectricalTaskUser> latestSendElectricalTaskUserList = electricalTaskUserList.Where(t => t.ElectricalTaskID == latestSendElectricalTask.ID).OrderBy(t => t.Date).ToList();
+                                    latestSendElectricalTaskUserList.ForEach(t => t.CreateDate = t.Date.ToString("yyyy-MM-dd HH:mm"));
+                                    latestSendElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(d => d.ID == t.UserID).Realname);
+                                    //送电操作时间
+                                    Cell10.SetCellValue(string.Join(",", latestSendElectricalTaskUserList.Select(t => t.CreateDate).ToArray()));
+                                    Cell10.CellStyle = cellStyle;
+                                    //送电操作人
+                                    Cell12.SetCellValue(string.Join(",", latestSendElectricalTaskUserList.Select(t => t.RealName).ToArray()));
+                                    Cell12.CellStyle = cellStyle;
+
+                                    //送电申请人
+                                    Cell11.SetCellValue(userList.FirstOrDefault(u=> u.ID == operationList.FirstOrDefault(t=>t.ID == latestSendElectricalTask.OperationID).UserID).Realname);
+                                    Cell11.CellStyle = cellStyle;
+
+                                    //送电日期 取送电电操作日期
+                                    Cell8.SetCellValue(latestSendElectricalTaskUserList.FirstOrDefault() != null ? latestSendElectricalTaskUserList.FirstOrDefault().Date.ToString("yyyy-MM-dd") : "");
+                                    Cell8.CellStyle = cellStyle;
+                                }
+                            }
+
+                            continue;
+                        }
+                        else
+                        {
+                            //送电申请时间
+                            Cell9.SetCellValue(sendElectricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"));
+                            Cell9.CellStyle = cellStyle;
+
+                            //调度
+                            Cell13.SetCellValue(userList.FirstOrDefault(t => t.ID == sendElectricalTask.AuditUserID).Realname + "(" + System.Enum.GetName(typeof(Audit), sendElectricalTask.Audit) + ")");
+                            Cell13.CellStyle = cellStyle;
+
+                            if (sendElectricalTask.Audit == Audit.驳回)
+                            {
+                                Cell14.SetCellValue("送电调度审核驳回(" + userList.FirstOrDefault(t => t.ID == sendElectricalTask.AuditUserID).Realname+")");
+                                continue;
+                            }
+
+                            List<ElectricalTaskUser> sendElectricalTaskUserList = electricalTaskUserList.Where(t => t.ElectricalTaskID == sendElectricalTask.ID).OrderBy(t => t.Date).ToList();
+                            sendElectricalTaskUserList.ForEach(t => t.CreateDate = t.Date.ToString("yyyy-MM-dd HH:mm"));
+                            sendElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(d => d.ID == t.UserID).Realname);
+                            //送电操作时间
+                            Cell10.SetCellValue(string.Join(",", sendElectricalTaskUserList.Select(t => t.CreateDate).ToArray()));
+                            Cell10.CellStyle = cellStyle;
+                            //送电操作人
+                            Cell12.SetCellValue(string.Join(",", sendElectricalTaskUserList.Select(t => t.RealName).ToArray()));
+                            Cell12.CellStyle = cellStyle;
+
+                            //送电申请人
+                            Cell11.SetCellValue(createUser.Realname);
+                            Cell11.CellStyle = cellStyle;
+
+                            //送电日期 取送电电操作日期
+                            Cell8.SetCellValue(sendElectricalTaskUserList.FirstOrDefault() != null ? sendElectricalTaskUserList.FirstOrDefault().Date.ToString("yyyy-MM-dd") : "");
+                            Cell8.CellStyle = cellStyle;
+
+                        }
+                       
+                    }
+                    string fileName = "裕溪口停送电导出" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+                    BaseUtil.ExportByWeb(fileName, wb);
+                    #endregion
+
+                    new LogDAO().AddLog(LogCode.导出, "成功导出裕溪口停送电", db);
+                    result = ApiResult.NewSuccessJson("成功导出裕溪口停送电");
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.导出错误, message, db);
+                }
+            }
+            return result;
+        }
+
+        public ApiResult ListForApp(int page=1,int limit = 10)
+        {
+            ApiResult result = new ApiResult();
+            string message = string.Empty;
+
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                try
+                {
+                    DateTime currentDate = DateTime.Now.Date;
+                    DateTime nextDate = currentDate.AddDays(1);
+                    User loginUser = LoginHelper.CurrentUser(db);
+
+                    IQueryable<Operation> operationIQueryable = db.Operation.Where(t => !t.IsFinish || (t.FinishDate.Value >currentDate && t.FinishDate.Value<=nextDate));
+                    int total = operationIQueryable.Count();
+                    List<Operation> operationList = operationIQueryable.OrderByDescending(t => t.CreateDate).Skip((page - 1) * limit).Take(limit).ToList();
+                    List<int> ahIDList = operationList.Select(t => t.AHID).Distinct().ToList();
+                    List<int> userIDList = operationList.Select(t => t.UserID).Distinct().ToList();
+                    List<int> operationIDList = operationList.Select(t => t.ID).ToList();
+
+                    List<object> returnList = new List<object>();
+                    List<AH> ahList = db.AH.Where(t => ahIDList.Contains(t.ID)).ToList();
+                    List<User> userList = db.User.Where(t => userIDList.Contains(t.ID)).ToList();
+                    List<ApplicationSheet> applicationSheetList = db.ApplicationSheet.Where(t => operationIDList.Contains(t.OperationID)).ToList();
+
+                    foreach (Operation operation in operationList)
+                    {
+                        ApplicationSheet applicationSheet = applicationSheetList.FirstOrDefault(t => t.OperationID == operation.ID);
+
+                        //高压需要增加其他表单
+
+                        returnList.Add(new
+                        {
+                            operation.ID,
+                            userList.FirstOrDefault(t => t.ID == operation.UserID).Realname,
+                            AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
+                            CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                            VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                            OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                            operation.IsFinish,
+                            operation.IsConfirm,
+                            ApplicationSheet = new
+                            {
+                                applicationSheet.ID,
+                                userList.FirstOrDefault(t => t.ID == applicationSheet.UserID).Realname,
+                                AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
+                                CreateDate = applicationSheet.CreateDate.ToString("yyyy-MM-dd HH:mm"),
+                                BeginDate = applicationSheet.BeginDate.ToString("yyyy-MM-dd HH:mm"),
+                                EndDate = applicationSheet.EndDate.ToString("yyyy-MM-dd HH:mm"),
+                                VoltageType = System.Enum.GetName(typeof(VoltageType), operation.VoltageType),
+                                OperationFlow = System.Enum.GetName(typeof(OperationFlow), operation.OperationFlow),
+                                Audit = System.Enum.GetName(typeof(Audit), applicationSheet.Audit),
+                            }
+                        });
+                    }
+
+                    result = ApiResult.NewSuccessJson(returnList, total);
+
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message.ToString();
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    result = ApiResult.NewErrorJson(LogCode.获取错误, message, db);
+                }
+            }
+            return result;
+        }
     }
 }

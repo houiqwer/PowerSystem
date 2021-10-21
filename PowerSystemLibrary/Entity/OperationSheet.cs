@@ -26,9 +26,9 @@ namespace PowerSystemLibrary.Entity
 
         public DateTime CreateDate { get; set; } = DateTime.Now;
 
-        [Required(ErrorMessage = "请输入操作内容")]
-        [ExchangeType]
-        public string Content { get; set; }
+        //[Required(ErrorMessage = "请输入操作内容")]
+        //[ExchangeType]
+        //public string Content { get; set; }
 
         /// <summary>
         /// 操作人
@@ -55,5 +55,11 @@ namespace PowerSystemLibrary.Entity
         public string OperationDateString { get; set; }
         [NotMapped]
         public string FinishDateString { get; set; }
+
+        [NotMapped]
+        public List<int> OperationContentIDList { get; set; }
+
+        [NotMapped]
+        public List<OperationContent> OperationContentList { get; set; }
     }
 }

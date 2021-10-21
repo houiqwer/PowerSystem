@@ -155,19 +155,30 @@ namespace PowerSystemLibrary.BLL
                             if (oldOperationSheet == null)
                             {
                                 //操作人填写
-                                if (!ClassUtil.Validate(electricalTask.OperationSheet, ref message))
+                                //if (!ClassUtil.Validate(electricalTask.OperationSheet, ref message))
+                                //{
+                                //    throw new ExceptionUtil(message);
+                                //}
+                                if(electricalTask.OperationSheet.OperationContentIDList == null || electricalTask.OperationSheet.OperationContentIDList.Count == 0)
                                 {
-                                    throw new ExceptionUtil(message);
+                                    throw new ExceptionUtil("请选择高压操作内容");
                                 }
                                 OperationSheet operationSheet = new OperationSheet();
                                 operationSheet.ElectricalTaskID = selectedElectricalTask.ID;
                                 operationSheet.CreateDate = now;
                                 operationSheet.OperationID = operation.ID;
-                                operationSheet.Content = electricalTask.OperationSheet.Content;
+                                //operationSheet.Content = electricalTask.OperationSheet.Content;
                                 operationSheet.OperationUserID = loginUser.ID;
                                 operationSheet.OperationDate = now;
                                 db.OperationSheet.Add(operationSheet);
                                 db.SaveChanges();
+                                foreach (int contentID in electricalTask.OperationSheet.OperationContentIDList)
+                                {
+                                    OperationSheet_Content operationSheet_Content = new OperationSheet_Content();
+                                    operationSheet_Content.OperationContentID = contentID;
+                                    operationSheet_Content.OperationSheetID = operationSheet.ID;
+                                    db.OperationSheet_Content.Add(operationSheet_Content);
+                                }
                             }
                             else
                             {
@@ -232,6 +243,7 @@ namespace PowerSystemLibrary.BLL
                                 operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压送电任务完成 : OperationFlow.高压送电任务完成;
 
                                 operation.IsFinish = true;
+                                operation.FinishDate = now;
 
                                 //同时修改所有该设备已confirm的flow,这个不这么做了
                                 //List<Operation> operationList = db.Operation.Where(t => t.AHID == ah.ID && t.IsConfirm && !t.IsFinish).ToList();
@@ -631,6 +643,7 @@ namespace PowerSystemLibrary.BLL
 
                             operation.OperationFlow = OperationFlow.作业终止;
                             operation.IsFinish = true;
+                            operation.FinishDate = now;
                             db.SaveChanges();
 
                             //发消息给发起人

@@ -83,11 +83,11 @@ function Submit() {
             return;
         }
 
-        if ($('#SafetyMeasures').val() == null || $('#SafetyMeasures').val() == "") {
-            alert("请输入技术安全措施");
-            $("#SafetyMeasures").focus();
-            return;
-        }
+        //if ($('#SafetyMeasures').val() == null || $('#SafetyMeasures').val() == "") {
+        //    alert("请输入技术安全措施");
+        //    $("#SafetyMeasures").focus();
+        //    return;
+        //}
 
         if ($('#DeputyAuditUser').val() == null || $('#DeputyAuditUser').val() == "") {
             alert("请选择部门副职审核人");
@@ -101,7 +101,7 @@ function Submit() {
             return;
         }
 
-        AddWorkSheet($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val(), $('#Influence').val(), $('#SafetyMeasures').val(), $('#DeputyAuditUser').val(), $('#ChiefAuditUser').val());
+        AddWorkSheet($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val(), $('#Influence').val(),  $('#DeputyAuditUser').val(), $('#ChiefAuditUser').val());
         
     } else {
         Add($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val());
@@ -111,7 +111,7 @@ function Submit() {
 }
 
 
-function AddWorkSheet(ah, beginDate, endDate, workContent, auditUser, influence, safetyMeasures, deputyAuditUser, chiefAuditUser) {
+function AddWorkSheet(ah, beginDate, endDate, workContent, auditUser, influence, deputyAuditUser, chiefAuditUser) {
     var path = "/Operation/Add";
     var data = {
         "AHID": ah,
@@ -123,7 +123,6 @@ function AddWorkSheet(ah, beginDate, endDate, workContent, auditUser, influence,
         },
         "WorkSheet": {
             "Influence": influence,
-            "SafetyMeasures": safetyMeasures,
             "DeputyAuditUserID": deputyAuditUser,
             "ChiefAuditUserID": chiefAuditUser
         }
@@ -173,7 +172,7 @@ function Cancle() {
 
 function InitAH() {
     $.ajax({
-        url: "/AH/List",
+        url: "/AH/List?limit=99",
         type: "get",
         dataType: "json",
         async: false,
@@ -186,6 +185,7 @@ function InitAH() {
                 for (var i = 0; i < data.data.length; i++) {
                     if (i == 0 && data.data[i].VoltageType == 2) {
                         VoltageType = 2;
+                        $('#Influence').val(data.data[i].Name);
                         $('#workSheet').show();
                     }
                     html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Name + "</option>";
@@ -224,6 +224,7 @@ function GetAHType(id) {
             if (data.code == 0) {
                 if (data.data.VoltageType == 2) {
                     VoltageType = 2;
+                    $('#Influence').val(data.data.Name);
                     $('#workSheet').show();
                 } else {
                     VoltageType = 1;

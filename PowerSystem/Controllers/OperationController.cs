@@ -107,5 +107,32 @@ namespace PowerSystem.Controllers
         {
             return new OperationBLL().ExportWorkSheet(ID);
         }
+
+        /// <summary>
+        /// 导出列表
+        /// </summary>
+        /// <param name="departmentID"></param>
+        /// <param name="voltageType"></param>
+        /// <param name="ahID"></param>
+        /// <param name="beginDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        [HttpGet, Route("ExportByList"), LoginRequired]
+        public ApiResult ExportByList(int? departmentID = null, VoltageType? voltageType = null, int? ahID = null, DateTime? beginDate = null, DateTime? endDate = null)
+        {
+            return new OperationBLL().ExportByList(departmentID, voltageType, ahID, beginDate, endDate);
+        }
+
+        /// <summary>
+        /// 手机端列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet, Route("ListForApp"), LoginRequired]
+        public ApiResult ListForApp(int page = 1, int limit = 10)
+        {
+            return new OperationBLL().ListForApp(page, limit);
+        }
     }
 }

@@ -297,4 +297,61 @@ function Export(id) {
     });
 }
 
+function ExportList() {
+    var ahID = $("#ah").val();
+    var voltageType = $("#voltageType").val();
+    var date = $("#date").val();
+    var beginDate = "1900-01-01";
+    var endDate = "9999-12-31";
+    if (date != "") {
+        beginDate = date.substring(0, 10);
+        endDate = date.substring(12, 23);
+    }
+    var departmentID = $("#depIDs").val();
+
+    layer.confirm("确认导出列表数据？", { title: "系统提示信息" }, function (index) {
+
+        let load = layer.msg('数据导出中', { icon: 16, shade: 0.3, time: 0 });
+        var par = 'ahID=' + ahID + '&voltageType=' + voltageType + "&beginDate=" + beginDate + "&endDate=" + endDate + "&departmentID=" + departmentID;
+        var path = "/Operation/ExportByList?" + par;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', path, true); // 也可以使用POST方式，根据接口
+        xhr.setRequestHeader("Authorization", localStorage.getItem("Token"));
+        xhr.responseType = "blob"; // 返回类型blob
+        // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+        xhr.onload = function (e) {
+            // 请求完成
+            if (this.status === 200) {
+                // 返回200
+                console.log(this.getResponseHeader('Content-Disposition'));
+                var blob = this.response;
+                var reader = new FileReader();
+                reader.readAsDataURL(blob); // 转换为base64，可以直接放入a表情href
+                reader.onload = function (e) {
+                    // 转换完成，创建一个a标签用于下载
+                    var a = document.createElement('a');
+                    var wpoInfo = { "Disposition": xhr.getResponseHeader('Content-Disposition'), };
+                    var name = "";
+                    var d = wpoInfo.Disposition;
+                    if (wpoInfo.Disposition.indexOf("filename=")) {
+                        name = wpoInfo.Disposition.split("filename=")[1];
+                        name = decodeURIComponent(name);
+                        console.log(decodeURIComponent(name));
+                    } else
+                        name = "停送电全列表数据导出" + new Date().Format("yyyyMMddHH") + ".doc";
+                    a.download = name;
+                    a.href = e.target.result;
+                    $("body").append(a); // 修复firefox中无法触发click
+                    a.click();
+                    $(a).remove();
+                }
+            }
+        };
+        // 发送ajax请求
+        xhr.send();
+        layer.closeAll();
+    });
+
+}
+
 

@@ -41,12 +41,12 @@ namespace PowerSystemLibrary.Entity
         public DateTime? DeputyAuditDate { get; set; }
         public string DeputyAuditMessage { get; set; }
 
-        [Required(ErrorMessage = "请填写技术安全措施")]
-        [ExchangeType]
-        public string SafetyMeasures { get; set; }
 
 
-        //部门正职审核
+
+        //部门正职审核        //[Required(ErrorMessage = "请填写技术安全措施")]
+        //[ExchangeType]
+        //public string SafetyMeasures { get; set; }
         public int ChiefAuditUserID { get; set; }
         public Audit ChiefAudit { get; set; } = Audit.待审核;
 

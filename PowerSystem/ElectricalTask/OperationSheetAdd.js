@@ -49,12 +49,8 @@ layui.use('laydate', function () {
 function Submit() {
     
     if (isOperationUser) {
-        if ($('#Content').val() == null || $('#Content').val() == "") {
-            alert("请输入高压操作内容");
-            $("#Content").focus();
-            return;
-        }
-        AddOperationSheet($('#Content').val());
+        
+        AddOperationSheet();
     } else {
         if (ElectricalTaskType == 1) {//停电只要确认
             ConfirmOperationSheet();
@@ -101,12 +97,14 @@ function AddSendElectricalSheet(WorkFinishContent, SendElectricDate, GroundLine,
 }
 
 
-function AddOperationSheet(content) {
+function AddOperationSheet() {
+    var operationContentIDList = GetCheckedArray("Check", "操作内容");
+   
     var path = "/ElectricalTask/Confirm";
     var data = {
         'ID': id,
         'OperationSheet': {
-            'Content': content
+            'OperationContentIDList': operationContentIDList
         }
     };
     if (basepost(data, path)) {
@@ -164,13 +162,21 @@ function InitOperationSheet(id) {
                 if (data.data == null) { //操作人填写操作票
                     $('#operationSheetAdd').show();
                     isOperationUser = true;
-                   
+                    InitOperationContent();
                 } else { // 监护人确认
                     isOperationUser = false;
                     $('#operationSheetDetail').show();
                     $("#Realname").html(data.data.Realname);
                     $("#OperationDate").html(data.data.OperationDate);
-                    $("#WorkContent").html(data.data.Content);
+                    //$("#WorkContent").html(data.data.Content);
+                    var html = "";
+                    for (var i = 0; i < data.data.OperationContentList.length; i++) {
+                        if (i == 0)
+                            html += " <tr class='anquan'><th  rowspan='" + data.data.OperationContentList.length+1 + "'>高压操作内容</th> <td colspan='4'><div class='safe-grey'>" + data.data.OperationContentList[i].Content + "</div></td></tr>";
+                        else
+                            html += " <tr class='anquan'> <td colspan='4'><div class='safe-grey'>" + data.data.OperationContentList[i].Content + "</div></td></tr>";
+                    }
+                    $('#operationDetail').after(html);
 
                     if (ElectricalTaskType == 2) { //送电 监护人需要填写送电确认单
                         $('#sendElectrialSheet').show();
@@ -192,7 +198,52 @@ function InitOperationSheet(id) {
     })
 }
 
+function InitOperationContent() {
+    $.ajax({
+        url: "/OperationContent/List?limit=99",
+        type: "get",
+        dataType: "json",
+        async: false,
+        beforeSend: function (XHR) {
+            XHR.setRequestHeader("Authorization", store.userInfo.token);
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                var html = '';
+                for (var i = 0; i < data.data.length; i++) {
+                    if (i == 0)
+                        html += " <tr class='anquan'><th  rowspan='" + data.count + "'>高压操作内容</th> <td colspan='2'><div class='safe-grey'>" + data.data[i].Content + "</div></td><td><div class='safe-grey'><input type=\"checkbox\" checked id='Check-" + data.data[i].ID + "' /></div></td> </tr>";
+                    else
+                        html += " <tr class='anquan'> <td colspan='2'><div class='safe-grey'>" + data.data[i].Content + "</div></td> <td><div class='safe-grey'><input type=\"checkbox\" checked id='Check-" + data.data[i].ID + "' /></div></td></tr>";
+                }
+                $('#Content').append(html);
+            }
+            else {
+                Failure(data);
+            }
+        },
+        error: function () {
+            layer.ready(function () {
+                title: false
+                layer.alert("数据提交存在问题，请检查当前网络", {
+                    title: false
+                });
+            });
+        }
+    })
+}
 
+function GetCheckedArray(type, name) {
+    var result = [];
+    $("input[id^='" + type + "']").each(function () {
+
+        if ($(this).get(0).checked) {
+            result.push(parseInt($(this).attr("id").replace(type + "-", "")));
+        }
+    });
+
+    return result;
+}
 
 
 
