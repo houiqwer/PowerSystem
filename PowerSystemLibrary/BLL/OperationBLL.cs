@@ -234,7 +234,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             stopOperationSheet.OperationUserName = userList.FirstOrDefault(t => t.ID == stopOperationSheet.OperationUserID).Realname;
                             stopOperationSheet.OperationDateString = stopOperationSheet.OperationDate.ToString("yyyy-MM-dd HH:ss");
-                            stopOperationSheet.GuardianUserName = userList.FirstOrDefault(t => t.ID == stopOperationSheet.GuardianUserID).Realname;
+                            stopOperationSheet.GuardianUserName = stopOperationSheet.GuardianUserID!=null?userList.FirstOrDefault(t => t.ID == stopOperationSheet.GuardianUserID).Realname:"";
                             stopOperationSheet.FinishDateString = stopOperationSheet.FinishDate.HasValue ? stopOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
                             stopOperationSheet.OperationContentList = db.OperationContent.Where(o => db.OperationSheet_Content.Where(t => t.OperationSheetID == stopOperationSheet.ID).Select(t => t.OperationContentID).Contains(o.ID)).ToList();
                         }
@@ -262,7 +262,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             sendOperationSheet.OperationUserName = userList.FirstOrDefault(t => t.ID == sendOperationSheet.OperationUserID).Realname;
                             sendOperationSheet.OperationDateString = sendOperationSheet.OperationDate.ToString("yyyy-MM-dd HH:ss");
-                            sendOperationSheet.GuardianUserName = userList.FirstOrDefault(t => t.ID == sendOperationSheet.GuardianUserID).Realname;
+                            sendOperationSheet.GuardianUserName = sendOperationSheet.GuardianUserID!=null? userList.FirstOrDefault(t => t.ID == sendOperationSheet.GuardianUserID).Realname:"";
                             sendOperationSheet.FinishDateString = sendOperationSheet.FinishDate.HasValue ? sendOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
                             sendOperationSheet.OperationContentList = db.OperationContent.Where(o => db.OperationSheet_Content.Where(t => t.OperationSheetID == sendOperationSheet.ID).Select(t => t.OperationContentID).Contains(o.ID)).ToList();
                         }
