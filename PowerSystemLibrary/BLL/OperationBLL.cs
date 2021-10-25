@@ -1204,7 +1204,7 @@ namespace PowerSystemLibrary.BLL
                     DateTime nextDate = currentDate.AddDays(1);
                     User loginUser = LoginHelper.CurrentUser(db);
 
-                    IQueryable<Operation> operationIQueryable = db.Operation.Where(t => !t.IsFinish || (t.FinishDate.Value >currentDate && t.FinishDate.Value<=nextDate));
+                    IQueryable<Operation> operationIQueryable = db.Operation.Where(t => t.UserID == loginUser.ID && !t.IsFinish || (t.FinishDate.Value >currentDate && t.FinishDate.Value<=nextDate));
                     int total = operationIQueryable.Count();
                     List<Operation> operationList = operationIQueryable.OrderByDescending(t => t.CreateDate).Skip((page - 1) * limit).Take(limit).ToList();
                     List<int> ahIDList = operationList.Select(t => t.AHID).Distinct().ToList();
