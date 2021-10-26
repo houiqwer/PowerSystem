@@ -16,6 +16,7 @@ using System.Web;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 
 namespace PowerSystemLibrary.BLL
 {
@@ -1172,7 +1173,9 @@ namespace PowerSystemLibrary.BLL
                         }
                        
                     }
-                    string fileName = "裕溪口停送电导出" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+                    
+                    string fileName = "停送电记录导出" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
                     BaseUtil.ExportByWeb(fileName, wb);
                     #endregion
 

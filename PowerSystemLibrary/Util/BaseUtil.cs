@@ -19,6 +19,7 @@ using PowerSystemLibrary.Entity;
 using System.Drawing;
 using System.Drawing.Imaging;
 using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace PowerSystemLibrary.Util
 {
@@ -583,7 +584,7 @@ namespace PowerSystemLibrary.Util
             {
                 HttpContext curContext = HttpContext.Current;
                 // 设置编码和附件格式
-                curContext.Response.ContentType = "application/ms-excel";
+                curContext.Response.ContentType = "application/vnd.ms-excel";
                 curContext.Response.ContentEncoding = Encoding.UTF8;
                 curContext.Response.Charset = "";
                 curContext.Response.AppendHeader("Content-Disposition",
@@ -594,7 +595,7 @@ namespace PowerSystemLibrary.Util
             }
             catch (Exception ex)
             {
-                string aa = ex.Message;
+                
             }
         }
 
@@ -602,9 +603,9 @@ namespace PowerSystemLibrary.Util
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                workbook.Write(ms);
-                ms.Flush();
                 ms.Position = 0;
+                workbook.Write(ms);                
+                ms.Flush();                
                 ms.Dispose();
                 return ms;
             }
