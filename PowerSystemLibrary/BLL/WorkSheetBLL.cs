@@ -102,6 +102,7 @@ namespace PowerSystemLibrary.BLL
 
                     IQueryable<WorkSheet> workSheetIQueryable = db.WorkSheet.Where(t => t.IsDelete != true &&
                     (departmentID == null || t.DepartmentID == departmentID) &&
+                    (db.Operation.Where(o => o.OperationFlow != OperationFlow.作业终止).Select(o => o.ID).Contains(t.OperationID)) &&
                     t.NO.Contains(no) &&
                     ((t.AuditLevel == AuditLevel.副职审核 &&  t.DeputyAudit == Enum.Audit.待审核 && t.DeputyAuditUserID == loginUser.ID) || (t.AuditLevel == AuditLevel.正职审核 && t.ChiefAudit == Enum.Audit.待审核 && t.ChiefAuditUserID == loginUser.ID))  &&
                     (ahID == null || db.Operation.Where(m => m.AHID == ahID).Select(m => m.ID).Contains(t.OperationID)) &&

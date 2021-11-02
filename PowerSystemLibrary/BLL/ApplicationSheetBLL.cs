@@ -436,7 +436,7 @@ namespace PowerSystemLibrary.BLL
                     IQueryable<ApplicationSheet> applicationSheetIQueryable = db.ApplicationSheet.Where(t => t.IsDelete != true &&
                     t.AuditUserID == loginUser.ID &&
                     (departmentID == null || t.DepartmentID == departmentID) &&
-                    ((!isAudit && t.Audit == Enum.Audit.待审核) || (isAudit && (t.Audit == Enum.Audit.通过 || t.Audit == Enum.Audit.驳回))) &&
+                    ((!isAudit && t.Audit == Enum.Audit.待审核 && db.Operation.Where(o=>o.OperationFlow!= OperationFlow.作业终止).Select(o=>o.ID).Contains(t.OperationID)) || (isAudit && (t.Audit == Enum.Audit.通过 || t.Audit == Enum.Audit.驳回))) &&
                     t.NO.Contains(no) &&
                     (ahID == null || db.Operation.Where(m => m.AHID == ahID).Select(m => m.ID).Contains(t.OperationID)) &&
                     (voltageType == null || db.Operation.Where(m => m.VoltageType == voltageType).Select(m => m.ID).Contains(t.OperationID)) &&
