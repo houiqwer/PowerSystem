@@ -52,6 +52,7 @@ namespace PowerSystemLibrary.BLL
 
                             if (operation.VoltageType == VoltageType.低压)
                             {
+                                operation.OperationAudit = OperationAudit.通过;
                                 //发布停电任务
                                 ElectricalTask electricalTask = new ElectricalTask();
                                 electricalTask.OperationID = operation.ID;
@@ -61,7 +62,7 @@ namespace PowerSystemLibrary.BLL
                                 db.ElectricalTask.Add(electricalTask);
 
 
-
+                                db.SaveChanges();
                                 //发消息给所有调度
                                 List<Role> roleList = RoleUtil.GetDispatcherRoleList();
                                 List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
@@ -92,6 +93,7 @@ namespace PowerSystemLibrary.BLL
                                 //检查其他是否审核均通过，通过则发布停电任务并发送消息
                                 if(db.WorkSheet.FirstOrDefault(t=>t.OperationID == operation.ID).AuditLevel == AuditLevel.通过)
                                 {
+                                    operation.OperationAudit = OperationAudit.通过;
                                     //发布停电任务
                                     ElectricalTask electricalTask = new ElectricalTask();
                                     electricalTask.OperationID = operation.ID;
@@ -99,6 +101,8 @@ namespace PowerSystemLibrary.BLL
                                     electricalTask.CreateDate = now;
                                     electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
                                     db.ElectricalTask.Add(electricalTask);
+
+                                    db.SaveChanges();
 
                                     //发消息给所有调度
                                     List<Role> roleList = RoleUtil.GetDispatcherRoleList();
@@ -111,6 +115,11 @@ namespace PowerSystemLibrary.BLL
                                     userWeChatIDString.TrimEnd('|');
 
                                     string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
+                                }
+                                else
+                                {
+                                    operation.OperationAudit = OperationAudit.审核中;
+                                    db.SaveChanges();
                                 }
                             }
                             new LogDAO().AddLog(LogCode.审核成功, loginUser.Realname + "成功审核" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation), db);
@@ -128,6 +137,7 @@ namespace PowerSystemLibrary.BLL
                             operation.OperationFlow = OperationFlow.作业终止;
                             operation.IsFinish = true;
                             operation.FinishDate = now;
+                            operation.OperationAudit = OperationAudit.驳回;
                             db.SaveChanges();
 
                             new SendDispatcherNoticeDAO().SendNotice(operation, ah, db);

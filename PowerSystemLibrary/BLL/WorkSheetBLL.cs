@@ -193,6 +193,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             if(selectedWorkSheetSheet.AuditLevel == AuditLevel.副职审核)
                             {
+                                operation.OperationAudit = OperationAudit.审核中;
                                 selectedWorkSheetSheet.AuditLevel = AuditLevel.正职审核;
                                 
                                 selectedWorkSheetSheet.DeputyAuditDate = now;
@@ -215,6 +216,7 @@ namespace PowerSystemLibrary.BLL
                                 //判断申请单是否审核通过 
                                 if(db.ApplicationSheet.FirstOrDefault(t=>t.OperationID == operation.ID).Audit  == Enum.Audit.通过)
                                 {
+                                    operation.OperationAudit = OperationAudit.通过;
                                     //发布停电任务
                                     ElectricalTask electricalTask = new ElectricalTask();
                                     electricalTask.OperationID = operation.ID;
@@ -245,7 +247,7 @@ namespace PowerSystemLibrary.BLL
                         }
                         else if (workSheet.AuditLevel == Enum.AuditLevel.驳回)
                         {
-
+                            operation.OperationAudit = OperationAudit.驳回;
                             if (selectedWorkSheetSheet.AuditLevel == AuditLevel.副职审核)
                             {
                                 selectedWorkSheetSheet.DeputyAuditDate = now;

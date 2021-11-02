@@ -74,7 +74,7 @@ function Init(id) {
 
                 $('#BeginDate').html(data.data.ApplicationSheet.BeginDate);
                 $('#EndDate').html(data.data.ApplicationSheet.EndDate);
-                $('#Aduit').html(data.data.ApplicationSheet.Audit);
+                $('#Aduit').html(data.data.OperationAuditName);
                 $('#CreateDate').html(data.data.CreateDate);
                 $("#WorkContent").html(data.data.ApplicationSheet.WorkContent);
                 $('#DepartmentName').html(data.data.ApplicationSheet.DepartmentName);

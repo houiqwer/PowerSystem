@@ -71,6 +71,7 @@ namespace PowerSystemLibrary.BLL
                         }
                         
                         operation.CreateDate = now;
+                        operation.OperationAudit = OperationAudit.待审核;
                         db.Operation.Add(operation);
                         db.SaveChanges();
 
@@ -292,6 +293,8 @@ namespace PowerSystemLibrary.BLL
                     result = ApiResult.NewSuccessJson(new
                     {
                         operation.ID,
+                        operation.OperationAudit,
+                        OperationAuditName = System.Enum.GetName(typeof(OperationAudit), operation.OperationAudit),
                         user.Realname,
                         AHName = ah.Name,
                         CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
@@ -375,6 +378,7 @@ namespace PowerSystemLibrary.BLL
                         returnList.Add(new
                         {
                             operation.ID,
+                            OperationAuditName = System.Enum.GetName(typeof(OperationAudit), operation.OperationAudit),
                             userList.FirstOrDefault(t => t.ID == operation.UserID).Realname,
                             AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
                             CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
@@ -452,6 +456,7 @@ namespace PowerSystemLibrary.BLL
                         returnList.Add(new
                         {
                             operation.ID,
+                            OperationAuditName = System.Enum.GetName(typeof(OperationAudit), operation.OperationAudit),
                             userList.FirstOrDefault(t => t.ID == operation.UserID).Realname,
                             AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
                             CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),
@@ -599,6 +604,8 @@ namespace PowerSystemLibrary.BLL
                         //查看该设备是否有其他正在执行的作业和任务，若没有则申请送电
                         if (surplusCount == 0)
                         {
+                            db.Operation.Where(t => t.AHID == ah.ID && (t.OperationFlow == OperationFlow.低压停电流程结束 || t.OperationFlow == OperationFlow.高压停电流程结束)).ToList().ForEach(t => t.IsSendElectric = true);
+
                             //增加送电任务
                             //selectedOperation.OperationFlow = OperationFlow.低压送电任务领取;
                             ElectricalTask electricalTask = new ElectricalTask();
@@ -1228,6 +1235,7 @@ namespace PowerSystemLibrary.BLL
                         returnList.Add(new
                         {
                             operation.ID,
+                            OperationAuditName = System.Enum.GetName(typeof(OperationAudit), operation.OperationAudit),
                             userList.FirstOrDefault(t => t.ID == operation.UserID).Realname,
                             AHName = ahList.FirstOrDefault(t => t.ID == operation.AHID).Name,
                             CreateDate = operation.CreateDate.ToString("yyyy-MM-dd HH:mm"),

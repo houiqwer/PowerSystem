@@ -74,4 +74,12 @@ namespace PowerSystemLibrary.Enum
         通过=3,
         驳回=4
     }
+
+    public enum OperationAudit
+    {
+        待审核=1,
+        审核中=2,
+        通过=3,
+        驳回=4
+    }
 }

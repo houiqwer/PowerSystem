@@ -27,6 +27,8 @@ namespace PowerSystemLibrary.Entity
         public bool IsConfirm { get; set; } = false;
         public bool IsFinish { get; set; } = false;
         public DateTime? FinishDate { get; set; }
+        public bool IsSendElectric { get; set; } = false;
+        public OperationAudit OperationAudit { get; set; }
         [NotMapped]
         public ApplicationSheet ApplicationSheet { get; set; }
 
