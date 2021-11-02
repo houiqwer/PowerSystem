@@ -1,5 +1,5 @@
 ﻿$(function () {
-    
+
     InitAH();
     InitEnum("VoltageType", $("#voltageType"), true, "电压类型");
     Page();
@@ -81,11 +81,11 @@ function Page() {
             }
             , cols: [[
                 { field: 'AHName', align: 'center', title: '送电柜' }
-                , { field: 'VoltageType', align: 'center', title: '电压类型' }
+                , { field: 'VoltageType', align: 'center', title: '电压类型', width: 100 }
                 , { field: 'OperationFlow', align: 'center', title: '作业状态' }
                 , { field: 'CreateDate', align: 'center', title: '发起日期' }
-                , { field: 'Realname', align: 'center', title: '发起人' }
-                , { field: 'title', align: 'center', title: '审核状态', templet: function (d) { return d.ApplicationSheet.Audit; } }
+                , { field: 'Realname', align: 'center', title: '发起人', width: 120 }
+                , { field: 'title', align: 'center', title: '审核状态', width: 100, templet: function (d) { return d.ApplicationSheet.Audit; } }
                 , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 350 }
             ]]
             , done: function (res, cur, count) {
