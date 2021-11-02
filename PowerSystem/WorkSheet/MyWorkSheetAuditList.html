@@ -104,7 +104,10 @@
     <script src="../zTree_v3/js/jquery.ztree.excheck.js"></script>
     <script src="MyWorkSheetAuditList.js"></script>
     <script type="text/html" id="bar">
+        {{#  if(d.OperationFlow != '作业终止'){ }}
         <a class="layui-btn layui-btn-xs safe-btn3 bian" lay-event="audit">审核</a>
+        {{#  } }}
+        
         <a class="layui-btn layui-btn-xs safe-btn3 kan" lay-event="detail">查看</a>
     </script>
 

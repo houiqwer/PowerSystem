@@ -130,6 +130,8 @@ namespace PowerSystemLibrary.BLL
                             operation.FinishDate = now;
                             db.SaveChanges();
 
+                            new SendDispatcherNoticeDAO().SendNotice(operation, ah, db);
+
                             //发消息给发起人
                             string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您的作业被驳回，原因为：" + applicationSheet.AuditMessage);
 

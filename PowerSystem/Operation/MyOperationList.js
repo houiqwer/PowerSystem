@@ -86,7 +86,7 @@ function Page() {
                 , { field: 'CreateDate', align: 'center', title: '发起日期' }
                 , { field: 'Realname', align: 'center', title: '发起人' }
                 , { field: 'title', align: 'center', title: '审核状态', templet: function (d) { return d.ApplicationSheet.Audit; } }
-                , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 250 }
+                , { fixed: 'right', align: 'center', toolbar: '#bar', title: '操作', width: 350 }
             ]]
             , done: function (res, cur, count) {
                 if (cur > 1 && res.data.length === 0) {

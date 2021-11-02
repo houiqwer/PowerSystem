@@ -106,6 +106,7 @@
     <Compile Include="BLL\WorkSheetBLL.cs" />
     <Compile Include="DAO\DepartmentDAO.cs" />
     <Compile Include="DAO\LogDAO.cs" />
+    <Compile Include="DAO\SendDispatcherNoticeDAO.cs" />
     <Compile Include="DBContext\PowerSystemDBContext.cs" />
     <Compile Include="Entity\AH.cs" />
     <Compile Include="Entity\AjaxPost.cs" />

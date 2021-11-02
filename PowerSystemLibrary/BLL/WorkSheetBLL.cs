@@ -268,6 +268,7 @@ namespace PowerSystemLibrary.BLL
                             //发消息给发起人
                             string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您的申请的高压工作票被驳回，原因为：" + workSheet.AuditMessage);
 
+                            new SendDispatcherNoticeDAO().SendNotice(operation, ah, db);
 
                             new LogDAO().AddLog(LogCode.审核驳回, loginUser.Realname + "成功审核" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation), db);
                         }
