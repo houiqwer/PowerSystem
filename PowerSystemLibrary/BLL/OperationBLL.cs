@@ -874,7 +874,7 @@ namespace PowerSystemLibrary.BLL
                     sh.SetColumnWidth(11, 40 * 150);
                     sh.SetColumnWidth(12, 40 * 150);
                     sh.SetColumnWidth(13, 40 * 150);
-                    sh.SetColumnWidth(14, 60 * 150);
+                    sh.SetColumnWidth(14, 70 * 150);
                     
                     IRow row = sh.CreateRow(0);
                     row.Height = 400;
@@ -1012,39 +1012,54 @@ namespace PowerSystemLibrary.BLL
                         i++;
                         rowTemp.Height = 400;
                         ICell Cell0 = rowTemp.CreateCell(0);
+                        Cell0.CellStyle = cellStyle;
                         ICell Cell1 = rowTemp.CreateCell(1);
+                        Cell1.CellStyle = cellStyle;
                         ICell Cell2 = rowTemp.CreateCell(2);
+                        Cell2.CellStyle = cellStyle;
                         ICell Cell3 = rowTemp.CreateCell(3);
+                        Cell3.CellStyle = cellStyle;
                         ICell Cell4 = rowTemp.CreateCell(4);
+                        Cell4.CellStyle = cellStyle;
                         ICell Cell5 = rowTemp.CreateCell(5);
+                        Cell5.CellStyle = cellStyle;
                         ICell Cell6 = rowTemp.CreateCell(6);
+                        Cell6.CellStyle = cellStyle;
                         ICell Cell7 = rowTemp.CreateCell(7);
+                        Cell7.CellStyle = cellStyle;
                         ICell Cell8 = rowTemp.CreateCell(8);
+                        Cell8.CellStyle = cellStyle;
                         ICell Cell9 = rowTemp.CreateCell(9);
+                        Cell9.CellStyle = cellStyle;
                         ICell Cell10 = rowTemp.CreateCell(10);
+                        Cell10.CellStyle = cellStyle;
                         ICell Cell11 = rowTemp.CreateCell(11);
+                        Cell11.CellStyle = cellStyle;
                         ICell Cell12 = rowTemp.CreateCell(12);
+                        Cell12.CellStyle = cellStyle;
                         ICell Cell13 = rowTemp.CreateCell(13);
+                        Cell13.CellStyle = cellStyle;
                         ICell Cell14 = rowTemp.CreateCell(14);
+                        Cell14.CellStyle = cellStyle;
 
                         //备注
                         Cell14.SetCellValue(desc);
-                        Cell14.CellStyle = cellStyle;
+                       
 
                        
                         //停电申请时间
                         Cell1.SetCellValue(operation.CreateDate.ToString("yyyy-MM-dd HH:mm"));
-                        Cell1.CellStyle = cellStyle;
+                        
                         
                         //停电部门
                         Cell3.SetCellValue(departmentList.FirstOrDefault(t=>t.ID == createUser.DepartmentID).Name);
-                        Cell3.CellStyle = cellStyle;
+                        
                         //停电申请人
                         Cell4.SetCellValue(createUser.Realname);
-                        Cell4.CellStyle = cellStyle;
+                        
                         //停电原因(变电柜+高低压)
                         Cell5.SetCellValue(ah.Name+"("+ System.Enum.GetName(typeof(VoltageType),ah.VoltageType)+")");
-                        Cell5.CellStyle = cellStyle;
+                        
 
                         //申请单
                         if(applicationSheet.Audit == Audit.驳回)
@@ -1073,7 +1088,7 @@ namespace PowerSystemLibrary.BLL
                         {
                             //调度
                             Cell7.SetCellValue(userList.FirstOrDefault(t=>t.ID == stopElectricalTask.AuditUserID).Realname+"("+ System.Enum.GetName(typeof(Audit),stopElectricalTask.Audit)+")");
-                            Cell7.CellStyle = cellStyle;
+                            
 
                             if(stopElectricalTask.Audit == Audit.驳回)
                             {
@@ -1086,14 +1101,14 @@ namespace PowerSystemLibrary.BLL
                             stopElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(d => d.ID == t.UserID).Realname);
                             //停电操作时间
                             Cell2.SetCellValue(string.Join(",", stopElectricalTaskUserList.Select(t=>t.CreateDate).ToArray()));
-                            Cell2.CellStyle = cellStyle;
+                           
                             //停电操作人
                             Cell6.SetCellValue(string.Join(",", stopElectricalTaskUserList.Select(t => t.RealName).ToArray()));
-                            Cell6.CellStyle = cellStyle;
+                            
 
                             //停电日期 取停电操作日期
                             Cell0.SetCellValue(stopElectricalTaskUserList.FirstOrDefault()!=null? stopElectricalTaskUserList.FirstOrDefault().Date.ToString("yyyy-MM-dd"):"");
-                            Cell0.CellStyle = cellStyle;
+                            
                         }
 
                         //没有送电任务
@@ -1102,22 +1117,24 @@ namespace PowerSystemLibrary.BLL
                             //状态流程结束说明有并行作业
                             if(operation.OperationFlow == OperationFlow.低压停电流程结束 || operation.OperationFlow == OperationFlow.高压停电流程结束)
                             {
-                                Cell14.SetCellValue(ah.Name+"存在并行作业,停电任务结束");
+                                //Cell14.SetCellValue(ah.Name+"存在并行作业,停电任务结束");
 
                                 //最近的送电完成的任务
                                 ElectricalTask latestSendElectricalTask = electricalTaskList.Where(e => operationList.Where(t => t.AHID == ah.ID).Select(t => t.ID).Contains(e.OperationID) && e.ElectricalTaskType == ElectricalTaskType.送电作业 && e.Audit == Audit.通过 && e.CreateDate >= operation.FinishDate).OrderBy(t => t.CreateDate).FirstOrDefault();
                                 if(latestSendElectricalTask != null)
                                 {
+                                    Cell14.SetCellValue(System.Enum.GetName(typeof(OperationFlow), operationList.FirstOrDefault(t => t.ID == latestSendElectricalTask.OperationID).OperationFlow)+"("+ "并行任务" + ")"); 
+
                                     Cell9.SetCellValue(latestSendElectricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"));
-                                    Cell9.CellStyle = cellStyle;
+                                   
 
                                     //调度
                                     Cell13.SetCellValue(userList.FirstOrDefault(t => t.ID == latestSendElectricalTask.AuditUserID).Realname + "(" + System.Enum.GetName(typeof(Audit), latestSendElectricalTask.Audit) + ")");
-                                    Cell13.CellStyle = cellStyle;
+                                    
 
                                     if (latestSendElectricalTask.Audit == Audit.驳回)
                                     {
-                                        Cell14.SetCellValue(ah.Name + "存在并行作业,送电调度审核驳回(" + userList.FirstOrDefault(t => t.ID == latestSendElectricalTask.AuditUserID).Realname + ")");
+                                        Cell14.SetCellValue("送电调度审核驳回(" + userList.FirstOrDefault(t => t.ID == latestSendElectricalTask.AuditUserID).Realname + ")");
                                         continue;
                                     }
 
@@ -1126,18 +1143,18 @@ namespace PowerSystemLibrary.BLL
                                     latestSendElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(d => d.ID == t.UserID).Realname);
                                     //送电操作时间
                                     Cell10.SetCellValue(string.Join(",", latestSendElectricalTaskUserList.Select(t => t.CreateDate).ToArray()));
-                                    Cell10.CellStyle = cellStyle;
+                                    
                                     //送电操作人
                                     Cell12.SetCellValue(string.Join(",", latestSendElectricalTaskUserList.Select(t => t.RealName).ToArray()));
-                                    Cell12.CellStyle = cellStyle;
+                                   
 
                                     //送电申请人
                                     Cell11.SetCellValue(userList.FirstOrDefault(u=> u.ID == operationList.FirstOrDefault(t=>t.ID == latestSendElectricalTask.OperationID).UserID).Realname);
-                                    Cell11.CellStyle = cellStyle;
+                                   
 
                                     //送电日期 取送电电操作日期
                                     Cell8.SetCellValue(latestSendElectricalTaskUserList.FirstOrDefault() != null ? latestSendElectricalTaskUserList.FirstOrDefault().Date.ToString("yyyy-MM-dd") : "");
-                                    Cell8.CellStyle = cellStyle;
+                                    
                                 }
                             }
 
@@ -1147,11 +1164,11 @@ namespace PowerSystemLibrary.BLL
                         {
                             //送电申请时间
                             Cell9.SetCellValue(sendElectricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"));
-                            Cell9.CellStyle = cellStyle;
+                            
 
                             //调度
                             Cell13.SetCellValue(userList.FirstOrDefault(t => t.ID == sendElectricalTask.AuditUserID).Realname + "(" + System.Enum.GetName(typeof(Audit), sendElectricalTask.Audit) + ")");
-                            Cell13.CellStyle = cellStyle;
+                           
 
                             if (sendElectricalTask.Audit == Audit.驳回)
                             {
@@ -1164,18 +1181,18 @@ namespace PowerSystemLibrary.BLL
                             sendElectricalTaskUserList.ForEach(t => t.RealName = userList.FirstOrDefault(d => d.ID == t.UserID).Realname);
                             //送电操作时间
                             Cell10.SetCellValue(string.Join(",", sendElectricalTaskUserList.Select(t => t.CreateDate).ToArray()));
-                            Cell10.CellStyle = cellStyle;
+                            
                             //送电操作人
                             Cell12.SetCellValue(string.Join(",", sendElectricalTaskUserList.Select(t => t.RealName).ToArray()));
-                            Cell12.CellStyle = cellStyle;
+                            
 
                             //送电申请人
                             Cell11.SetCellValue(createUser.Realname);
-                            Cell11.CellStyle = cellStyle;
+                            
 
                             //送电日期 取送电电操作日期
                             Cell8.SetCellValue(sendElectricalTaskUserList.FirstOrDefault() != null ? sendElectricalTaskUserList.FirstOrDefault().Date.ToString("yyyy-MM-dd") : "");
-                            Cell8.CellStyle = cellStyle;
+                            
 
                         }
                        
