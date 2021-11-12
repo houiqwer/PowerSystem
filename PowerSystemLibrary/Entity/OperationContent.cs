@@ -1,4 +1,5 @@
-﻿using PowerSystemLibrary.Util;
+﻿using PowerSystemLibrary.Enum;
+using PowerSystemLibrary.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,8 @@ namespace PowerSystemLibrary.Entity
         [Required(ErrorMessage = "请输入操作内容")]
         [ExchangeType]
         public string Content { get; set; }
+
+        public ElectricalTaskType ElectricalTaskType { get; set; }
 
         public bool IsDelete { get; set; } = false;
     }

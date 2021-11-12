@@ -14,7 +14,8 @@ $(function () {
     $("#stopTaskUser").hide();
     $("#sendTaskUser").hide();
     $('#stopDispatcherAudit').hide();
-    $('#sendDispatcherAudit').hide();
+    //$('#sendDispatcherAudit').hide();
+    $('#pickTaskUser').hide();
     if (id != null && id != '') {
         if (sign != null && sign != "") {
             $("#myAudit").show();
@@ -88,7 +89,7 @@ function Init(id) {
 
 
                 
-                if (data.data.stopElectricalTask != null && data.data.stopElectricalTask.Audit != 1) {
+                if (data.data.stopElectricalTask != null && data.data.stopElectricalTask.DispatcherAudit != 1) {
                     var stopDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
                     $('#stopDispatcherAudit').show();
                     stopDispatcherList += "<tr><td style='text-align:center'>" + data.data.stopElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.AuditMessage == null ? "" : data.data.stopElectricalTask.AuditMessage) + "</td></tr>";
@@ -123,12 +124,23 @@ function Init(id) {
 
                 }
 
+                if (data.data.pickElectricalTask != null) {
+                    $('#pickTaskUser').show();
+                    var send = "<tr ><th style='text-align:center'>摘牌电工</th><th style='text-align:center'>摘牌时间</th><th style='text-align:center'>是否确认</th></tr>";
+                    for (var i = 0; i < data.data.pickElectricalTask.ElectricalTaskUserList.length; i++) {
+
+                        send += "<tr><td style='text-align:center'>" + data.data.pickElectricalTask.ElectricalTaskUserList[i].RealName + "</td><td style='text-align:center'>" + data.data.pickElectricalTask.ElectricalTaskUserList[i].CreateDate + "</td><td style='text-align:center'>" + (data.data.pickElectricalTask.ElectricalTaskUserList[i].IsConfirm ? '是' : '否') + "</td></tr>";
+                    }
+                    $("#pickElectricalTaskList").append(send);
+                }
+
+
                 
-                if (data.data.sendElectricalTask != null && data.data.sendElectricalTask.Audit != 1) {
-                    $('#sendDispatcherAudit').show();
-                    var sendDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
-                    sendDispatcherList += "<tr><td style='text-align:center'>" + data.data.sendElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditMessage == null ? "" : data.data.sendElectricalTask.AuditMessage) + "</td></tr>";
-                    $("#sendDispatcherList").append(sendDispatcherList);
+                if (data.data.sendElectricalTask != null) {
+                    //$('#sendDispatcherAudit').show();
+                    //var sendDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
+                    //sendDispatcherList += "<tr><td style='text-align:center'>" + data.data.sendElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditMessage == null ? "" : data.data.sendElectricalTask.AuditMessage) + "</td></tr>";
+                    //$("#sendDispatcherList").append(sendDispatcherList);
 
                     $('#sendTaskUser').show();
                     var send = "<tr ><th style='text-align:center'>送电电工</th><th style='text-align:center'>送电时间</th><th style='text-align:center'>是否确认</th></tr>";

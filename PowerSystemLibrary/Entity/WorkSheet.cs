@@ -25,7 +25,9 @@ namespace PowerSystemLibrary.Entity
         public DateTime EndDate { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         
-        public string WorkContent { get; set; }
+        //public string WorkContent { get; set; }
+
+        public WorkContentType WorkContentType { get; set; }
 
         //public Audit Audit { get; set; } = Audit.待审核;
 
@@ -34,6 +36,13 @@ namespace PowerSystemLibrary.Entity
         public string Influence { get; set; }
 
         public AuditLevel AuditLevel { get; set; }
+
+        ///班长审核
+        public int MonitorAuditUserID { get; set; }
+        public Audit MonitorAudit { get; set; } = Audit.待审核;
+        public DateTime? MonitorAuditDate { get; set; }
+        public string MonitorAuditMessage { get; set; }
+
 
         //部门副职审核
         public int DeputyAuditUserID { get; set; }
@@ -76,7 +85,14 @@ namespace PowerSystemLibrary.Entity
         [NotMapped]
         public string ChiefAuditName { get; set; }
 
+        [NotMapped]
+        public string MonitorAuditUserName { get; set; }
 
+        [NotMapped]
+        public string MonitorAuditDateString { get; set; }
+
+        [NotMapped]
+        public string MonitorAuditName { get; set; }
 
     }
 }

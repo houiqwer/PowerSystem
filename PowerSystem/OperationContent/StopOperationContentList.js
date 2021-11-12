@@ -39,7 +39,7 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/OperationContent/List'
+            , url: '/OperationContent/List?electricalTaskType=1'
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
@@ -135,7 +135,8 @@ function AddType(content) {
         headers: { "Authorization": store.userInfo.token },
         type: "POST",
         data: {
-            'Content': content
+            'Content': content,
+            'ElectricalTaskType':1
         },
         dataType: "json",
         success: function (data) {

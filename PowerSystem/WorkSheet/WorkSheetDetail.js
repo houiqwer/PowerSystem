@@ -64,6 +64,7 @@ function Init(id) {
                 
                 var item = "";
                 item += "<tr ><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
+                item += "<tr><td style='text-align:center'>" + data.data.MonitorAuditUserName + "</td><td style='text-align:center'>" + data.data.MonitorAudit + "</td><td style='text-align:center'>" + (data.data.MonitorAuditDate == null ? "" : data.data.MonitorAuditDate) + "</td><td style='text-align:center'>" + (data.data.MonitorAuditMessage == null ? "" : data.data.MonitorAuditMessage) + "</td></tr>";
                 item += "<tr><td style='text-align:center'>" + data.data.DeputyAuditUserName + "</td><td style='text-align:center'>" + data.data.DeputyAudit + "</td><td style='text-align:center'>" + (data.data.DeputyAuditDate == null ? "" : data.data.DeputyAuditDate) + "</td><td style='text-align:center'>" + (data.data.DeputyAuditMessage == null ? "" : data.data.DeputyAuditMessage) + "</td></tr>";
                 item += "<tr><td style='text-align:center'>" + data.data.ChiefAuditUserName + "</td><td style='text-align:center'>" + data.data.ChiefAudit + "</td><td style='text-align:center'>" + (data.data.ChiefAuditDate == null ? "" : data.data.ChiefAuditDate) + "</td><td style='text-align:center'>" + (data.data.ChiefAuditMessage == null ? "" : data.data.ChiefAuditMessage) + "</td></tr>";
                 $("#tbody").append(item);

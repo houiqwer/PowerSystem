@@ -21,7 +21,9 @@ namespace PowerSystemLibrary.Entity
         public int AHID { get; set; }
         public ElectricalTaskType ElectricalTaskType { get; set; }
         //调度审核
-        public Audit Audit { get; set; } = Audit.待审核;
+
+        public DispatcherAudit DispatcherAudit { get; set; }
+        //public Audit Audit { get; set; } = Audit.待审核;
         public int? AuditUserID { get; set; }
         public DateTime? AuditDate { get; set; }
         public string AuditMessage { get; set; }

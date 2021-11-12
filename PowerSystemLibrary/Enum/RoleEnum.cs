@@ -18,7 +18,7 @@ namespace PowerSystemLibrary.Enum
 
         现场调度 = 6,
 
-
+        班长 = 7,
 
         系统管理员 = 99
 

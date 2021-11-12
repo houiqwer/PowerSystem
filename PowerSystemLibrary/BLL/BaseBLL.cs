@@ -35,6 +35,9 @@ namespace PowerSystemLibrary.BLL
                         case "VoltageType":
                             enumList = BaseUtil.EnumToList<VoltageType>();
                             break;
+                        case "WorkContentType":
+                            enumList = BaseUtil.EnumToList<WorkContentType>();
+                            break;
                         default:
                             message = "不存在该枚举数据";
                             break;

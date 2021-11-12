@@ -1,8 +1,10 @@
 ﻿
 $(function () {
     $('#workSheet').hide();
+    InitWorkContent();
     InitAH();
     InitAudit();
+    GetMonitorAuditUser();
     GetDeputyAuditUser();
     GetChiefAuditUser();
     GetLayui();
@@ -54,6 +56,12 @@ function Submit() {
         return;
     }
 
+    if ($('#workContent').val() == null || $('#workContent').val() == "") {
+        alert("请选择作业内容");
+        $("#workContent").focus();
+        return;
+    }
+
     if ($("#beginDate").val() == null || $("#beginDate").val() == "") {
         alert("请输入开始时间");
         $("#beginDate").focus();
@@ -64,11 +72,11 @@ function Submit() {
         $("#endDate").focus();
         return;
     }
-    if ($('#workContent').val() == null || $('#workContent').val() == "") {
-        alert("请输入作业内容");
-        $("#workContent").focus();
-        return;
-    }
+    //if ($('#workContent').val() == null || $('#workContent').val() == "") {
+    //    alert("请输入作业内容");
+    //    $("#workContent").focus();
+    //    return;
+    //}
 
     if ($('#auditUser').val() == null || $('#auditUser').val() == "") {
         alert("请选择审核人");
@@ -88,6 +96,12 @@ function Submit() {
         //    $("#SafetyMeasures").focus();
         //    return;
         //}
+        if ($('#MonitorAuditUser').val() == null || $('#MonitorAuditUser').val() == "") {
+            alert("请选择部门班长审核人");
+            $("#MonitorAuditUser").focus();
+            return;
+        }
+
 
         if ($('#DeputyAuditUser').val() == null || $('#DeputyAuditUser').val() == "") {
             alert("请选择部门副职审核人");
@@ -101,7 +115,7 @@ function Submit() {
             return;
         }
 
-        AddWorkSheet($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val(), $('#Influence').val(),  $('#DeputyAuditUser').val(), $('#ChiefAuditUser').val());
+        AddWorkSheet($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val(), $('#Influence').val(), $('#DeputyAuditUser').val(), $('#ChiefAuditUser').val(), $('#MonitorAuditUser').val());
         
     } else {
         Add($('#ah').val(), $("#beginDate").val(), $("#endDate").val(), $('#workContent').val(), $('#auditUser').val());
@@ -111,18 +125,19 @@ function Submit() {
 }
 
 
-function AddWorkSheet(ah, beginDate, endDate, workContent, auditUser, influence, deputyAuditUser, chiefAuditUser) {
+function AddWorkSheet(ah, beginDate, endDate, workContent, auditUser, influence, deputyAuditUser, chiefAuditUser, monitorAuditUser) {
     var path = "/Operation/Add";
     var data = {
         "AHID": ah,
         "ApplicationSheet": {
             "BeginDate": beginDate,
             "EndDate": endDate,
-            "WorkContent": workContent,
+            "WorkContentType": workContent,
             "AuditUserID": auditUser
         },
         "WorkSheet": {
             "Influence": influence,
+            "MonitorAuditUserID": monitorAuditUser,
             "DeputyAuditUserID": deputyAuditUser,
             "ChiefAuditUserID": chiefAuditUser
         }
@@ -149,7 +164,7 @@ function Add(ah, beginDate, endDate, workContent, auditUser) {
         "ApplicationSheet": {
             "BeginDate": beginDate,
             "EndDate": endDate,
-            "WorkContent": workContent,
+            "WorkContentType": workContent,
             "AuditUserID": auditUser
         }
     }
@@ -328,6 +343,74 @@ function GetChiefAuditUser() {
                     html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Realname + "</option>";
                 }
                 $("#ChiefAuditUser").html(html);
+            }
+            else {
+                Failure(data);
+            }
+        },
+        error: function () {
+            layer.ready(function () {
+                title: false
+                layer.alert("数据提交存在问题，请检查当前网络", {
+                    title: false
+                });
+            });
+        }
+    })
+}
+
+function GetMonitorAuditUser() {
+    $.ajax({
+        url: "/User/GetMonitorAuditUser",
+        type: "get",
+        dataType: "json",
+        async: false,
+        beforeSend: function (XHR) {
+            XHR.setRequestHeader("Authorization", store.userInfo.token);
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                var html = "";
+                for (var i = 0; i < data.data.length; i++) {
+                    html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Realname + "</option>";
+                }
+                $("#MonitorAuditUser").html(html);
+            }
+            else {
+                Failure(data);
+            }
+        },
+        error: function () {
+            layer.ready(function () {
+                title: false
+                layer.alert("数据提交存在问题，请检查当前网络", {
+                    title: false
+                });
+            });
+        }
+    })
+}
+
+function InitWorkContent() {
+    var data = {
+        type: "WorkContentType"
+    }
+    $.ajax({
+        url: "/Base/GetEnum",
+        type: "get",
+        data: data,
+        dataType: "json",
+        async: false,
+        beforeSend: function (XHR) {
+            XHR.setRequestHeader("Authorization", store.userInfo.token);
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                var html = "";
+                for (var i = 0; i < data.data.List.length; i++) {
+                    html += "<option value=\"" + data.data.List[i].EnumValue + "\">" + data.data.List[i].EnumName + "</option>";
+                }
+                $("#workContent").html(html);
             }
             else {
                 Failure(data);

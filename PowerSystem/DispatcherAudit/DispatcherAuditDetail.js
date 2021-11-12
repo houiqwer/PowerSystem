@@ -147,7 +147,7 @@ function Audit() {
     var data = {
         ID: ElectricalTaskID,
         AuditMessage: $("#AuditDesc").val(),
-        Audit: $("#AuditState").val(),
+        DispatcherAudit: $("#AuditState").val(),
 
     };
     if (basepost(data, path)) {

@@ -150,7 +150,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult List(int page=1,int limit=10)
+        public ApiResult List(ElectricalTaskType electricalTaskType, int page=1,int limit=10)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -158,7 +158,7 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    List<OperationContent> operationContentList = db.OperationContent.Where(t => t.IsDelete != true).ToList();
+                    List<OperationContent> operationContentList = db.OperationContent.Where(t => t.IsDelete != true && t.ElectricalTaskType == electricalTaskType).ToList();
                     int total = operationContentList.Count;
                     operationContentList = operationContentList.Skip((page - 1) * limit).Take(limit).ToList();
                     result = ApiResult.NewSuccessJson(operationContentList, total);

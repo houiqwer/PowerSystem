@@ -200,7 +200,7 @@ function InitOperationSheet(id) {
 
 function InitOperationContent() {
     $.ajax({
-        url: "/OperationContent/List?limit=99",
+        url: "/OperationContent/List?limit=99&electricalTaskType=" + ElectricalTaskType,
         type: "get",
         dataType: "json",
         async: false,

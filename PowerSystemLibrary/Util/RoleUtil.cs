@@ -64,5 +64,15 @@ namespace PowerSystemLibrary.Util
 
             return roleList;
         }
+        
+
+        //班长
+        public static List<Role> GetMonitorRoleList()
+        {
+            List<Role> roleList = new List<Role>();
+            roleList.Add(Role.班长);
+
+            return roleList;
+        }
     }
 }

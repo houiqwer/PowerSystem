@@ -238,7 +238,7 @@
                                                         <th>停电影响范围</th>
                                                         <td colspan="3">
                                                             <div class="safe-grey">
-                                                                <textarea id="Influence"  class="layui-textarea" name="Influence" disabled></textarea>
+                                                                <textarea id="Influence" class="layui-textarea" name="Influence" disabled></textarea>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -321,7 +321,7 @@
                                                                 <span id="stopOperationDate"></span>
                                                             </div>
                                                         </td>
-                                                        
+
                                                     </tr>
                                                     <tr id="stopOperationContent">
                                                         <th>监护人</th>
@@ -350,7 +350,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div id="sendDispatcherAudit">
+                                    <!--<div id="sendDispatcherAudit">
                                         <h2>送电调度审核</h2>
                                         <div class="layui-form safe-form">
                                             <table border="0" class="layui-table">
@@ -361,6 +361,20 @@
                                                     <col>
                                                 </colgroup>
                                                 <tbody id="sendDispatcherList"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>-->
+                                    <div id="pickTaskUser">
+                                        <h2>摘牌电工</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <colgroup>
+                                                    <col width="">
+                                                    <col width="">
+                                                    <col width="">
+                                                    <col>
+                                                </colgroup>
+                                                <tbody id="pickElectricalTaskList"></tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -396,7 +410,7 @@
                                                                 <span id="sendOperationDate"></span>
                                                             </div>
                                                         </td>
-                                                       
+
                                                     </tr>
                                                     <tr id="sendOperationContent">
                                                         <th>监护人</th>
@@ -468,7 +482,7 @@
                                     <input type="button" value="工作票" onclick="exportWorkSheet()" class="layui-btn bian workSheet">
                                     <input type="button" value="停电操作单" onclick="exportStopOperationSheet()" class="layui-btn kan stopOperationSheet">
                                     <input type="button" value="送电操作单" onclick="exportSendOperationSheet()" class="layui-btn bbl3 sendOperationSheet">
-                                   
+
                                     <input type="button" value="返回" onclick="cancle()" class="layui-btn bred">
                                 </div>
                             </div>
@@ -485,6 +499,6 @@
     <script src="../Scripts/Common.js"></script>
     <script src="../Scripts/safe.js"></script>
     <script src="OperationDetail.js"></script>
-    
+
 </body>
 </html>

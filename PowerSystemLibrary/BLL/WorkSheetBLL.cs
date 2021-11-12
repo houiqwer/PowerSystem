@@ -104,7 +104,7 @@ namespace PowerSystemLibrary.BLL
                     (departmentID == null || t.DepartmentID == departmentID) &&
                     (db.Operation.Where(o => o.OperationFlow != OperationFlow.作业终止).Select(o => o.ID).Contains(t.OperationID)) &&
                     t.NO.Contains(no) &&
-                    ((t.AuditLevel == AuditLevel.副职审核 &&  t.DeputyAudit == Enum.Audit.待审核 && t.DeputyAuditUserID == loginUser.ID) || (t.AuditLevel == AuditLevel.正职审核 && t.ChiefAudit == Enum.Audit.待审核 && t.ChiefAuditUserID == loginUser.ID))  &&
+                    ((t.AuditLevel == AuditLevel.班长审核 && t.MonitorAudit == Enum.Audit.待审核 && t.MonitorAuditUserID == loginUser.ID) || (t.AuditLevel == AuditLevel.副职审核 &&  t.DeputyAudit == Enum.Audit.待审核 && t.DeputyAuditUserID == loginUser.ID) || (t.AuditLevel == AuditLevel.正职审核 && t.ChiefAudit == Enum.Audit.待审核 && t.ChiefAuditUserID == loginUser.ID))  &&
                     (ahID == null || db.Operation.Where(m => m.AHID == ahID).Select(m => m.ID).Contains(t.OperationID)) &&
                     (voltageType == null || db.Operation.Where(m => m.VoltageType == voltageType).Select(m => m.ID).Contains(t.OperationID)) &&
                     (t.BeginDate >= beginDate && t.EndDate <= endDate)
@@ -191,9 +191,21 @@ namespace PowerSystemLibrary.BLL
 
                         if (workSheet.AuditLevel == Enum.AuditLevel.通过)
                         {
-                            if(selectedWorkSheetSheet.AuditLevel == AuditLevel.副职审核)
+
+                            if(selectedWorkSheetSheet.AuditLevel == AuditLevel.班长审核)
                             {
                                 operation.OperationAudit = OperationAudit.审核中;
+                                selectedWorkSheetSheet.AuditLevel = AuditLevel.副职审核;
+                                selectedWorkSheetSheet.MonitorAuditDate = now;
+                                selectedWorkSheetSheet.MonitorAudit = Enum.Audit.通过;
+                                selectedWorkSheetSheet.MonitorAuditMessage = workSheet.AuditMessage;
+                                //发消息给副职审核
+                                userWeChatIDString = db.User.FirstOrDefault(t => t.ID == selectedWorkSheetSheet.DeputyAuditUserID && t.IsDelete != true).WeChatID;
+                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, loginUser.Realname + "于" + now.ToString("yyyy-MM-dd HH:mm") + "申请" + ah.Name + "位置的" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation) + "工作票待审核");
+                            }
+                            else if(selectedWorkSheetSheet.AuditLevel == AuditLevel.副职审核)
+                            {
+                                //operation.OperationAudit = OperationAudit.审核中;
                                 selectedWorkSheetSheet.AuditLevel = AuditLevel.正职审核;
                                 
                                 selectedWorkSheetSheet.DeputyAuditDate = now;
@@ -248,7 +260,13 @@ namespace PowerSystemLibrary.BLL
                         else if (workSheet.AuditLevel == Enum.AuditLevel.驳回)
                         {
                             operation.OperationAudit = OperationAudit.驳回;
-                            if (selectedWorkSheetSheet.AuditLevel == AuditLevel.副职审核)
+                            if(selectedWorkSheetSheet.AuditLevel == AuditLevel.班长审核)
+                            {
+                                selectedWorkSheetSheet.MonitorAuditDate = now;
+                                selectedWorkSheetSheet.MonitorAudit = Enum.Audit.驳回;
+                                selectedWorkSheetSheet.MonitorAuditMessage = workSheet.AuditMessage;
+                            }
+                            else if (selectedWorkSheetSheet.AuditLevel == AuditLevel.副职审核)
                             {
                                 selectedWorkSheetSheet.DeputyAuditDate = now;
                                 selectedWorkSheetSheet.DeputyAudit = Enum.Audit.驳回;
@@ -323,8 +341,8 @@ namespace PowerSystemLibrary.BLL
                     result = ApiResult.NewSuccessJson(new
                     {
                         workSheet.ID,
-                        workSheet.WorkContent,
-                        
+                        //workSheet.WorkContent,
+                        WorkContent = System.Enum.GetName(typeof(WorkContentType),workSheet.WorkContentType),
                         workSheet.Influence,
                         //workSheet.SafetyMeasures,
                         DepartmentName = db.Department.FirstOrDefault(t => t.ID == createUser.DepartmentID).Name,
@@ -338,9 +356,13 @@ namespace PowerSystemLibrary.BLL
 
                         AuditLevel = System.Enum.GetName(typeof(AuditLevel), workSheet.AuditLevel),
 
+                        MonitorAuditUserName = db.User.FirstOrDefault(t=>t.ID == workSheet.MonitorAuditUserID).Realname,
+                        MonitorAudit = System.Enum.GetName(typeof(Audit), workSheet.MonitorAudit),
+                        MonitorAuditDate = workSheet.MonitorAuditDate.HasValue ? workSheet.MonitorAuditDate.Value.ToString("yyyy-MM-dd HH:mm") : "",
+                        workSheet.MonitorAuditMessage,
 
                         DeputyAuditUserName =db.User.FirstOrDefault(t=>t.ID == workSheet.DeputyAuditUserID).Realname,
-                        DeputyAudit = System.Enum.GetName(typeof(Audit), workSheet.DeputyAudit),
+                        DeputyAudit = workSheet.MonitorAudit == Enum.Audit.驳回 ? "无需审核" : System.Enum.GetName(typeof(Audit), workSheet.DeputyAudit),
                         DeputyAuditDate = workSheet.DeputyAuditDate.HasValue ? workSheet.DeputyAuditDate.Value.ToString("yyyy-MM-dd HH:mm"):"",
                         workSheet.DeputyAuditMessage,
 

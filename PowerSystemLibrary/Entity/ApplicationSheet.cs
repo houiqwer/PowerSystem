@@ -24,9 +24,13 @@ namespace PowerSystemLibrary.Entity
         public DateTime BeginDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
-        [Required(ErrorMessage = "请输入工作内容")]
+        //[Required(ErrorMessage = "请输入工作内容")]
+        //[ExchangeType]
+        //public string WorkContent { get; set; }
+
+        [Required(ErrorMessage = "请选择工作内容")]
         [ExchangeType]
-        public string WorkContent { get; set; }
+        public WorkContentType WorkContentType { get; set; }
 
         public Audit Audit { get; set; } = Audit.待审核;
         public int? AuditUserID { get; set; }

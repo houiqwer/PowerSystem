@@ -1,5 +1,6 @@
 ﻿using PowerSystemLibrary.BLL;
 using PowerSystemLibrary.Entity;
+using PowerSystemLibrary.Enum;
 using PowerSystemLibrary.Filter;
 using PowerSystemLibrary.Util;
 using System;
@@ -65,13 +66,14 @@ namespace PowerSystem.Controllers
         /// <summary>
         /// 列表
         /// </summary>
+        /// <param name="electricalTaskType">作业类型</param>
         /// <param name="page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet, Route("List"), LoginRequired]
-        public ApiResult List(int page = 1, int limit = 10)
+        public ApiResult List(ElectricalTaskType electricalTaskType, int page = 1, int limit = 10)
         {
-            return new OperationContentBLL().List(page, limit);
+            return new OperationContentBLL().List(electricalTaskType, page, limit);
         }
     }
 }

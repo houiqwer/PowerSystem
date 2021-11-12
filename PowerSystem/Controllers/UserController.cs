@@ -128,5 +128,15 @@ namespace PowerSystem.Controllers
         {
             return new UserBLL().GetChiefAuditUser();
         }
+
+        /// <summary>
+        /// 部门班长
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet, Route("GetMonitorAuditUser"), LoginRequired]
+        public ApiResult GetMonitorAuditUser()
+        {
+            return new UserBLL().GetMonitorAuditUser();
+        }
     }
 }
