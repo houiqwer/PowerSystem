@@ -38,6 +38,18 @@ namespace PowerSystemLibrary.DAO
                     db.SaveChanges();
 
                     User createUser = db.User.FirstOrDefault(t => t.ID == operation.UserID);
+                    string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                    //发送消息给调度
+                    List<Role> dispatcherRoleList = RoleUtil.GetDispatcherRoleList();
+                    List<string> dispatcherWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == createUser.DepartmentID && db.UserRole.Where(m => dispatcherRoleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                    string dispatcherWeChatIDString = "";
+                    foreach (string userWeChatID in dispatcherWeChatIDList)
+                    {
+                        dispatcherWeChatIDString = dispatcherWeChatIDString + userWeChatID + "|";
+                    }
+                    dispatcherWeChatIDString.TrimEnd('|');
+                    //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                    string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务开始");
 
                     //发给电工
                     List<Role> roleList = RoleUtil.GetElectricianRoleList();
@@ -48,8 +60,9 @@ namespace PowerSystemLibrary.DAO
                         userWeChatIDString = userWeChatIDString + userWeChatID + "|";
                     }
                     userWeChatIDString.TrimEnd('|');
-                    string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name + "有新的送电任务");
+                    
+                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name + "有新的送电任务待领取");
+
 
                     operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压送电任务领取 : OperationFlow.高压送电任务领取;
                     operation.IsFinish = false;

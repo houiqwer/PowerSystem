@@ -281,6 +281,7 @@ namespace PowerSystemLibrary.BLL
                                 int surplusCount = db.Operation.Count(t => t.ID != operation.ID && t.AHID == operation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
                                 if(surplusCount == 0)//没有 创建送电任务给这两个电工去送电
                                 {
+                                    db.Operation.Where(t => t.AHID == ah.ID && (t.OperationFlow == OperationFlow.低压停电流程结束 || t.OperationFlow == OperationFlow.高压停电流程结束)).ToList().ForEach(t => t.IsSendElectric = true);
                                     ElectricalTask sendElectricalTask = new ElectricalTask();
                                     sendElectricalTask.DispatcherAudit = Enum.DispatcherAudit.无需审核;
                                     sendElectricalTask.OperationID = operation.ID;
@@ -301,9 +302,24 @@ namespace PowerSystemLibrary.BLL
                                     
                                     string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "停电任务完成," + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务请及时处理");
                                     //db db.ElectricalTaskUser.Where(t=>t.ElectricalTaskID ==  selectedElectricalTask.ID).Select(t=>t.UserID)
+
+                                    //发送消息给调度
+                                    List<Role> roleList = RoleUtil.GetDispatcherRoleList();
+                                    List<string> dispatcherWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                                    string dispatcherWeChatIDString = "";
+                                    foreach (string userWeChatID in dispatcherWeChatIDList)
+                                    {
+                                        dispatcherWeChatIDString = dispatcherWeChatIDString + userWeChatID + "|";
+                                    }
+                                    dispatcherWeChatIDString.TrimEnd('|');
+                                    //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                                    string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务开始");
+
                                 }
                                 else
                                 {
+                                    operation.FinishDate = now;
+                                    operation.IsFinish = true;
                                     operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压停电流程结束 : OperationFlow.高压停电流程结束;
                                 }
                             }
