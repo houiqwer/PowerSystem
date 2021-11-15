@@ -191,7 +191,7 @@ var w = ($(window).width()*0.7);
 var h = ($(window).height()*0.6);
 
 function Confirm(id, VoltageType, ElectricalTaskType) {
-    if (VoltageType == 1) {//低压
+    if (VoltageType == 1 || ElectricalTaskType == 3) {//低压或摘牌任务
         var path = "/ElectricalTask/Confirm";
         var data = {
             'ID': id,

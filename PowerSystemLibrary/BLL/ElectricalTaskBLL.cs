@@ -276,8 +276,9 @@ namespace PowerSystemLibrary.BLL
                             }
                             else //摘牌任务
                             {
+                                operation.IsPick = true;
                                 //判断是否有并行任务
-                                int surplusCount = db.Operation.Count(t => t.ID != operation.ID && t.AHID == operation.AHID && (t.IsConfirm != true && t.OperationFlow != OperationFlow.作业终止));
+                                int surplusCount = db.Operation.Count(t => t.ID != operation.ID && t.AHID == operation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
                                 if(surplusCount == 0)//没有 创建送电任务给这两个电工去送电
                                 {
                                     ElectricalTask sendElectricalTask = new ElectricalTask();

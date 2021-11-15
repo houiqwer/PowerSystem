@@ -936,31 +936,65 @@ namespace PowerSystemLibrary.BLL
 
                         }
 
+                        //电工摘牌
+                        if(pickElectricalTask != null)
+                        {
+                            foreach (ElectricalTaskUser pickTaskUser in pickElectricalTask.ElectricalTaskUserList)
+                            {
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+
+                                builder.Write("摘牌电工:");
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(pickTaskUser.RealName);
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(pickTaskUser.CreateDate);
+                                builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+
+                                builder.InsertCell();
+                                builder.CellFormat.VerticalMerge = CellMerge.None;
+                                builder.CellFormat.HorizontalMerge = CellMerge.None;
+                                builder.Write(pickTaskUser.IsConfirm ? "已确认" : "未确认");
+
+                                builder.EndRow();
+                            }
+                        }
+
                         //送电作业
                         if (sendElectricalTask != null)
                         {
-                            builder.InsertCell();
-                            builder.CellFormat.VerticalMerge = CellMerge.None;
-                            builder.CellFormat.HorizontalMerge = CellMerge.First;
+                            //builder.InsertCell();
+                            //builder.CellFormat.VerticalMerge = CellMerge.None;
+                            //builder.CellFormat.HorizontalMerge = CellMerge.First;
 
-                            builder.Write("送电调度审核:" + sendElectricalTask.RealName + "("+ sendElectricalTask.AuditDateString + sendElectricalTask.AuditName + ")");
+                            //builder.Write("送电调度审核:" + sendElectricalTask.RealName + "("+ sendElectricalTask.AuditDateString + sendElectricalTask.AuditName + ")");
 
-                            builder.InsertCell();
-                            builder.CellFormat.VerticalMerge = CellMerge.None;
-                            builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                            //builder.InsertCell();
+                            //builder.CellFormat.VerticalMerge = CellMerge.None;
+                            //builder.CellFormat.HorizontalMerge = CellMerge.Previous;
 
-                            builder.CellFormat.Borders.LineStyle = LineStyle.Single;
+                            //builder.CellFormat.Borders.LineStyle = LineStyle.Single;
 
-                            builder.InsertCell();
-                            builder.CellFormat.VerticalMerge = CellMerge.None;
-                            builder.CellFormat.HorizontalMerge = CellMerge.First;
-                            builder.Write("审核理由:" + sendElectricalTask.AuditMessage);
+                            //builder.InsertCell();
+                            //builder.CellFormat.VerticalMerge = CellMerge.None;
+                            //builder.CellFormat.HorizontalMerge = CellMerge.First;
+                            //builder.Write("审核理由:" + sendElectricalTask.AuditMessage);
 
-                            builder.InsertCell();
-                            builder.CellFormat.VerticalMerge = CellMerge.None;
-                            builder.CellFormat.HorizontalMerge = CellMerge.Previous;
+                            //builder.InsertCell();
+                            //builder.CellFormat.VerticalMerge = CellMerge.None;
+                            //builder.CellFormat.HorizontalMerge = CellMerge.Previous;
 
-                            builder.EndRow();
+                            //builder.EndRow();
 
 
                             foreach (ElectricalTaskUser sendTaskUser in sendElectricalTask.ElectricalTaskUserList)

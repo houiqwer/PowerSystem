@@ -132,15 +132,24 @@ namespace PowerSystemLibrary.BLL
                             }
                             WorkSheet workSheet = new WorkSheet();
 
-                            string deputyUserWeChatIDString = "";
+
+
+                            string monitorUserWeChatIDString = "";
+
+                            if(db.User.FirstOrDefault(t=>t.ID == operation.WorkSheet.MonitorAuditUserID && t.IsDelete!=true) == null)
+                            {
+                                throw new ExceptionUtil("请选择工作票班长审核人");
+                            }
+                            else
+                            {
+                                monitorUserWeChatIDString = db.User.FirstOrDefault(t => t.ID == operation.WorkSheet.MonitorAuditUserID && t.IsDelete != true).WeChatID;
+                            }
+
                             if (db.User.FirstOrDefault(t => t.ID == operation.WorkSheet.DeputyAuditUserID && t.IsDelete != true) == null)
                             {
                                 throw new ExceptionUtil("请选择工作票副职审核人");
                             }
-                            else
-                            {
-                                deputyUserWeChatIDString = db.User.FirstOrDefault(t => t.ID == operation.WorkSheet.DeputyAuditUserID && t.IsDelete != true).WeChatID;
-                            }
+                            
 
                             if (db.User.FirstOrDefault(t => t.ID == operation.WorkSheet.ChiefAuditUserID && t.IsDelete != true) == null)
                             {
@@ -171,7 +180,7 @@ namespace PowerSystemLibrary.BLL
                             db.SaveChanges();
 
 
-                            string sendMessage = WeChatAPI.SendMessage(accessToken, deputyUserWeChatIDString, ParaUtil.MessageAgentid, loginUser.Realname + "于" + now.ToString("yyyy-MM-dd HH:mm") + "申请" + ah.Name + "位置的" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation)+"工作票待审核");
+                            string sendMessage = WeChatAPI.SendMessage(accessToken, monitorUserWeChatIDString, ParaUtil.MessageAgentid, loginUser.Realname + "于" + now.ToString("yyyy-MM-dd HH:mm") + "申请" + ah.Name + "位置的" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ClassUtil.GetEntityName(operation)+"工作票待审核");
                         }
 
 
@@ -285,7 +294,15 @@ namespace PowerSystemLibrary.BLL
                             sendOperationSheet.FinishDateString = sendOperationSheet.FinishDate.HasValue ? sendOperationSheet.FinishDate.Value.ToString("yyyy-MM-dd HH:ss") : "";
                             sendOperationSheet.OperationContentList = db.OperationContent.Where(o => db.OperationSheet_Content.Where(t => t.OperationSheetID == sendOperationSheet.ID).Select(t => t.OperationContentID).Contains(o.ID)).ToList();
                         }
+                        //送电联票
+                        SendElectricalSheet sendElectricalSheet = db.SendElectricalSheet.FirstOrDefault(t => t.ElectricalTaskID == sendElectricalTask.ID);
+                        if(sendElectricalSheet != null)
+                        {
+                            sendElectricalSheet.SendElectricDateString = sendElectricalSheet.SendElectricDate.ToString("yyyy-MM-dd HH:ss");
+                            sendElectricalSheet.UserRealName = userList.FirstOrDefault(t => t.ID == sendElectricalSheet.UserID).Realname;
+                        }
 
+                        sendElectricalTask.SendElectricalSheet = sendElectricalSheet;
                         sendElectricalTask.OperationSheet = sendOperationSheet;
                     }
 
@@ -612,8 +629,8 @@ namespace PowerSystemLibrary.BLL
                         selectedOperation.IsConfirm = true;
                         
 
-                        //增加摘牌任务（高压未完成）
-                        selectedOperation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压摘牌任务领取 : OperationFlow.低压摘牌任务领取;
+                        //增加摘牌任务
+                        selectedOperation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压摘牌任务领取 : OperationFlow.高压摘牌任务领取;
 
                         ElectricalTask electricalTask = new ElectricalTask();
                         electricalTask.DispatcherAudit = DispatcherAudit.无需审核;
@@ -775,7 +792,7 @@ namespace PowerSystemLibrary.BLL
 
 
 
-
+                    doc.Range.Replace("@monitorAuditUser", userList.FirstOrDefault(t => t.ID == workSheet.MonitorAuditUserID).Realname + "(" + System.Enum.GetName(typeof(Audit), workSheet.MonitorAudit) + ")", false, false);
                     doc.Range.Replace("@deputyAuditUser", userList.FirstOrDefault(t=>t.ID == workSheet.DeputyAuditUserID).Realname+"("+System.Enum.GetName(typeof(Audit), workSheet.DeputyAudit)+")", false, false);
                     //doc.Range.Replace("@safetyMeasures", workSheet.SafetyMeasures, false, false);
                     doc.Range.Replace("@chiefAuditUser", userList.FirstOrDefault(t=>t.ID == workSheet.ChiefAuditUserID).Realname+"("+System.Enum.GetName(typeof(Audit), workSheet.ChiefAudit)+")", false, false);
@@ -922,8 +939,8 @@ namespace PowerSystemLibrary.BLL
                     sh.SetColumnWidth(10, 70 * 150);
                     sh.SetColumnWidth(11, 40 * 150);
                     sh.SetColumnWidth(12, 40 * 150);
-                    sh.SetColumnWidth(13, 40 * 150);
-                    sh.SetColumnWidth(14, 70 * 150);
+                    sh.SetColumnWidth(13, 70 * 150);
+                    //sh.SetColumnWidth(14, 70 * 150);
                     
                     IRow row = sh.CreateRow(0);
                     row.Height = 400;
@@ -943,7 +960,7 @@ namespace PowerSystemLibrary.BLL
                     ICell rowICell11 = row.CreateCell(11);
                     ICell rowICell12 = row.CreateCell(12);
                     ICell rowICell13 = row.CreateCell(13);
-                    ICell rowICell14 = row.CreateCell(14);
+                    //ICell rowICell14 = row.CreateCell(14);
 
                     //创建第一行
                     rowICell0.SetCellValue("停电");
@@ -979,10 +996,10 @@ namespace PowerSystemLibrary.BLL
                     rowICell12.CellStyle = cellStyle;
                     rowICell13.SetCellValue("");
                     rowICell13.CellStyle = cellStyle;
-                    rowICell14.SetCellValue("");
-                    rowICell14.CellStyle = cellStyle;
+                    //rowICell14.SetCellValue("");
+                    //rowICell14.CellStyle = cellStyle;
                     sh.AddMergedRegion(new CellRangeAddress(0, 0, 0, 7));
-                    sh.AddMergedRegion(new CellRangeAddress(0, 0, 8, 14));
+                    sh.AddMergedRegion(new CellRangeAddress(0, 0, 8, 13));
 
                     //创建第二行
                     IRow row0 = sh.CreateRow(1);
@@ -1001,7 +1018,7 @@ namespace PowerSystemLibrary.BLL
                     ICell row0ICell11 = row0.CreateCell(11);
                     ICell row0ICell12 = row0.CreateCell(12);
                     ICell row0ICell13 = row0.CreateCell(13);
-                    ICell row0ICell14 = row0.CreateCell(14);
+                    //ICell row0ICell14 = row0.CreateCell(14);
 
                     row0ICell0.SetCellValue("停电日期");
                     row0ICell0.CellStyle = cellStyle;
@@ -1032,10 +1049,10 @@ namespace PowerSystemLibrary.BLL
                     row0ICell11.CellStyle = cellStyle;
                     row0ICell12.SetCellValue("送电操作人");
                     row0ICell12.CellStyle = cellStyle;
-                    row0ICell13.SetCellValue("调度");
+                    //row0ICell13.SetCellValue("调度");
+                    //row0ICell13.CellStyle = cellStyle;
+                    row0ICell13.SetCellValue("备注");
                     row0ICell13.CellStyle = cellStyle;
-                    row0ICell14.SetCellValue("备注");
-                    row0ICell14.CellStyle = cellStyle;
                     #endregion
 
                     int i = 0;
@@ -1088,11 +1105,11 @@ namespace PowerSystemLibrary.BLL
                         Cell12.CellStyle = cellStyle;
                         ICell Cell13 = rowTemp.CreateCell(13);
                         Cell13.CellStyle = cellStyle;
-                        ICell Cell14 = rowTemp.CreateCell(14);
-                        Cell14.CellStyle = cellStyle;
+                        //ICell Cell14 = rowTemp.CreateCell(14);
+                        //Cell14.CellStyle = cellStyle;
 
                         //备注
-                        Cell14.SetCellValue(desc);
+                        Cell13.SetCellValue(desc);
                        
 
                        
@@ -1113,7 +1130,7 @@ namespace PowerSystemLibrary.BLL
                         //申请单
                         if(applicationSheet.Audit == Audit.驳回)
                         {
-                            Cell14.SetCellValue("申请单审核驳回(" + userList.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname + ")");
+                            Cell13.SetCellValue("申请单审核驳回(" + userList.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname + ")");
                             continue;
                         }
 
@@ -1123,7 +1140,7 @@ namespace PowerSystemLibrary.BLL
                             if(workSheet.AuditLevel == AuditLevel.驳回)
                             {
                                 desc = workSheet.MonitorAudit == Audit.驳回? ("高压工作票班长审核驳回(" + userList.FirstOrDefault(t => t.ID == workSheet.MonitorAuditUserID).Realname + ")"): (workSheet.ChiefAudit == Audit.驳回 ? ("高压工作票正职审核驳回(" + userList.FirstOrDefault(t => t.ID == workSheet.ChiefAuditUserID).Realname + ")") : ("高压工作票副职审核驳回(" + userList.FirstOrDefault(t => t.ID == workSheet.DeputyAuditUserID).Realname + ")"));
-                                Cell14.SetCellValue(desc);
+                                Cell13.SetCellValue(desc);
                                 continue;
                             }
                         }
@@ -1141,7 +1158,7 @@ namespace PowerSystemLibrary.BLL
 
                             if(stopElectricalTask.DispatcherAudit == DispatcherAudit.驳回)
                             {
-                                Cell14.SetCellValue("停电调度审核驳回("+ userList.FirstOrDefault(t => t.ID == stopElectricalTask.AuditUserID).Realname+")");
+                                Cell13.SetCellValue("停电调度审核驳回("+ userList.FirstOrDefault(t => t.ID == stopElectricalTask.AuditUserID).Realname+")");
                                 continue;
                             }
 
@@ -1172,7 +1189,7 @@ namespace PowerSystemLibrary.BLL
                                 ElectricalTask latestSendElectricalTask = electricalTaskList.Where(e => operationList.Where(t => t.AHID == ah.ID).Select(t => t.ID).Contains(e.OperationID) && e.ElectricalTaskType == ElectricalTaskType.送电作业 && e.CreateDate >= operation.FinishDate).OrderBy(t => t.CreateDate).FirstOrDefault();
                                 if(latestSendElectricalTask != null)
                                 {
-                                    Cell14.SetCellValue(System.Enum.GetName(typeof(OperationFlow), operationList.FirstOrDefault(t => t.ID == latestSendElectricalTask.OperationID).OperationFlow)+"("+ "并行任务" + ")"); 
+                                    Cell13.SetCellValue(System.Enum.GetName(typeof(OperationFlow), operationList.FirstOrDefault(t => t.ID == latestSendElectricalTask.OperationID).OperationFlow)+"("+ "并行任务" + ")"); 
 
                                     Cell9.SetCellValue(latestSendElectricalTask.CreateDate.ToString("yyyy-MM-dd HH:mm"));
                                    

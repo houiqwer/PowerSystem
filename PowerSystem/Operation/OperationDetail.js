@@ -14,6 +14,7 @@ $(function () {
     $("#stopTaskUser").hide();
     $("#sendTaskUser").hide();
     $('#stopDispatcherAudit').hide();
+    $('#sendElectricalSheet').hide();
     //$('#sendDispatcherAudit').hide();
     $('#pickTaskUser').hide();
     if (id != null && id != '') {
@@ -170,6 +171,16 @@ function Init(id) {
                         }
                         $('#sendOperationContent').after(html);
                     }
+
+                    //送电联票
+                    if (data.data.sendElectricalTask.SendElectricalSheet != null) {
+                        $('#sendElectricalSheet').show();
+                        $('#sendElectricalRealName').html(data.data.sendElectricalTask.SendElectricalSheet.UserRealName);
+                        $('#sendElectricalDate').html(data.data.sendElectricalTask.SendElectricalSheet.SendElectricDateString);
+                        $('#WorkFinishContent').html(data.data.sendElectricalTask.SendElectricalSheet.WorkFinishContent);
+                        $('#IsEvacuateAllPeople').html(data.data.sendElectricalTask.SendElectricalSheet.IsEvacuateAllPeople?"是":"否");
+                        $('#IsRemoveGroundLine').html(data.data.sendElectricalTask.SendElectricalSheet.IsRemoveGroundLine?"是":"否");
+                    }
                 }
 
                 if (data.data.ApplicationSheet.Audit != '待审核') {
@@ -182,6 +193,7 @@ function Init(id) {
                     $(".workSheet").show();
                     var workAudit = "";
                     workAudit += "<tr ><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
+                    workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.MonitorAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.MonitorAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.MonitorAuditDate == null ? "" : data.data.workSheet.MonitorAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.MonitorAuditMessage == null ? "" : data.data.workSheet.MonitorAuditMessage) + "</td></tr>";
                     workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.DeputyAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.DeputyAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.DeputyAuditDate == null ? "" : data.data.workSheet.DeputyAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.DeputyAuditMessage == null ? "" : data.data.workSheet.DeputyAuditMessage) + "</td></tr>";
                     workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.ChiefAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.ChiefAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.ChiefAuditDate == null ? "" : data.data.workSheet.ChiefAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.ChiefAuditMessage == null ? "" : data.data.workSheet.ChiefAuditMessage) + "</td></tr>";
                     $("#workSheetAudit").append(workAudit);

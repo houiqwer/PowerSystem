@@ -338,32 +338,32 @@
                                                         </td>
                                                     </tr>
                                                     <!--<tr>
-                                                        <th>操作内容</th>
-                                                        <td colspan="3">
-                                                            <div class="safe-grey">
-                                                                <textarea id="stopOperationContent" class="layui-textarea" name="stopOperationContent" disabled></textarea>
-                                                            </div>
-                                                        </td>
-                                                    </tr>-->
+                        <th>操作内容</th>
+                        <td colspan="3">
+                            <div class="safe-grey">
+                                <textarea id="stopOperationContent" class="layui-textarea" name="stopOperationContent" disabled></textarea>
+                            </div>
+                        </td>
+                    </tr>-->
 
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                     <!--<div id="sendDispatcherAudit">
-                                        <h2>送电调度审核</h2>
-                                        <div class="layui-form safe-form">
-                                            <table border="0" class="layui-table">
-                                                <colgroup>
-                                                    <col width="">
-                                                    <col width="">
-                                                    <col width="">
-                                                    <col>
-                                                </colgroup>
-                                                <tbody id="sendDispatcherList"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>-->
+        <h2>送电调度审核</h2>
+        <div class="layui-form safe-form">
+            <table border="0" class="layui-table">
+                <colgroup>
+                    <col width="">
+                    <col width="">
+                    <col width="">
+                    <col>
+                </colgroup>
+                <tbody id="sendDispatcherList"></tbody>
+            </table>
+        </div>
+    </div>-->
                                     <div id="pickTaskUser">
                                         <h2>摘牌电工</h2>
                                         <div class="layui-form safe-form">
@@ -427,13 +427,60 @@
                                                         </td>
                                                     </tr>
                                                     <!--<tr>
-                                                        <th>操作内容</th>
-                                                        <td colspan="3">
+                        <th>操作内容</th>
+                        <td colspan="3">
+                            <div class="safe-grey">
+                                <textarea id="sendOperationContent" class="layui-textarea" name="sendOperationContent" disabled></textarea>
+                            </div>
+                        </td>
+                    </tr>-->
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div id="sendElectricalSheet">
+                                        <h2>送电联票</h2>
+                                        <div class="layui-form safe-form">
+                                            <table border="0" class="layui-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>操作人</th>
+                                                        <td>
                                                             <div class="safe-grey">
-                                                                <textarea id="sendOperationContent" class="layui-textarea" name="sendOperationContent" disabled></textarea>
+                                                                <span id="sendElectricalRealName"></span>
                                                             </div>
                                                         </td>
-                                                    </tr>-->
+                                                        <th>要求送电时间</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="sendElectricalDate"></span>
+                                                            </div>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <th>工作完成情况</th>
+                                                        <td colspan="3">
+                                                            <div class="safe-grey">
+                                                                <span id="WorkFinishContent"></span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>人员是否全部撤离现场</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="IsEvacuateAllPeople"></span>
+                                                            </div>
+                                                        </td>
+                                                        <th>地线是否拆除</th>
+                                                        <td>
+                                                            <div class="safe-grey">
+                                                                <span id="IsRemoveGroundLine"></span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
 
                                                 </tbody>
                                             </table>

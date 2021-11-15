@@ -20,6 +20,18 @@ namespace PowerSystemLibrary.Util
             return roleList;
         }
 
+        //工作票审核人
+        public static List<Role> GetWorkSheetAuditRoleList()
+        {
+            List<Role> roleList = new List<Role>();
+            roleList.Add(Role.班长);
+            roleList.Add(Role.部门副职);
+            roleList.Add(Role.部门正职);
+            roleList.Add(Role.分管领导);
+
+            return roleList;
+        }
+
         //工作票副职审核人
         public static List<Role> GetWorkSheetDeputyAuditRoleList()
         {

@@ -52,6 +52,9 @@ namespace PowerSystemLibrary.Filter
                             case "Dispatcher":
                                 roleList = RoleUtil.GetDispatcherRoleList();
                                 break;
+                            case "WorkSheetAuditRoleList":
+                                roleList = RoleUtil.GetWorkSheetAuditRoleList();
+                                break;
                             default:
                                 break;
                         }

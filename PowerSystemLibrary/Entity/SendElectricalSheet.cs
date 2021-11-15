@@ -40,5 +40,11 @@ namespace PowerSystemLibrary.Entity
         public bool IsEvacuateAllPeople { get; set; }
 
         public int UserID { get; set; }
+
+        [NotMapped]
+        public string SendElectricDateString { get; set; }
+
+        [NotMapped]
+        public string UserRealName { get; set; }
     }
 }

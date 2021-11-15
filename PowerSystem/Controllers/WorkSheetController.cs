@@ -59,7 +59,7 @@ namespace PowerSystem.Controllers
         /// </summary>
         /// <param name="workSheet">需要ID、AuditLevel(通过3 驳回4)、AuditMessage</param>
         /// <returns></returns>
-        [HttpPost, Route("Audit"), LoginRequired(Role = "ApplicationSheetAudit")]
+        [HttpPost, Route("Audit"), LoginRequired(Role = "WorkSheetAuditRoleList")]
         public ApiResult Audit(WorkSheet workSheet)
         {
             return new WorkSheetBLL().Audit(workSheet);

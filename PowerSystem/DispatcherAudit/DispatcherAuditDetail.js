@@ -9,7 +9,8 @@ $(function () {
     $("#stopTaskUser").hide();
     $("#sendTaskUser").hide();
     $('#stopDispatcherAudit').hide();
-    $('#sendDispatcherAudit').hide();
+    //$('#sendDispatcherAudit').hide();
+    $('#workSheetAuditInfo').hide();
     if (id != null && id != '') {
         if (sign != null && sign != "") {
             $("#myAudit").show();
@@ -78,9 +79,18 @@ function Init(id) {
                 item += "<tr><td style='text-align:center'>" + data.data.ApplicationSheet.AuditUserName + "</td><td style='text-align:center'>" + data.data.ApplicationSheet.Audit + "</td><td style='text-align:center'>" + (data.data.ApplicationSheet.AuditDate == null ? "" : data.data.ApplicationSheet.AuditDate) + "</td><td style='text-align:center'>" + (data.data.ApplicationSheet.AuditMessage == null ? "" : data.data.ApplicationSheet.AuditMessage) + "</td></tr>";
                 $("#tbody").append(item);
 
+                if (data.data.VoltageType == '高压' && data.data.workSheet != null) {
+                    $('#workSheetAuditInfo').show();
+                    var workAudit = "";
+                    workAudit += "<tr ><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
+                    workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.MonitorAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.MonitorAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.MonitorAuditDate == null ? "" : data.data.workSheet.MonitorAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.MonitorAuditMessage == null ? "" : data.data.workSheet.MonitorAuditMessage) + "</td></tr>";
+                    workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.DeputyAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.DeputyAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.DeputyAuditDate == null ? "" : data.data.workSheet.DeputyAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.DeputyAuditMessage == null ? "" : data.data.workSheet.DeputyAuditMessage) + "</td></tr>";
+                    workAudit += "<tr><td style='text-align:center'>" + data.data.workSheet.ChiefAuditUserName + "</td><td style='text-align:center'>" + data.data.workSheet.ChiefAuditName + "</td><td style='text-align:center'>" + (data.data.workSheet.ChiefAuditDate == null ? "" : data.data.workSheet.ChiefAuditDateString) + "</td><td style='text-align:center'>" + (data.data.workSheet.ChiefAuditMessage == null ? "" : data.data.workSheet.ChiefAuditMessage) + "</td></tr>";
+                    $("#workSheetAuditList").append(workAudit);
+                }
 
-               
-                if (data.data.stopElectricalTask != null && data.data.stopElectricalTask.Audit != 1) {
+                //停电
+                if (data.data.stopElectricalTask != null && data.data.stopElectricalTask.DispatcherAudit != 1) {
                     var stopDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
                     $('#stopDispatcherAudit').show();
                     stopDispatcherList += "<tr><td style='text-align:center'>" + data.data.stopElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.stopElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.stopElectricalTask.AuditMessage == null ? "" : data.data.stopElectricalTask.AuditMessage) + "</td></tr>";
@@ -97,12 +107,12 @@ function Init(id) {
                 }
 
 
-                
-                if (data.data.sendElectricalTask != null && data.data.sendElectricalTask.Audit != 1) {
-                    $('#sendDispatcherAudit').show(); 
-                    var sendDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
-                    sendDispatcherList += "<tr><td style='text-align:center'>" + data.data.sendElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditMessage == null ? "" : data.data.sendElectricalTask.AuditMessage) + "</td></tr>";
-                    $("#sendDispatcherList").append(sendDispatcherList);
+                //送电
+                if (data.data.sendElectricalTask != null) {
+                    //$('#sendDispatcherAudit').show(); 
+                    //var sendDispatcherList = "<tr ><th style='text-align:center'>作业类型</th><th style='text-align:center'>审核人</th><th style='text-align:center'>审核状态</th><th style='text-align:center'>审核日期</th><th style='text-align:center'>审核说明</th></tr>";
+                    //sendDispatcherList += "<tr><td style='text-align:center'>" + data.data.sendElectricalTask.ElectricalTaskTypeName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.RealName + "</td><td style='text-align:center'>" + data.data.sendElectricalTask.AuditName + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditDateString) + "</td><td style='text-align:center'>" + (data.data.sendElectricalTask.AuditMessage == null ? "" : data.data.sendElectricalTask.AuditMessage) + "</td></tr>";
+                    //$("#sendDispatcherList").append(sendDispatcherList);
 
                     $('#sendTaskUser').show();
                     var send = "<tr ><th style='text-align:center'>送电电工</th><th style='text-align:center'>送电时间</th><th style='text-align:center'>是否确认</th></tr>";

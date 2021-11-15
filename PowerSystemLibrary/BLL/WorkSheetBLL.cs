@@ -234,6 +234,7 @@ namespace PowerSystemLibrary.BLL
                                     electricalTask.OperationID = operation.ID;
                                     electricalTask.AHID = operation.AHID;
                                     electricalTask.CreateDate = now;
+                                    electricalTask.DispatcherAudit = DispatcherAudit.待审核;
                                     electricalTask.ElectricalTaskType = ElectricalTaskType.停电作业;
                                     db.ElectricalTask.Add(electricalTask);
 

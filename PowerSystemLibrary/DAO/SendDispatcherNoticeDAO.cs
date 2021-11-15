@@ -19,7 +19,7 @@ namespace PowerSystemLibrary.DAO
             try
             {
                 //没用并行任务
-                int surplusCount = db.Operation.Count(t => t.ID != selectedOperation.ID && t.AHID == selectedOperation.AHID && (t.IsConfirm != true && t.OperationFlow != OperationFlow.作业终止));
+                int surplusCount = db.Operation.Count(t => t.ID != selectedOperation.ID && t.AHID == selectedOperation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
 
                 List<Operation> operationList = db.Operation.Where(t => !t.IsSendElectric && t.AHID == selectedOperation.AHID && (t.OperationFlow == OperationFlow.低压停电流程结束 || t.OperationFlow == OperationFlow.高压停电流程结束)).ToList();
 
@@ -32,13 +32,15 @@ namespace PowerSystemLibrary.DAO
                     electricalTask.OperationID = operation.ID;
                     electricalTask.AHID = operation.AHID;
                     electricalTask.CreateDate = now;
+                    electricalTask.DispatcherAudit = DispatcherAudit.无需审核;
                     electricalTask.ElectricalTaskType = ElectricalTaskType.送电作业;
                     db.ElectricalTask.Add(electricalTask);
                     db.SaveChanges();
 
                     User createUser = db.User.FirstOrDefault(t => t.ID == operation.UserID);
 
-                    List<Role> roleList = RoleUtil.GetDispatcherRoleList();
+                    //发给电工
+                    List<Role> roleList = RoleUtil.GetElectricianRoleList();
                     List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == createUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
                     string userWeChatIDString = "";
                     foreach (string userWeChatID in userWeChatIDList)
@@ -47,9 +49,9 @@ namespace PowerSystemLibrary.DAO
                     }
                     userWeChatIDString.TrimEnd('|');
                     string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name + "有新的送电任务待审核");
+                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name + "有新的送电任务");
 
-                    operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压检修作业完成 : OperationFlow.高压检修作业完成;
+                    operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压送电任务领取 : OperationFlow.高压送电任务领取;
                     operation.IsFinish = false;
                     operation.FinishDate = null;
                     db.SaveChanges();
