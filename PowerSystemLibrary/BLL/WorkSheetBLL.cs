@@ -248,7 +248,7 @@ namespace PowerSystemLibrary.BLL
                                     }
                                     userWeChatIDString.TrimEnd('|');
                                     
-                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
+                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务等待调度");
                                 }
                             }
                             operation.OperationFlow = OperationFlow.高压停电作业审核;

@@ -74,7 +74,7 @@ namespace PowerSystemLibrary.BLL
                                 }
                                 userWeChatIDString.TrimEnd('|');
                                 
-                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
+                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务等待调度");
 
                                 ////发消息给所有电工
                                 //List<Role> roleList = RoleUtil.GetElectricianRoleList();
@@ -116,7 +116,7 @@ namespace PowerSystemLibrary.BLL
                                     }
                                     userWeChatIDString.TrimEnd('|');
 
-                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务");
+                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "停电任务等待调度");
                                 }
                                 else
                                 {

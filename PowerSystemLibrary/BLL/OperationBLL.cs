@@ -641,6 +641,9 @@ namespace PowerSystemLibrary.BLL
                         db.ElectricalTask.Add(electricalTask);
                         db.SaveChanges();
 
+                        int surplusCount = db.Operation.Count(t =>  t.AHID == selectedOperation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
+                        string notice = ",剩余牌数为" + surplusCount + ",牌未加完,禁止送电";
+                        
                         //发消息给所有电工
                         List<Role> roleList = RoleUtil.GetElectricianRoleList();
                         List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
@@ -651,7 +654,7 @@ namespace PowerSystemLibrary.BLL
                         }
                         userWeChatIDString.TrimEnd('|');
                         string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                        string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "摘牌任务");
+                        string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "摘牌任务"+ notice);
 
                         //发消息给巡检通知剩余牌数，若无剩余牌数则需要确认送电任务
                         //int surplusCount = db.Operation.Count(t => t.ID != selectedOperation.ID && t.AHID == selectedOperation.AHID && (t.IsConfirm != true && t.OperationFlow!= OperationFlow.作业终止));
