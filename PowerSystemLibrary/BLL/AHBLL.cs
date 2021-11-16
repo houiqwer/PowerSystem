@@ -196,7 +196,7 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    List<AH> aHList = db.AH.Where(t => t.IsDelete != true && t.Name.Contains(name) && (voltageType == null || t.VoltageType == voltageType)).ToList();
+                    List<AH> aHList = db.AH.Where(t => t.IsDelete != true && t.Name.Contains(name) && (voltageType == null || t.VoltageType == voltageType)).OrderBy(t => t.Name).ToList();
                     int total = aHList.Count;
                     aHList = aHList.Skip((page - 1) * limit).Take(limit).ToList();
                     List<int> powerSubstationIDList = aHList.Select(t => t.PowerSubstationID).Distinct().ToList();
