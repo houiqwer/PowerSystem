@@ -262,31 +262,28 @@ namespace PowerSystemLibrary.BLL
                                 //operationList.ForEach(t => t.OperationFlow = OperationFlow.低压送电任务完成);
 
 
-                                string userWeChatString = db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID + "|";
-                                List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => t.ElectricalTaskID == selectedElectricalTask.ID && t.IsBack!=true).ToList();
-                                List<int> userIDList = electricalTaskUserList.Select(t => t.UserID).ToList();
-                                List<string> weChatIDList = db.User.Where(t => userIDList.Contains(t.ID)).Select(t => t.WeChatID).ToList();
-                                foreach (string weChatID in weChatIDList)
-                                {
-                                    userWeChatString = userWeChatString + weChatID + "|";
-                                }
+                                //string userWeChatString = db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID + "|";
+                                //List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(t => t.ElectricalTaskID == selectedElectricalTask.ID && t.IsBack!=true).ToList();
+                                //List<int> userIDList = electricalTaskUserList.Select(t => t.UserID).ToList();
+                                //List<string> weChatIDList = db.User.Where(t => userIDList.Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                                //foreach (string weChatID in weChatIDList)
+                                //{
+                                //    userWeChatString = userWeChatString + weChatID + "|";
+                                //}
                                 //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                                string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatString.TrimEnd('|'), ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成");
+                                string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成");
 
-                                if (!string.IsNullOrEmpty(resultMessage))
+                                //通知调度
+                                List<Role> roleList = RoleUtil.GetDispatcherRoleList();
+                                List<string> dispatcherWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
+                                string dispatcherWeChatIDString = "";
+                                foreach (string userWeChatID in dispatcherWeChatIDList)
                                 {
-                                    //通知调度
-                                    List<Role> roleList = RoleUtil.GetDispatcherRoleList();
-                                    List<string> dispatcherWeChatIDList = db.User.Where(t => t.IsDelete != true && t.DepartmentID == loginUser.DepartmentID && db.UserRole.Where(m => roleList.Contains(m.Role)).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
-                                    string dispatcherWeChatIDString = "";
-                                    foreach (string userWeChatID in dispatcherWeChatIDList)
-                                    {
-                                        dispatcherWeChatIDString = dispatcherWeChatIDString + userWeChatID + "|";
-                                    }
-                                    dispatcherWeChatIDString.TrimEnd('|');
-                                    string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
+                                    dispatcherWeChatIDString = dispatcherWeChatIDString + userWeChatID + "|";
                                 }
-                               
+                                dispatcherWeChatIDString.TrimEnd('|');
+                                string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
+
                             }
                             else //摘牌任务
                             {
