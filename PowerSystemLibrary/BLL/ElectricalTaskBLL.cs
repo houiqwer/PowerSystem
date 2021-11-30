@@ -241,10 +241,8 @@ namespace PowerSystemLibrary.BLL
                                 //同时修改所有该设备未confirm的flow,这个不这么做了
                                 //List<Operation> operationList = db.Operation.Where(t => t.AHID == ah.ID && !t.IsConfirm && !t.IsFinish).ToList();
                                 //operationList.ForEach(t => t.OperationFlow = OperationFlow.低压停电任务完成);
-
-
-                                
                                 string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成，请挂现场停电牌");
+                                new LampUtil().OpenOrCloseLamp(ah, AHState.停电);
                             }
                             else if(selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.送电作业)
                             {
@@ -284,6 +282,7 @@ namespace PowerSystemLibrary.BLL
                                 dispatcherWeChatIDString.TrimEnd('|');
                                 string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
 
+                                new LampUtil().OpenOrCloseLamp(ah, AHState.正常);
                             }
                             else //摘牌任务
                             {
@@ -325,7 +324,7 @@ namespace PowerSystemLibrary.BLL
                                     dispatcherWeChatIDString.TrimEnd('|');
                                     //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                                     string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务开始");
-
+                                    new ShowLed().ShowLedMethod(ah, true);
                                 }
                                 else
                                 {
@@ -344,6 +343,8 @@ namespace PowerSystemLibrary.BLL
                                     userWeChatIDString.TrimEnd('|');
 
                                     string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name+"剩余牌数为"+ surplusCount+",牌未加完,禁止送电");
+
+                                    new ShowLed().ShowLedMethod(ah, false,surplusCount);
                                 }
                             }
                             db.SaveChanges();

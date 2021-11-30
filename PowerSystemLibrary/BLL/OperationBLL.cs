@@ -570,7 +570,11 @@ namespace PowerSystemLibrary.BLL
                         AH ah = db.AH.FirstOrDefault(t => t.ID == selectedOperation.AHID);
                         
                         selectedOperation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压挂停电牌作业 : OperationFlow.高压挂停电牌作业;
+                        selectedOperation.IsHang = true;
                         db.SaveChanges();
+
+                        int surplusCount = db.Operation.Count(t => t.AHID == selectedOperation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
+                        new ShowLed().ShowLedMethod(ah, false, surplusCount);
 
                         new LogDAO().AddLog(LogCode.挂牌, loginUser.Realname + "成功挂牌", db);
                         result = ApiResult.NewSuccessJson("成功挂牌");
@@ -656,6 +660,8 @@ namespace PowerSystemLibrary.BLL
                         string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                         string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "摘牌任务"+ notice);
 
+
+                        new ShowLed().ShowLedMethod(ah, false, surplusCount);
                         //发消息给巡检通知剩余牌数，若无剩余牌数则需要确认送电任务
                         //int surplusCount = db.Operation.Count(t => t.ID != selectedOperation.ID && t.AHID == selectedOperation.AHID && (t.IsConfirm != true && t.OperationFlow!= OperationFlow.作业终止));
                         //List<Role> roleList = RoleUtil.GetDispatcherRoleList();

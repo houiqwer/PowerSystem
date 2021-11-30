@@ -44,6 +44,7 @@ namespace PowerSystemLibrary.BLL
                         aH.AHState = AHState.正常;
                         db.AH.Add(aH);
                         db.SaveChanges();
+                        new LampUtil().OpenOrCloseLamp(aH, AHState.正常);
                         new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name, db);
                         result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name);
                         ts.Complete();
@@ -166,6 +167,8 @@ namespace PowerSystemLibrary.BLL
                     {
                         ah.ID,
                         ah.Name,
+                        ah.IP,
+                        ah.LedIP,
                         ah.PowerSubstationID,
                         PowerSubstationName = db.PowerSubstation.FirstOrDefault(t => t.ID == ah.PowerSubstationID).Name,
                         ah.VoltageType,

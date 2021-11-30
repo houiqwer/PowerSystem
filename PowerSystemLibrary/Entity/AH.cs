@@ -26,5 +26,20 @@ namespace PowerSystemLibrary.Entity
         [ExchangeType]
         public int PowerSubstationID { get; set; }
         public bool? IsDelete { get; set; }
+
+        /// <summary>
+        /// 牌的IP
+        /// </summary>
+        [Required(ErrorMessage = "请输入牌的IP")]
+        [ExchangeType]
+        public string LedIP { get; set; }
+
+        /// <summary>
+        /// 灯的IP
+        /// </summary>
+        [Required(ErrorMessage = "请输入灯的IP")]
+        [ExchangeType]
+        public string IP { get; set; }
+
     }
 }

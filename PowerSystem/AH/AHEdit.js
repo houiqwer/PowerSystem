@@ -47,6 +47,8 @@ function Init(id) {
                 $("#name").val(data.data.Name);
                 $("#voltageType").val(data.data.VoltageType);
                 $("#powerSubstation").val(data.data.PowerSubstationID);
+                $("#lampIP").val(data.data.IP);
+                $("#ledIP").val(data.data.LedIP);
             }
             else {
                 Failure(data);
@@ -71,22 +73,36 @@ function Submit() {
         return;
     }
 
+    if ($("#ledIP").val() == null || $("#ledIP").val() == "") {
+        alert("请输入led牌IP");
+        $("#ledIP").focus();
+        return;
+    }
+
+    if ($("#lampIP").val() == null || $("#lampIP").val() == "") {
+        alert("请输入灯IP");
+        $("#lampIP").focus();
+        return;
+    }
+
     if (urlID == null || urlID == '') {
-        AddAH($('#name').val(), $("#voltageType").val(), $("#powerSubstation").val());
+        AddAH($('#name').val(), $("#voltageType").val(), $("#powerSubstation").val(), $("#ledIP").val(), $("#lampIP").val());
     }
     else {
-        EditAH(urlID, $('#name').val(), $("#voltageType").val(), $("#powerSubstation").val());
+        EditAH(urlID, $('#name').val(), $("#voltageType").val(), $("#powerSubstation").val(), $("#ledIP").val(), $("#lampIP").val());
     }
 
 }
 
 
-function AddAH(Name, VoltageType, PowerSubstationID) {
+function AddAH(Name, VoltageType, PowerSubstationID,ledIP,lampIP) {
     var path = "/AH/Add";
     var data = {
         'Name': Name,
         'VoltageType': VoltageType,
-        'PowerSubstationID': PowerSubstationID
+        'PowerSubstationID': PowerSubstationID,
+        'LedIP': ledIP,
+        'IP': lampIP
     };
     if (basepost(data, path)) {
         layer.alert('添加成功！', {
@@ -100,13 +116,15 @@ function AddAH(Name, VoltageType, PowerSubstationID) {
     }
 }
 
-function EditAH(ID,Name, VoltageType, PowerSubstationID) {
+function EditAH(ID, Name, VoltageType, PowerSubstationID, ledIP, lampIP) {
     var path = "/AH/Edit";
     var data = {
         'ID': ID,
         'Name': Name,
         'VoltageType': VoltageType,
-        'PowerSubstationID': PowerSubstationID
+        'PowerSubstationID': PowerSubstationID,
+        'LedIP': ledIP,
+        'IP': lampIP
     };
     if (basepost(data, path)) {
         layer.alert('修改成功！', {

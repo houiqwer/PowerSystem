@@ -21,6 +21,14 @@ namespace PowerSystemLibrary.DAO
                 //没用并行任务
                 int surplusCount = db.Operation.Count(t => t.ID != selectedOperation.ID && t.AHID == selectedOperation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
 
+                if(surplusCount == 0)
+                {
+                    new ShowLed().ShowLedMethod(ah, true);
+                }else
+                {
+                    new ShowLed().ShowLedMethod(ah, false,surplusCount);
+                }
+
                 List<Operation> operationList = db.Operation.Where(t => !t.IsSendElectric && t.AHID == selectedOperation.AHID && (t.OperationFlow == OperationFlow.低压停电流程结束 || t.OperationFlow == OperationFlow.高压停电流程结束)).ToList();
 
                 //Operation operation = db.Operation.Where(t => t.AHID == selectedOperation.AHID && (t.OperationFlow == OperationFlow.低压停电流程结束 || t.OperationFlow == OperationFlow.高压停电流程结束)).OrderByDescending(t => t.CreateDate).FirstOrDefault();

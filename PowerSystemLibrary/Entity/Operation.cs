@@ -30,6 +30,8 @@ namespace PowerSystemLibrary.Entity
         public bool IsSendElectric { get; set; } = false;
         public OperationAudit OperationAudit { get; set; }
         public bool IsPick { get; set; } = false;
+
+        public bool IsHang { get; set; } = false;
         [NotMapped]
         public ApplicationSheet ApplicationSheet { get; set; }
 

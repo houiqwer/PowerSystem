@@ -133,6 +133,8 @@
     <Compile Include="Util\ApiResult.cs" />
     <Compile Include="Util\BaseUtil.cs" />
     <Compile Include="Util\ExceptionUtil.cs" />
+    <Compile Include="Util\LampUtil.cs" />
+    <Compile Include="Util\Led5kSDK.cs" />
     <Compile Include="Util\LoginHelper.cs" />
     <Compile Include="Enum\OperationEnum.cs" />
     <Compile Include="Enum\ApiResultEnum.cs" />
@@ -144,6 +146,7 @@
     <Compile Include="Util\RequestHelper.cs" />
     <Compile Include="Util\RoleUtil.cs" />
     <Compile Include="Util\SheetUtil.cs" />
+    <Compile Include="Util\ShowLed.cs" />
     <Compile Include="Util\WeChatAPI.cs" />
   </ItemGroup>
   <ItemGroup>
