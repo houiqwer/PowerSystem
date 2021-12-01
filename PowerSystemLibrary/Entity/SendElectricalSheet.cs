@@ -46,5 +46,11 @@ namespace PowerSystemLibrary.Entity
 
         [NotMapped]
         public string UserRealName { get; set; }
+
+        [NotMapped]
+        public string IsRemoveGroundLineName { get; set; }
+
+        [NotMapped]
+        public string IsEvacuateAllPeopleName { get; set; }
     }
 }

@@ -300,6 +300,8 @@ namespace PowerSystemLibrary.BLL
                         {
                             sendElectricalSheet.SendElectricDateString = sendElectricalSheet.SendElectricDate.ToString("yyyy-MM-dd HH:ss");
                             sendElectricalSheet.UserRealName = userList.FirstOrDefault(t => t.ID == sendElectricalSheet.UserID).Realname;
+                            sendElectricalSheet.IsEvacuateAllPeopleName = sendElectricalSheet.IsEvacuateAllPeople ? "是" : "否";
+                            sendElectricalSheet.IsRemoveGroundLineName = sendElectricalSheet.IsRemoveGroundLine ? "是" : "否";
                         }
 
                         sendElectricalTask.SendElectricalSheet = sendElectricalSheet;
