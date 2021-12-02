@@ -66,7 +66,7 @@ namespace PowerSystemLibrary.BLL
                                 }
                                 else
                                 {
-                                    operation.OperationFlow = ah.VoltageType == VoltageType.低压? OperationFlow.低压停电任务领取:OperationFlow.高压停电任务领取;
+                                    operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压停电任务领取 : OperationFlow.高压停电任务领取;
                                 }
                             }
 
@@ -83,7 +83,7 @@ namespace PowerSystemLibrary.BLL
                                 }
                             }
 
-                            if(selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.摘牌作业)
+                            if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.摘牌作业)
                             {
                                 if (selectedElectricalTask.ReciveCount == ParaUtil.MaxReciveCount)
                                 {
@@ -161,7 +161,7 @@ namespace PowerSystemLibrary.BLL
                         Operation operation = db.Operation.FirstOrDefault(t => t.ID == selectedElectricalTask.OperationID);
                         AH ah = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
                         string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
-                        if (ah.VoltageType == VoltageType.高压 && selectedElectricalTask.ElectricalTaskType!= ElectricalTaskType.摘牌作业)
+                        if (ah.VoltageType == VoltageType.高压 && selectedElectricalTask.ElectricalTaskType != ElectricalTaskType.摘牌作业)
                         {
                             OperationSheet oldOperationSheet = db.OperationSheet.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskID == selectedElectricalTask.ID);
                             if (oldOperationSheet == null)
@@ -171,7 +171,7 @@ namespace PowerSystemLibrary.BLL
                                 //{
                                 //    throw new ExceptionUtil(message);
                                 //}
-                                if(electricalTask.OperationSheet.OperationContentIDList == null || electricalTask.OperationSheet.OperationContentIDList.Count == 0)
+                                if (electricalTask.OperationSheet.OperationContentIDList == null || electricalTask.OperationSheet.OperationContentIDList.Count == 0)
                                 {
                                     throw new ExceptionUtil("请选择高压操作内容");
                                 }
@@ -201,7 +201,7 @@ namespace PowerSystemLibrary.BLL
                                 db.SaveChanges();
 
                                 //送电作业确认时审核人添加
-                                if(selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.送电作业)
+                                if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.送电作业)
                                 {
                                     if (!ClassUtil.Validate(electricalTask.SendElectricalSheet, ref message))
                                     {
@@ -218,8 +218,8 @@ namespace PowerSystemLibrary.BLL
                                     sendElectricalSheet.UserID = loginUser.ID;
                                     db.SendElectricalSheet.Add(sendElectricalSheet);
                                 }
-                                
-                            }    
+
+                            }
                         }
 
                         electricalTaskUser.Date = now;
@@ -233,7 +233,7 @@ namespace PowerSystemLibrary.BLL
                             if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.停电作业)
                             {
                                 //通知发起人检修作业
-                               
+
                                 //需要验证现场是否已停电
                                 ah.AHState = AHState.停电;
                                 operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压停电任务完成 : OperationFlow.高压停电任务完成;
@@ -241,13 +241,19 @@ namespace PowerSystemLibrary.BLL
                                 //同时修改所有该设备未confirm的flow,这个不这么做了
                                 //List<Operation> operationList = db.Operation.Where(t => t.AHID == ah.ID && !t.IsConfirm && !t.IsFinish).ToList();
                                 //operationList.ForEach(t => t.OperationFlow = OperationFlow.低压停电任务完成);
+                                string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.停电);
+                                if (lampMessage != string.Empty)
+                                {
+                                    throw new ExceptionUtil(lampMessage);
+                                }
+
                                 string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成，请挂现场停电牌");
-                                new LampUtil().OpenOrCloseLamp(ah, AHState.停电);
+
                             }
-                            else if(selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.送电作业)
+                            else if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.送电作业)
                             {
                                 //通知发起人和电工作业结束
-                               
+
                                 //需要验证现场是否已送电
                                 ah.AHState = AHState.正常;
                                 operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压送电任务完成 : OperationFlow.高压送电任务完成;
@@ -269,6 +275,12 @@ namespace PowerSystemLibrary.BLL
                                 //    userWeChatString = userWeChatString + weChatID + "|";
                                 //}
                                 //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+                                string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.正常);
+                                if (lampMessage != string.Empty)
+                                {
+                                    throw new ExceptionUtil(lampMessage);
+                                }
+
                                 string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成");
 
                                 //通知调度
@@ -282,14 +294,14 @@ namespace PowerSystemLibrary.BLL
                                 dispatcherWeChatIDString.TrimEnd('|');
                                 string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
 
-                                new LampUtil().OpenOrCloseLamp(ah, AHState.正常);
+
                             }
                             else //摘牌任务
                             {
                                 operation.IsPick = true;
                                 //判断是否有并行任务
                                 int surplusCount = db.Operation.Count(t => t.ID != operation.ID && t.AHID == operation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
-                                if(surplusCount == 0)//没有 创建送电任务给这两个电工去送电
+                                if (surplusCount == 0)//没有 创建送电任务给这两个电工去送电
                                 {
                                     db.Operation.Where(t => t.AHID == ah.ID && (t.OperationFlow == OperationFlow.低压停电流程结束 || t.OperationFlow == OperationFlow.高压停电流程结束)).ToList().ForEach(t => t.IsSendElectric = true);
                                     ElectricalTask sendElectricalTask = new ElectricalTask();
@@ -301,6 +313,11 @@ namespace PowerSystemLibrary.BLL
                                     db.ElectricalTask.Add(sendElectricalTask);
                                     db.SaveChanges();
 
+                                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true);
+                                    if (ledMessage != string.Empty)
+                                    {
+                                        throw new ExceptionUtil(ledMessage);
+                                    }
                                     //发送消息给电工 
                                     List<string> userWeChatIDList = db.User.Where(t => t.IsDelete != true && db.ElectricalTaskUser.Where(m => m.ElectricalTaskID == selectedElectricalTask.ID).Select(m => m.UserID).Contains(t.ID)).Select(t => t.WeChatID).ToList();
                                     string userWeChatIDString = "";
@@ -309,8 +326,8 @@ namespace PowerSystemLibrary.BLL
                                         userWeChatIDString = userWeChatIDString + userWeChatID + "|";
                                     }
                                     userWeChatIDString.TrimEnd('|');
-                                    
-                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "摘牌任务完成," + ah.Name+"剩余牌数为"+ surplusCount+"," + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务开始请及时处理");
+
+                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "摘牌任务完成," + ah.Name + "剩余牌数为" + surplusCount + "," + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务开始请及时处理");
                                     //db db.ElectricalTaskUser.Where(t=>t.ElectricalTaskID ==  selectedElectricalTask.ID).Select(t=>t.UserID)
 
                                     //发送消息给调度
@@ -324,13 +341,19 @@ namespace PowerSystemLibrary.BLL
                                     dispatcherWeChatIDString.TrimEnd('|');
                                     //string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                                     string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "送电任务开始");
-                                    new ShowLed().ShowLedMethod(ah, true);
+
                                 }
                                 else
                                 {
                                     operation.FinishDate = now;
                                     operation.IsFinish = true;
                                     operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压停电流程结束 : OperationFlow.高压停电流程结束;
+
+                                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
+                                    if (ledMessage != string.Empty)
+                                    {
+                                        throw new ExceptionUtil(ledMessage);
+                                    }
 
                                     //发送消息给电工 
                                     List<Role> roleList = RoleUtil.GetElectricianRoleList();
@@ -342,9 +365,7 @@ namespace PowerSystemLibrary.BLL
                                     }
                                     userWeChatIDString.TrimEnd('|');
 
-                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name+"剩余牌数为"+ surplusCount+",牌未加完,禁止送电");
-
-                                    new ShowLed().ShowLedMethod(ah, false,surplusCount);
+                                    string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, ah.Name + "剩余牌数为" + surplusCount + ",牌未加完,禁止送电");
                                 }
                             }
                             db.SaveChanges();
@@ -444,7 +465,7 @@ namespace PowerSystemLibrary.BLL
 
                     IQueryable<ElectricalTask> electricalTaskIQueryable = db.ElectricalTask.Where(t =>
                     //t.IsConfirm != true && t.ReciveCount < 2 && t.Audit == Audit.通过 &&
-                    t.IsConfirm != true && t.ReciveCount < 2 && (t.DispatcherAudit == Enum.DispatcherAudit.通过 || t.DispatcherAudit == Enum.DispatcherAudit.无需审核)  &&
+                    t.IsConfirm != true && t.ReciveCount < 2 && (t.DispatcherAudit == Enum.DispatcherAudit.通过 || t.DispatcherAudit == Enum.DispatcherAudit.无需审核) &&
                     (ahID == null || t.AHID == ahID) &&
                      db.ElectricalTaskUser.FirstOrDefault(m => m.UserID == loginUser.ID && m.ElectricalTaskID == t.ID && !m.IsBack) == null &&
                     (electricalTaskType == null || t.ElectricalTaskType == electricalTaskType) &&
@@ -562,7 +583,7 @@ namespace PowerSystemLibrary.BLL
             string message = string.Empty;
             using (TransactionScope ts = new TransactionScope())
             {
-                using(PowerSystemDBContext db = new PowerSystemDBContext())
+                using (PowerSystemDBContext db = new PowerSystemDBContext())
                 {
                     try
                     {
@@ -678,13 +699,13 @@ namespace PowerSystemLibrary.BLL
             string message = string.Empty;
             using (TransactionScope ts = new TransactionScope())
             {
-                using(PowerSystemDBContext db = new PowerSystemDBContext())
+                using (PowerSystemDBContext db = new PowerSystemDBContext())
                 {
                     try
                     {
                         DateTime now = DateTime.Now;
                         ElectricalTask selectElectricalTask = db.ElectricalTask.FirstOrDefault(t => t.ID == electricalTask.ID);
-                        if(selectElectricalTask == null)
+                        if (selectElectricalTask == null)
                         {
                             throw new ExceptionUtil("未找到" + ClassUtil.GetEntityName(new ElectricalTask()));
                         }
@@ -702,7 +723,7 @@ namespace PowerSystemLibrary.BLL
                             //{
                             //    //检查其他是否审核均通过，通过则发布停电任务并发送消息
                             //}
-                            
+
                             selectElectricalTask.AuditUserID = loginUser.ID;
                             //selectElectricalTask.Audit = Audit.通过;
                             selectElectricalTask.DispatcherAudit = Enum.DispatcherAudit.通过;
@@ -741,7 +762,7 @@ namespace PowerSystemLibrary.BLL
                             string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                             string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您的作业被驳回，原因为：" + electricalTask.AuditMessage);
 
-                            if(selectElectricalTask.ElectricalTaskType == ElectricalTaskType.停电作业)
+                            if (selectElectricalTask.ElectricalTaskType == ElectricalTaskType.停电作业)
                             {
                                 new SendDispatcherNoticeDAO().SendNotice(operation, ah, db);
                             }

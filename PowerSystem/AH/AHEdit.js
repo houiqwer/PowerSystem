@@ -47,7 +47,7 @@ function Init(id) {
                 $("#name").val(data.data.Name);
                 $("#voltageType").val(data.data.VoltageType);
                 $("#powerSubstation").val(data.data.PowerSubstationID);
-                $("#lampIP").val(data.data.IP);
+                $("#lampIP").val(data.data.LampIP);
                 $("#ledIP").val(data.data.LedIP);
             }
             else {
@@ -102,7 +102,7 @@ function AddAH(Name, VoltageType, PowerSubstationID,ledIP,lampIP) {
         'VoltageType': VoltageType,
         'PowerSubstationID': PowerSubstationID,
         'LedIP': ledIP,
-        'IP': lampIP
+        'LampIP': lampIP
     };
     if (basepost(data, path)) {
         layer.alert('添加成功！', {
@@ -124,28 +124,7 @@ function EditAH(ID, Name, VoltageType, PowerSubstationID, ledIP, lampIP) {
         'VoltageType': VoltageType,
         'PowerSubstationID': PowerSubstationID,
         'LedIP': ledIP,
-        'IP': lampIP
-    };
-    if (basepost(data, path)) {
-        layer.alert('修改成功！', {
-            time: 0, //不自动关闭
-            btn: ['确定'],
-            title: "系统提示信息",
-            yes: function (index) {
-                window.location.href = 'AHList.html';
-            }
-        });
-    }
-}
-
-
-function EditHazard(id, Name, VoltageType, PowerSubstationID) {
-    var path = "/hazard/edit";
-    var data = {
-        'ID': id,
-        'Name': Name,
-        'VoltageType': VoltageType,
-        'PowerSubstationID': PowerSubstationID
+        'LampIP': lampIP
     };
     if (basepost(data, path)) {
         layer.alert('修改成功！', {

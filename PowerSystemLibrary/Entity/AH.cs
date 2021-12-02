@@ -39,7 +39,7 @@ namespace PowerSystemLibrary.Entity
         /// </summary>
         [Required(ErrorMessage = "请输入灯的IP")]
         [ExchangeType]
-        public string IP { get; set; }
+        public string LampIP { get; set; }
 
     }
 }

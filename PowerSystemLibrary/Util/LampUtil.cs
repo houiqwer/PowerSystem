@@ -16,70 +16,85 @@ namespace PowerSystemLibrary.Util
     public class LampUtil
     {
         private static int Port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["lampPort"]);
-        public void OpenOrCloseLamp(AH ah, AHState aHState)
+        public string OpenOrCloseLamp(string lampIP, AHState aHState, bool isDebug = true)
         {
-
-            IPAddress ip = IPAddress.Parse(ah.IP);
-            Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            serverSocket.Connect(new IPEndPoint(ip, Port));
-
-            string atCmd = "AT+STACH1=1\r\n";
-            byte[] buf = new byte[0];
-            if (aHState == AHState.正常)
+            string message = string.Empty;
+            if (isDebug)
             {
-                atCmd = "AT+STACH2=0\r\n";
-                buf = StringToAsciiByte(atCmd);//===================
-                serverSocket.Send(buf);
-
-                FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs);
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":关了红灯");
-                sw.Close();
-                fs.Close();
-
-                Thread.Sleep(2000);
-
-                atCmd = "AT+STACH1=1\r\n";
-                buf = StringToAsciiByte(atCmd);//===================
-                serverSocket.Send(buf);
-
-                fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                sw = new StreamWriter(fs);
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":开了绿灯");
-                sw.Close();
-                fs.Close();
+                return message;
             }
-            else
+            try
             {
+                IPAddress ip = IPAddress.Parse(lampIP);
+                Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                serverSocket.Connect(new IPEndPoint(ip, Port));
 
-                atCmd = "AT+STACH1=0\r\n";
-                buf = StringToAsciiByte(atCmd);//===================
-                serverSocket.Send(buf);
+                string atCmd = "AT+STACH1=1\r\n";
+                byte[] buf = new byte[0];
+                if (aHState == AHState.正常)
+                {
+                    atCmd = "AT+STACH2=0\r\n";
+                    buf = StringToAsciiByte(atCmd);//===================
+                    serverSocket.Send(buf);
 
-                FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs);
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":关了绿灯");
-                sw.Close();
-                fs.Close();
+                    FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                    StreamWriter sw = new StreamWriter(fs);
+                    sw.BaseStream.Seek(0, SeekOrigin.End);
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":关了红灯");
+                    sw.Close();
+                    fs.Close();
 
-                Thread.Sleep(2000);
+                    Thread.Sleep(2000);
 
-                atCmd = "AT+STACH2=1\r\n";
-                buf = StringToAsciiByte(atCmd);//===================
-                serverSocket.Send(buf);
+                    atCmd = "AT+STACH1=1\r\n";
+                    buf = StringToAsciiByte(atCmd);//===================
+                    serverSocket.Send(buf);
 
-                fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                sw = new StreamWriter(fs);
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":开了红灯");
-                sw.Close();
-                fs.Close();
+                    fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                    sw = new StreamWriter(fs);
+                    sw.BaseStream.Seek(0, SeekOrigin.End);
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":开了绿灯");
+                    sw.Close();
+                    fs.Close();
+                }
+                else
+                {
+
+                    atCmd = "AT+STACH1=0\r\n";
+                    buf = StringToAsciiByte(atCmd);//===================
+                    serverSocket.Send(buf);
+
+                    FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                    StreamWriter sw = new StreamWriter(fs);
+                    sw.BaseStream.Seek(0, SeekOrigin.End);
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":关了绿灯");
+                    sw.Close();
+                    fs.Close();
+
+                    Thread.Sleep(2000);
+
+                    atCmd = "AT+STACH2=1\r\n";
+                    buf = StringToAsciiByte(atCmd);//===================
+                    serverSocket.Send(buf);
+
+                    fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                    sw = new StreamWriter(fs);
+                    sw.BaseStream.Seek(0, SeekOrigin.End);
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":开了红灯");
+                    sw.Close();
+                    fs.Close();
+                }
+
+                serverSocket.Dispose();
+            }
+            catch (Exception ex)
+            {
+                message = "无法连接现场报警灯。";
+
+                new DAO.LogDAO().AddLog(LogCode.系统错误, ex.Message, new DBContext.PowerSystemDBContext());
             }
 
-            serverSocket.Dispose();
+            return message;
         }
 
         static public byte[] StringToAsciiByte(string str)

@@ -44,9 +44,11 @@ namespace PowerSystemLibrary.BLL
                         aH.AHState = AHState.正常;
                         db.AH.Add(aH);
                         db.SaveChanges();
-                        new LampUtil().OpenOrCloseLamp(aH, AHState.正常);
-                        new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name, db);
-                        result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name);
+
+                        string lampMessage = new LampUtil().OpenOrCloseLamp(aH.LampIP, AHState.正常);
+                        string ledMessage = new ShowLed().ShowLedMethod(aH.LedIP, true);
+                        new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage+ ledMessage, db);
+                        result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage+ ledMessage);
                         ts.Complete();
                     }
                     catch (Exception ex)
@@ -167,7 +169,7 @@ namespace PowerSystemLibrary.BLL
                     {
                         ah.ID,
                         ah.Name,
-                        ah.IP,
+                        ah.LampIP,
                         ah.LedIP,
                         ah.PowerSubstationID,
                         PowerSubstationName = db.PowerSubstation.FirstOrDefault(t => t.ID == ah.PowerSubstationID).Name,
