@@ -68,13 +68,14 @@ namespace PowerSystem.Controllers
         /// </summary>
         /// <param name="name">变电柜名称</param>
         /// <param name="voltageType">电压类型 低压1 高压2</param>
+        /// <param name="powerSubstationID">变电所ID</param>
         /// <param name="page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet, Route("List"), LoginRequired]
-        public ApiResult List(string name = "", VoltageType? voltageType = null, int page = 1, int limit = 10)
+        public ApiResult List(string name = "", VoltageType? voltageType = null, int? powerSubstationID = null, int page = 1, int limit = 10)
         {
-            return new AHBLL().List(name, voltageType, page, limit);
+            return new AHBLL().List(name, voltageType, powerSubstationID, page, limit);
         }
 
     }

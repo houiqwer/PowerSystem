@@ -1,5 +1,6 @@
 ﻿$(function () {
     InitVoltageType();
+    InitPowerSubstation();
     Page();
     GetLayui();
 })
@@ -39,6 +40,7 @@ function Edit(id) {
 function Page() {
     var name = $("#name").val();
     var voltageType = $("#voltageType").val();
+    var powerSubstation = $("#powerSubstation").val();
 
     layui.use('table', function () {
         var table = layui.table;
@@ -46,7 +48,8 @@ function Page() {
         var hei = $('.safe-card1').height() - 51 - ssq;
         table.render({
             elem: '#table'
-            , url: '/AH/List?name=' + name + '&voltageType=' + voltageType
+            , url: '/AH/List?name=' + name + '&voltageType=' + voltageType + '&powerSubstationID=' + powerSubstation
+
             , page: true
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , headers: { "Authorization": store.userInfo.token }
@@ -112,6 +115,43 @@ function InitVoltageType() {
     })
 }
 
+function InitPowerSubstation() {
+    var data = {
+        limit: 100
+    }
+    $.ajax({
+        url: "/PowerSubstation/List",
+        type: "get",
+        data: data,
+        dataType: "json",
+        async: false,
+        beforeSend: function (XHR) {
+            XHR.setRequestHeader("Authorization", store.userInfo.token);
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                var html = "<option>所有变电所</option>";
+                for (var i = 0; i < data.data.length; i++) {
+                    html += "<option value=\"" + data.data[i].ID + "\">" + data.data[i].Name + "</option>";
+                }
+                $("#powerSubstation").html(html);
+            }
+            else {
+                Failure(data);
+            }
+        },
+        error: function () {
+            layer.ready(function () {
+                title: false
+                layer.alert("数据提交存在问题，请检查当前网络", {
+                    title: false
+                });
+            });
+        }
+    })
+}
+
+
 function Delete(id) {
     layer.confirm("确认删除？", { title: "系统提示信息" }, function (index) {
         var path = "/AH/Delete";
@@ -130,5 +170,5 @@ function Delete(id) {
             });
         }
     });
-   
+
 }

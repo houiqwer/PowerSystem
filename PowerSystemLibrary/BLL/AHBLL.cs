@@ -47,8 +47,8 @@ namespace PowerSystemLibrary.BLL
 
                         string lampMessage = new LampUtil().OpenOrCloseLamp(aH.LampIP, AHState.正常);
                         string ledMessage = new ShowLed().ShowLedMethod(aH.LedIP, true);
-                        new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage+ ledMessage, db);
-                        result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage+ ledMessage);
+                        new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage + ledMessage, db);
+                        result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage + ledMessage);
                         ts.Complete();
                     }
                     catch (Exception ex)
@@ -192,7 +192,7 @@ namespace PowerSystemLibrary.BLL
             return result;
         }
 
-        public ApiResult List(string name = "", VoltageType? voltageType = null, int page = 1, int limit = 10)
+        public ApiResult List(string name = "", VoltageType? voltageType = null, int? powerSubstationID = null, int page = 1, int limit = 10)
         {
             ApiResult result = new ApiResult();
             string message = string.Empty;
@@ -201,7 +201,7 @@ namespace PowerSystemLibrary.BLL
             {
                 try
                 {
-                    List<AH> aHList = db.AH.Where(t => t.IsDelete != true && t.Name.Contains(name) && (voltageType == null || t.VoltageType == voltageType)).OrderBy(t => t.Name).ToList();
+                    List<AH> aHList = db.AH.Where(t => t.IsDelete != true && t.Name.Contains(name) && (powerSubstationID == null || t.PowerSubstationID == powerSubstationID) && (voltageType == null || t.VoltageType == voltageType)).OrderBy(t => t.Name).ToList();
                     int total = aHList.Count;
                     aHList = aHList.Skip((page - 1) * limit).Take(limit).ToList();
                     List<int> powerSubstationIDList = aHList.Select(t => t.PowerSubstationID).Distinct().ToList();
