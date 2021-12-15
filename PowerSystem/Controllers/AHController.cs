@@ -82,7 +82,7 @@ namespace PowerSystem.Controllers
         [HttpGet,Route("ResetAllDevice")]
         public void ResetAllDevice()
         {
-            return new AHBLL().ResetAllDevice();
+            new AHBLL().ResetAllDevice();
         }
     }
 }

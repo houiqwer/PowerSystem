@@ -242,8 +242,8 @@ namespace PowerSystemLibrary.BLL
                 List<AH> ahList = db.AH.Where(t => t.IsDelete != true).ToList();
                 foreach (AH ah in ahList)
                 {
-                    string lampMessage = new LampUtil().OpenOrCloseLamp(aH.LampIP, AHState.正常, false);
-                    string ledMessage = new ShowLed().ShowLedMethod(aH.LedIP, true, 0, false);
+                    string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.正常, false);
+                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true, 0, false);
                 }
 
             }
