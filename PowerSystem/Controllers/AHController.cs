@@ -77,6 +77,12 @@ namespace PowerSystem.Controllers
         {
             return new AHBLL().List(name, voltageType, powerSubstationID, page, limit);
         }
+         
 
+        [HttpGet,Route("ResetAllDevice")]
+        public void ResetAllDevice()
+        {
+            return new AHBLL().ResetAllDevice();
+        }
     }
 }

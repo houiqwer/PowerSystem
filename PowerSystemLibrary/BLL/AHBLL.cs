@@ -233,5 +233,22 @@ namespace PowerSystemLibrary.BLL
             }
             return result;
         }
+
+
+        public void ResetAllDevice()
+        {
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                List<AH> ahList = db.AH.Where(t => t.IsDelete != true).ToList();
+                foreach (AH ah in ahList)
+                {
+                    string lampMessage = new LampUtil().OpenOrCloseLamp(aH.LampIP, AHState.正常, false);
+                    string ledMessage = new ShowLed().ShowLedMethod(aH.LedIP, true, 0, false);
+                }
+
+            }
+
+        }
+
     }
 }
