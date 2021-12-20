@@ -128,199 +128,199 @@ namespace PowerSystemLibrary.Util
 
         //E:\Program Files\WXFile\WeChat Files\wxid_fp3opqqmg8x822\FileStorage\File\2021-11\BX-5K 5MK 6K 6K-YY Font card\DEMO\Led5kSDK\Led5KSDKDemoCSharp\bin\Release
         //初始化动态库
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern void InitSdk(byte minorVer, byte majorVer);
         //释放动态库
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern void ReleaseSdk();
         //创建广播通讯模式
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern uint CreateBroadCast(byte[] broad_ip, uint broad_port, bx_5k_card_type card_type, byte[] barcode, byte Option, int mode);
         //创建固定IP通讯模式
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern uint CreateClient(byte[] led_ip, uint led_port, bx_5k_card_type card_type, int tmout_sec, int mode, CallBackClientClose pCloseFunc);
         //创建TCP Modbus通讯
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern uint CreateTcpModbus(byte[] led_ip, bx_5k_card_type card_type, CallBackClientClose pCloseFunc);
         //创建串口通讯
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern uint CreateComClient(byte com, uint baudrate, bx_5k_card_type card_type, int mode, ushort ScreenID);
         //创建串口Modbus通讯
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern uint CreateComModbus(byte com, uint baudrate, serial_parity Parity, serial_databits DataBits,
             serial_stopbits StopBits, bx_5k_card_type card_type, ushort ScreenID);
         //销毁通讯
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern void Destroy(uint dwHand);
         //设置通讯超时
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern void SetTimeout(uint dwHand, uint nSec);
         //ping
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_PING(uint dwHand);
         //复位
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_Reset(uint dwHand);
         //
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_ControllerStatus(uint dwHand, byte[] pStatus, ref ushort len);
         //查询字库信息
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_CheckCurrentFont(uint dwHand, byte[] fontStatus, ref ushort len);
         //回读客户信息
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_CheckCurrentCustomer(uint dwHand, byte[] CustomerStatus, ref ushort len);
         //参数回读
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_ReadScreen(uint dwHand, byte[] ScreenStatus, ref ushort len);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_SytemClockCorrect(uint dwHand);
         //查询固件状态
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_CheckCurrentFirmware(uint dwHand, byte[] FirmwareName, byte[] FirmwareVersion, byte[] FirmwareDateTime);
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SendFirmWareData(uint dwHand, byte overwrite, byte[] pFileName, byte[] FirmWareData, int FirmWareDataLen, CloseFunc pCloseFunc);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_FirmwareActivate(uint dwHand, byte[] FirmwareName);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_SetScreenID(uint dwHand, ushort newScreenID);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_ReadScreenID(uint dwHand, ref ushort pScreenID);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_ForceOnOff(uint dwHand, byte OnOffFlag);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_TimeTurnOnOff(uint dwHand, byte[] pTimer, int nGroup);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_SetBrightness(uint dwHand, byte BrightnessType, byte CurrentBrightness, byte[] BrightnessValue);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_SetWaitTime(uint dwHand, byte WaitTime);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_LockProgram(uint dwHand, byte LockFlag, byte StoreMode, byte[] ProgramFileName);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_DelDynamicArea(uint dwHand, byte DeleteAreaId);
 
         //动态区
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_SendDynamicArea(uint dwHand, bx_5k_area_header header, ushort TextLen, byte[] AreaText);
         //语音
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_SendSound(uint dwHand, bx_5k_sound sound, int TextLen, byte[] AreaText);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_SendSoundDynamicArea(uint dwHand, bx_5k_area_header header, ushort TextLen, byte[] AreaText, byte SoundMode, byte SoundPerson, byte SoundVolume, byte SoundSpeed, int sound_len, byte[] sounddata);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_Test(uint dwHand, byte TestTime);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SCREEN_CancelTimeOnOff(uint dwHand);
 
         #region 设置特殊动态区动态
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_SetSpecialAppDynamic(uint dwHand, ushort AreaX, ushort AreaY, ushort AreaW, ushort AreaH,
             byte DataType, byte Pagetotal, byte RunState, ushort Timeout, byte SingleLine, byte Lines_sizes, byte NewLine, ushort StayTime);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_SendPageData(uint dwHand, byte PageNum, ushort PageDataLen, byte[] PageData);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_SendLatticeMessage(uint dwHand, byte BlockFlag, ushort BlockAddr, byte[] BlockData, ushort BlockDataLen);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_DelSpecialAppDynamic(uint dwHand);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_SetIPAddress(uint dwHand, byte ConnnectMode, byte[] ip, byte[] SubnetMask, byte[] Gateway, ushort port,
             byte ServerMode, byte[] ServerIPAddress, ushort ServerPort, byte[] ServerAccessPassword, ushort HeartBeatInterval, byte[] NetID);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_SetMACAddress(uint dwHand, byte[] MAC);
 
         //设置特殊动态区动态
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_SetSpecialAppDynamic(int dwHand, ushort AreaX, ushort AreaY, ushort AreaW, ushort AreaH, byte DataType, byte Pagetotal,
             byte RunState, ushort Timeout, byte SingleLine, byte Lines_sizes, byte NewLine, ushort StayTime);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_WebSearch(uint dwHand, ref ushort Status, ref ushort Error, byte[] IP,
             byte[] SubNetMask, byte[] Gate, ref ushort Port, byte[] Mac, byte[] NetID);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_DelPageData(uint dwHand, byte PageLog);
         #endregion
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_Formatting(uint dwHand);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_DeleteFile(uint dwHand, ushort FileNumber, byte[] pFileNameList);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_BeginSendMultiFiles(uint dwHand);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SendFile(uint dwHand, byte overwrite, byte[] pFilePath);
         //发送节目
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SendFileData(uint dwHand, byte overwrite, byte[] pFileName, ushort DisplayType, byte PlayTimes,
             byte[] ProgramLife, byte ProgramWeek, byte ProgramTime, byte[] Period, byte AreaNum, byte[] AreaDataList, int AreaDataListLen);
 
         //添加扫描
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SendScanData(uint dwHand, byte overwrite, byte[] pFileName, byte[] ScanData, int ScanDataLen);
 
         //添加字库
         public delegate void CloseFunc(int total, int sendlen);
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SendFontData(uint dwHand, byte overwrite, byte[] pFileName, byte FontWidth, byte FontHeight,
             byte[] LibData, int LibData_len, byte FontEncode, CloseFunc pCloseFunc);
 
         //设置屏参
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SendScreenData(uint dwHand, byte overwrite, byte[] pFileName, ushort Address, byte Baudrate,
             ushort ScreenWith, ushort ScreenHeight, byte Color, byte MirrorMode, byte OE, byte DA, byte RowOrder, byte FreqPar,
             byte OEAngle, byte CommTimeout, byte TipLanguage, byte LatticeMode);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_EndSendMultiFiles(uint dwHand);
 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int CON_SetDispInfo(uint dwHand, byte DispInfo);
 
         //设置客户信息
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int OFS_SetFontInformation(uint dwHand, byte OverWrite, byte[] ClientMsg);
 
         public delegate void CallBackCon(uint dwHand, string pid);
         public delegate void CallBackLedClose(uint dwHand, string pid, int err_code);
         //启动gprs服务器
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern bool StartGprsServer(uint port, CallBackCon pCallBackCon, CallBackLedClose pCallBackLedClose);
         //关闭gprs服务器                 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern void CloseGprsServer();
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern void SetGprsAliveTick(uint dwHand, int time_sec);
 
         //扫描
         //返回值：0：发送数据正确；ERR_TIMEOUT：通讯超时；其它：返回错误代码。
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SendAndRecvBuff(uint dwHand, byte cmd_group, byte cmd, byte[] cmd_data, ushort data_len, byte[] recv_data, ref short p_recv_len);
         //返回值：0：发送数据正确；ERR_TIMEOUT：通讯超时；其它：返回错误代码。
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int SendBuff(uint dwHand, byte cmd_group, byte cmd, byte[] cmd_data, ushort data_len);
         // 网络搜索 
-        [DllImport(@"Led5kSDK.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"E:\Led5kSDK.dll", CharSet = CharSet.Unicode)]
         public static extern int BX5MK_WebSearch(uint dwHand, byte[] recv_buff, ushort[] recv_len);
     }
 

@@ -16,7 +16,7 @@ namespace PowerSystemLibrary.Util
     public class LampUtil
     {
         private static int Port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["lampPort"]);
-        public string OpenOrCloseLamp(string lampIP, AHState aHState, bool isDebug = true)
+        public string OpenOrCloseLamp(string lampIP, AHState aHState, bool isDebug = false)
         {
             string message = string.Empty;
             if (isDebug)
@@ -37,25 +37,12 @@ namespace PowerSystemLibrary.Util
                     buf = StringToAsciiByte(atCmd);//===================
                     serverSocket.Send(buf);
 
-                    FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                    StreamWriter sw = new StreamWriter(fs);
-                    sw.BaseStream.Seek(0, SeekOrigin.End);
-                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":关了红灯");
-                    sw.Close();
-                    fs.Close();
-
                     Thread.Sleep(2000);
 
                     atCmd = "AT+STACH1=1\r\n";
                     buf = StringToAsciiByte(atCmd);//===================
                     serverSocket.Send(buf);
-
-                    fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                    sw = new StreamWriter(fs);
-                    sw.BaseStream.Seek(0, SeekOrigin.End);
-                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":开了绿灯");
-                    sw.Close();
-                    fs.Close();
+                
                 }
                 else
                 {
@@ -63,26 +50,13 @@ namespace PowerSystemLibrary.Util
                     atCmd = "AT+STACH1=0\r\n";
                     buf = StringToAsciiByte(atCmd);//===================
                     serverSocket.Send(buf);
-
-                    FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                    StreamWriter sw = new StreamWriter(fs);
-                    sw.BaseStream.Seek(0, SeekOrigin.End);
-                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":关了绿灯");
-                    sw.Close();
-                    fs.Close();
+                  
 
                     Thread.Sleep(2000);
 
                     atCmd = "AT+STACH2=1\r\n";
                     buf = StringToAsciiByte(atCmd);//===================
                     serverSocket.Send(buf);
-
-                    fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                    sw = new StreamWriter(fs);
-                    sw.BaseStream.Seek(0, SeekOrigin.End);
-                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":开了红灯");
-                    sw.Close();
-                    fs.Close();
                 }
 
                 serverSocket.Dispose();

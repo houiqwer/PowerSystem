@@ -79,10 +79,16 @@ namespace PowerSystem.Controllers
         }
          
 
-        [HttpGet,Route("ResetAllDevice")]
-        public void ResetAllDevice()
+        [HttpGet,Route("ResetAllDeviceLed")]
+        public void ResetAllDeviceLed()
         {
-            new AHBLL().ResetAllDevice();
+            new AHBLL().ResetAllDeviceLed();
+        }
+
+        [HttpGet, Route("ResetAllDeviceLamp")]
+        public void ResetAllDeviceLamp()
+        {
+            new AHBLL().ResetAllDeviceLamp();
         }
     }
 }

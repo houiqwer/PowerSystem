@@ -235,7 +235,27 @@ namespace PowerSystemLibrary.BLL
         }
 
 
-        public void ResetAllDevice()
+        public void ResetAllDeviceLed()
+        {
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+                List<AH> ahList = db.AH.Where(t => t.IsDelete != true).ToList();
+                foreach (AH ah in ahList)
+                {
+                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true, 0, false);
+                    if (!string.IsNullOrEmpty(ledMessage))
+                    {
+                        new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":屏无法初始化", db);
+                    }else
+                    {
+                        new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":屏正常", db);
+                    }
+                }
+
+            }
+        }
+
+        public void ResetAllDeviceLamp()
         {
             using (PowerSystemDBContext db = new PowerSystemDBContext())
             {
@@ -247,15 +267,13 @@ namespace PowerSystemLibrary.BLL
                     {
                         new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":灯无法初始化", db);
                     }
-                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true, 0, false);
-                    if (!string.IsNullOrEmpty(ledMessage))
+                    else
                     {
-                        new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":屏无法初始化", db);
+                        new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":灯正常", db);
                     }
                 }
 
             }
-
         }
 
     }

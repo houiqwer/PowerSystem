@@ -70,12 +70,6 @@ namespace PowerSystemLibrary.Util
                             //失败
                             message = "修改LED灯牌状态失败，失败码:" + err;
                         }
-                        FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                        StreamWriter sw = new StreamWriter(fs);
-                        sw.BaseStream.Seek(0, SeekOrigin.End);
-                        sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":正常工作");
-                        sw.Close();
-                        fs.Close();
                     }
                     else
                     {
@@ -97,14 +91,7 @@ namespace PowerSystemLibrary.Util
                         {
                             //失败
                             message = "修改LED灯牌状态失败，失败码:" + err + "。";
-                        }
-
-                        FileStream fs = new FileStream(@"D:\\LampTest.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                        StreamWriter sw = new StreamWriter(fs);
-                        sw.BaseStream.Seek(0, SeekOrigin.End);
-                        sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ":还剩" + BrandCount + "块牌，牌未加完禁止送电");
-                        sw.Close();
-                        fs.Close();
+                        }                    
                     }
 
 
