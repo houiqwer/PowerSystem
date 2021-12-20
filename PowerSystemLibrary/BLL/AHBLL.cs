@@ -243,7 +243,15 @@ namespace PowerSystemLibrary.BLL
                 foreach (AH ah in ahList)
                 {
                     string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.正常, false);
+                    if (!string.IsNullOrEmpty(lampMessage))
+                    {
+                        new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":灯无法初始化", db);
+                    }
                     string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true, 0, false);
+                    if (!string.IsNullOrEmpty(ledMessage))
+                    {
+                        new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":屏无法初始化", db);
+                    }
                 }
 
             }
