@@ -1,4 +1,6 @@
-﻿using PowerSystemLibrary.Entity;
+﻿using PowerSystemLibrary.DAO;
+using PowerSystemLibrary.Entity;
+using PowerSystemLibrary.Enum;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +15,7 @@ namespace PowerSystemLibrary.Util
     public class ShowLed
     {
 
-        public string ShowLedMethod(string ip, bool IsNormal = false, int BrandCount = 0, bool isDebug = true)
+        public string ShowLedMethod(string ip, bool IsNormal = false, int BrandCount = 0, bool isDebug = false)
         {
             string message = "";
             if (isDebug)
@@ -22,9 +24,16 @@ namespace PowerSystemLibrary.Util
             }
             try
             {
+                new LogDAO().AddLog(LogCode.系统测试, "进入：" + ip + IsNormal, new DBContext.PowerSystemDBContext());
+
                 Encoding encoding = Encoding.GetEncoding("GB2312");
                 InitSdk(2, 2);
+
+                new LogDAO().AddLog(LogCode.系统测试, "初始化成功", new DBContext.PowerSystemDBContext());
+
                 Connect(ip);
+                new LogDAO().AddLog(LogCode.系统测试, "连接成功：" + ip, new DBContext.PowerSystemDBContext());
+
                 if (m_dwCurHand == 0)
                 {
                     //失败
@@ -81,17 +90,19 @@ namespace PowerSystemLibrary.Util
                         m_Program2.m_arealist.Add(AddArea(@"\C3牌\C3未\C3加\C3完\n\C3禁\C3止\C3送\C3电"));
 
                         int err = m_Program.SendProgram(m_dwCurHand);
+                        new LogDAO().AddLog(LogCode.系统测试, "修改led文字：" + err, new DBContext.PowerSystemDBContext());
+
                         if (err != 0)
                         {
                             //失败
                             message = "修改LED灯牌状态失败，失败码:" + err + "。";
                         }
-                        err = m_Program2.SendProgram(m_dwCurHand);
-                        if (err != 0)
-                        {
-                            //失败
-                            message = "修改LED灯牌状态失败，失败码:" + err + "。";
-                        }                    
+                        //err = m_Program2.SendProgram(m_dwCurHand);
+                        //if (err != 0)
+                        //{
+                        //    //失败
+                        //    message = "修改LED灯牌状态失败，失败码:" + err + "。";
+                        //}
                     }
 
 

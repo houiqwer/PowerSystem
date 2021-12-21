@@ -230,6 +230,8 @@ namespace PowerSystemLibrary.BLL
                         if (db.ElectricalTaskUser.Count(t => t.IsConfirm && t.ElectricalTaskID == selectedElectricalTask.ID && !t.IsBack) == ParaUtil.MaxReciveCount)
                         {
                             selectedElectricalTask.IsConfirm = true;
+                            int surplusCount1 = db.Operation.Count(t => t.ID != operation.ID && t.AHID == operation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
+
                             if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.停电作业)
                             {
                                 //通知发起人检修作业
@@ -242,9 +244,17 @@ namespace PowerSystemLibrary.BLL
                                 //List<Operation> operationList = db.Operation.Where(t => t.AHID == ah.ID && !t.IsConfirm && !t.IsFinish).ToList();
                                 //operationList.ForEach(t => t.OperationFlow = OperationFlow.低压停电任务完成);
                                 string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.停电);
+
                                 if (lampMessage != string.Empty)
                                 {
                                     throw new ExceptionUtil(lampMessage);
+                                }
+
+                                new LogDAO().AddLog(LogCode.系统测试, ah.ID + "停电任务完成：" + (surplusCount1 + 1), db);
+                                string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount1 + 1);
+                                if (ledMessage != string.Empty)
+                                {
+                                    throw new ExceptionUtil(ledMessage);
                                 }
 
                                 string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成，请挂现场停电牌");
