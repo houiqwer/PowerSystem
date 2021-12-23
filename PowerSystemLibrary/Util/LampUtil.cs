@@ -28,35 +28,46 @@ namespace PowerSystemLibrary.Util
                 IPAddress ip = IPAddress.Parse(lampIP);
                 Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 serverSocket.Connect(new IPEndPoint(ip, Port));
-
-                string atCmd = "AT+STACH1=1\r\n";
+                serverSocket.SendTimeout = 10000;
+                string atCmd = string.Empty;
                 byte[] buf = new byte[0];
                 if (aHState == AHState.正常)
                 {
+                    //Thread.Sleep(2000);
+
+                    atCmd = "AT+STACH1=0\r\n";
+                    buf = StringToAsciiByte(atCmd);
+                    serverSocket.Send(buf);//===================
+                    //await Task.Run(() => serverSocket.Send(buf));
+                    //new DAO.LogDAO().AddLog(LogCo
+                    //de.系统测试, "关绿灯", new DBContext.PowerSystemDBContext());
+                    Thread.Sleep(2000);
+
+                    //红灯
+                    atCmd = "AT+STACH2=1\r\n";
+                    buf = StringToAsciiByte(atCmd);
+                    serverSocket.Send(buf);//===================
+                    Thread.Sleep(2000);
+                    //await Task.Run(() => serverSocket.Send(buf));
+                    //new DAO.LogDAO().AddLog(LogCode.系统测试, "开红灯", new DBContext.PowerSystemDBContext());
+                }
+                else if (aHState == AHState.停电)
+                {
+                    //Thread.Sleep(2000);
+
                     atCmd = "AT+STACH2=0\r\n";
                     buf = StringToAsciiByte(atCmd);//===================
                     serverSocket.Send(buf);
-
+                    //await Task.Run(() => serverSocket.Send(buf));
+                    //new DAO.LogDAO().AddLog(LogCode.系统测试, "关红灯", new DBContext.PowerSystemDBContext());
                     Thread.Sleep(2000);
-
+                    //绿灯
                     atCmd = "AT+STACH1=1\r\n";
-                    buf = StringToAsciiByte(atCmd);//===================
+                    buf = StringToAsciiByte(atCmd);
                     serverSocket.Send(buf);
-                
-                }
-                else
-                {
-
-                    atCmd = "AT+STACH1=0\r\n";
-                    buf = StringToAsciiByte(atCmd);//===================
-                    serverSocket.Send(buf);
-                  
-
                     Thread.Sleep(2000);
-
-                    atCmd = "AT+STACH2=1\r\n";
-                    buf = StringToAsciiByte(atCmd);//===================
-                    serverSocket.Send(buf);
+                    // await Task.Run(() => serverSocket.Send(buf));
+                    //new DAO.LogDAO().AddLog(LogCode.系统测试, "开绿灯", new DBContext.PowerSystemDBContext());
                 }
 
                 serverSocket.Dispose();

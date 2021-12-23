@@ -77,9 +77,9 @@ namespace PowerSystem.Controllers
         {
             return new AHBLL().List(name, voltageType, powerSubstationID, page, limit);
         }
-         
 
-        [HttpGet,Route("ResetAllDeviceLed")]
+
+        [HttpGet, Route("ResetAllDeviceLed")]
         public void ResetAllDeviceLed()
         {
             new AHBLL().ResetAllDeviceLed();
@@ -89,6 +89,13 @@ namespace PowerSystem.Controllers
         public void ResetAllDeviceLamp()
         {
             new AHBLL().ResetAllDeviceLamp();
+        }
+
+
+        [HttpGet, Route("ResetLamp")]
+        public void ResetLamp(string ip, AHState ahSrate = AHState.正常)
+        {
+            new AHBLL().ResetLamp(ip, ahSrate);
         }
     }
 }

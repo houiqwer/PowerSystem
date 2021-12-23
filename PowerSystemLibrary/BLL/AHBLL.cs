@@ -46,7 +46,7 @@ namespace PowerSystemLibrary.BLL
                         db.SaveChanges();
 
                         string lampMessage = new LampUtil().OpenOrCloseLamp(aH.LampIP, AHState.正常);
-                        string ledMessage = new ShowLed().ShowLedMethod(aH.LedIP, true);
+                        string ledMessage = new ShowLed().ShowLedMethod(aH.LedIP, LEDState.正常);
                         new LogDAO().AddLog(LogCode.添加, "成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage + ledMessage, db);
                         result = ApiResult.NewSuccessJson("成功添加" + ClassUtil.GetEntityName(aH) + ":" + aH.Name + lampMessage + ledMessage);
                         ts.Complete();
@@ -242,11 +242,12 @@ namespace PowerSystemLibrary.BLL
                 List<AH> ahList = db.AH.Where(t => t.IsDelete != true).ToList();
                 foreach (AH ah in ahList)
                 {
-                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true, 0, false);
+                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, LEDState.正常, 0, false);
                     if (!string.IsNullOrEmpty(ledMessage))
                     {
                         new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":屏无法初始化", db);
-                    }else
+                    }
+                    else
                     {
                         new LogDAO().AddLog(LogCode.系统测试, ah.ID + ":屏正常", db);
                     }
@@ -273,6 +274,23 @@ namespace PowerSystemLibrary.BLL
                     }
                 }
 
+            }
+        }
+
+        public void ResetLamp(string ip, AHState ahSrate = AHState.正常)
+        {
+            using (PowerSystemDBContext db = new PowerSystemDBContext())
+            {
+
+                string lampMessage = new LampUtil().OpenOrCloseLamp(ip, ahSrate, false);
+                if (!string.IsNullOrEmpty(lampMessage))
+                {
+                    new LogDAO().AddLog(LogCode.系统测试, ip + ":灯无法初始化", db);
+                }
+                else
+                {
+                    new LogDAO().AddLog(LogCode.系统测试, ip + ":灯正常", db);
+                }
             }
         }
 

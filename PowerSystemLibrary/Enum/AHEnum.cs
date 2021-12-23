@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 
 namespace PowerSystemLibrary.Enum
 {
-   
+
     public enum AHState
     {
         正常 = 0,
         停电 = 1,
         掉线 = 99
+    }
+
+    public enum LEDState
+    {
+        正常 = 0,
+        摘牌 = 1,
+        未送电 = 99
     }
 
     public enum VoltageType

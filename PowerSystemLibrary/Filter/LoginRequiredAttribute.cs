@@ -68,6 +68,7 @@ namespace PowerSystemLibrary.Filter
 
                     if (user.Expire < DateTime.Now)
                     {
+                        new DAO.LogDAO().AddLog(LogCode.登陆错误, user.Realname + "登陆验证过期：" + user.Expire.Value.ToLongDateString(), db);
                         throw new ExceptionUtil("登陆超时，请重新登陆");
                     }
 

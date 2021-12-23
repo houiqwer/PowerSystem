@@ -15,7 +15,7 @@ namespace PowerSystemLibrary.Util
     public class ShowLed
     {
 
-        public string ShowLedMethod(string ip, bool IsNormal = false, int BrandCount = 0, bool isDebug = false)
+        public string ShowLedMethod(string ip, LEDState LEDState, int BrandCount = 0, bool isDebug = false)
         {
             string message = "";
             if (isDebug)
@@ -24,15 +24,15 @@ namespace PowerSystemLibrary.Util
             }
             try
             {
-                new LogDAO().AddLog(LogCode.系统测试, "进入：" + ip + IsNormal, new DBContext.PowerSystemDBContext());
+                //new LogDAO().AddLog(LogCode.系统测试, "进入：" + ip + IsNormal, new DBContext.PowerSystemDBContext());
 
                 Encoding encoding = Encoding.GetEncoding("GB2312");
                 InitSdk(2, 2);
 
-                new LogDAO().AddLog(LogCode.系统测试, "初始化成功", new DBContext.PowerSystemDBContext());
+                //new LogDAO().AddLog(LogCode.系统测试, "初始化成功", new DBContext.PowerSystemDBContext());
 
                 Connect(ip);
-                new LogDAO().AddLog(LogCode.系统测试, "连接成功：" + ip, new DBContext.PowerSystemDBContext());
+                //new LogDAO().AddLog(LogCode.系统测试, "连接成功：" + ip, new DBContext.PowerSystemDBContext());
 
                 if (m_dwCurHand == 0)
                 {
@@ -69,7 +69,7 @@ namespace PowerSystemLibrary.Util
                     //添加正常工作
                     //string message = @"\C2正\C2常\C2工\C2作";
 
-                    if (IsNormal)
+                    if (LEDState == LEDState.正常)
                     {
                         m_Program.m_arealist.Add(AddArea(@"\C2正\C2常\C2工\C2作"));
 
@@ -80,7 +80,7 @@ namespace PowerSystemLibrary.Util
                             message = "修改LED灯牌状态失败，失败码:" + err;
                         }
                     }
-                    else
+                    else if(LEDState == LEDState.摘牌)
                     {
                         m_Program.m_arealist = new System.Collections.Generic.List<Led5kstaticArea>();
                         m_Program2.m_arealist = new System.Collections.Generic.List<Led5kstaticArea>();
@@ -90,8 +90,7 @@ namespace PowerSystemLibrary.Util
                         m_Program2.m_arealist.Add(AddArea(@"\C3牌\C3未\C3加\C3完\n\C3禁\C3止\C3送\C3电"));
 
                         int err = m_Program.SendProgram(m_dwCurHand);
-                        new LogDAO().AddLog(LogCode.系统测试, "修改led文字：" + err, new DBContext.PowerSystemDBContext());
-
+                 
                         if (err != 0)
                         {
                             //失败
@@ -104,19 +103,20 @@ namespace PowerSystemLibrary.Util
                         //    message = "修改LED灯牌状态失败，失败码:" + err + "。";
                         //}
                     }
-
-
-                    //if (err != 0)
-                    //{
-                    //    //失败
-                    //}
-                    //Thread.Sleep(10000);
-
-
-                    // OFS_DeleteFile(m_dwCurHand, 0, null);
-
-
-
+                    else if (LEDState == LEDState.未送电)
+                    {
+                        m_Program.m_arealist = new System.Collections.Generic.List<Led5kstaticArea>();
+                      
+                        m_Program.m_arealist.Add(AddArea(string.Format(@"\C3牌\C3已\C3摘\C3完\n\C3未\C3送\C3电", BrandCount)));
+                    
+                        int err = m_Program.SendProgram(m_dwCurHand);
+                   
+                        if (err != 0)
+                        {
+                            //失败
+                            message = "修改LED灯牌状态失败，失败码:" + err + "。";
+                        }                       
+                    }
                     Destroy(m_dwCurHand);
                 }
             }

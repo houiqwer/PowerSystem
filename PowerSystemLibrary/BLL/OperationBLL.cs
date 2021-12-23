@@ -350,7 +350,7 @@ namespace PowerSystemLibrary.BLL
                             applicationSheet.ID,
                             //applicationSheet.WorkContent,
                             WorkContent = System.Enum.GetName(typeof(WorkContentType), applicationSheet.WorkContentType),
-                            AuditUserName = db.User.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname,
+                            AuditUserName = userList.FirstOrDefault(t => t.ID == applicationSheet.AuditUserID).Realname,
                             applicationSheet.AuditMessage,
                             AuditDate = applicationSheet.AuditDate.HasValue ? applicationSheet.AuditDate.Value.ToString("yyyy-MM-dd HH:mm") : null,
                             user.Realname,
@@ -577,10 +577,16 @@ namespace PowerSystemLibrary.BLL
 
                         int surplusCount = db.Operation.Count(t => t.AHID == selectedOperation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
 
-                        string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
-                        if (ledMessage!=string.Empty)
+                        //string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
+                        //if (ledMessage!=string.Empty)
+                        //{
+                        //    throw new ExceptionUtil(ledMessage);
+                        //}
+                        string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.停电);
+
+                        if (lampMessage != string.Empty)
                         {
-                            throw new ExceptionUtil(ledMessage);
+                            throw new ExceptionUtil(lampMessage);
                         }
 
                         new LogDAO().AddLog(LogCode.挂牌, loginUser.Realname + "成功挂牌", db);
@@ -653,13 +659,19 @@ namespace PowerSystemLibrary.BLL
                         db.SaveChanges();
 
                         int surplusCount = db.Operation.Count(t => t.AHID == selectedOperation.AHID && (t.IsPick != true && t.OperationFlow != OperationFlow.作业终止));
-                        string notice = ",剩余牌数为" + surplusCount + ",牌未加完,禁止送电";
+                        string notice = ",剩余牌数为" + surplusCount + ",牌未取完,禁止送电";
 
-                        string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
-                        if (ledMessage != string.Empty)
-                        {
-                            throw new ExceptionUtil(ledMessage);
-                        }
+                        //string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
+                        //if (ledMessage != string.Empty)
+                        //{
+                        //    throw new ExceptionUtil(ledMessage);
+                        //}
+
+                        //string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.正常);
+                        //if (lampMessage != string.Empty)
+                        //{
+                        //    throw new ExceptionUtil(lampMessage);
+                        //}
 
                         //发消息给所有电工
                         List<Role> roleList = RoleUtil.GetElectricianRoleList();
@@ -673,6 +685,7 @@ namespace PowerSystemLibrary.BLL
                         string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
                         string resultMessage = WeChatAPI.SendMessage(accessToken, userWeChatIDString, ParaUtil.MessageAgentid, "有新的" + ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "摘牌任务" + notice);
 
+                     
 
                         //new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
                         //发消息给巡检通知剩余牌数，若无剩余牌数则需要确认送电任务
@@ -1146,9 +1159,9 @@ namespace PowerSystemLibrary.BLL
                         Cell4.SetCellValue(createUser.Realname);
 
                         //停电原因(变电柜+高低压)
-                        Cell5.SetCellValue(ah.Name + "(" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ")");
+                       // Cell5.SetCellValue(ah.Name + "(" + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + ")");
 
-
+                        Cell5.SetCellValue(System.Enum.GetName(typeof(WorkContentType), applicationSheet.WorkContentType));
                         //申请单
                         if (applicationSheet.Audit == Audit.驳回)
                         {

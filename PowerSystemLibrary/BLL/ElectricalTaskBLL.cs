@@ -243,15 +243,15 @@ namespace PowerSystemLibrary.BLL
                                 //同时修改所有该设备未confirm的flow,这个不这么做了
                                 //List<Operation> operationList = db.Operation.Where(t => t.AHID == ah.ID && !t.IsConfirm && !t.IsFinish).ToList();
                                 //operationList.ForEach(t => t.OperationFlow = OperationFlow.低压停电任务完成);
-                                string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.停电);
+                                //string lampMessage = new LampUtil().OpenOrCloseLamp(ah.LampIP, AHState.停电);
 
-                                if (lampMessage != string.Empty)
-                                {
-                                    throw new ExceptionUtil(lampMessage);
-                                }
+                                //if (lampMessage != string.Empty)
+                                //{
+                                //    throw new ExceptionUtil(lampMessage);
+                                //}
 
                                 new LogDAO().AddLog(LogCode.系统测试, ah.ID + "停电任务完成：" + (surplusCount1 + 1), db);
-                                string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount1 + 1);
+                                string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, LEDState.摘牌, surplusCount1 + 1);
                                 if (ledMessage != string.Empty)
                                 {
                                     throw new ExceptionUtil(ledMessage);
@@ -291,6 +291,11 @@ namespace PowerSystemLibrary.BLL
                                     throw new ExceptionUtil(lampMessage);
                                 }
 
+                                string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, LEDState.正常);
+                                if (ledMessage != string.Empty)
+                                {
+                                    throw new ExceptionUtil(ledMessage);
+                                }
                                 string resultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, "您申请的" + ah.Name + ClassUtil.GetEntityName(operation) + System.Enum.GetName(typeof(ElectricalTaskType), selectedElectricalTask.ElectricalTaskType) + "已完成");
 
                                 //通知调度
@@ -303,7 +308,8 @@ namespace PowerSystemLibrary.BLL
                                 }
                                 dispatcherWeChatIDString.TrimEnd('|');
                                 string dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, dispatcherWeChatIDString, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
-
+                                //通知本人
+                                dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
 
                             }
                             else //摘牌任务
@@ -323,7 +329,7 @@ namespace PowerSystemLibrary.BLL
                                     db.ElectricalTask.Add(sendElectricalTask);
                                     db.SaveChanges();
 
-                                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, true);
+                                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, LEDState.未送电, surplusCount);
                                     if (ledMessage != string.Empty)
                                     {
                                         throw new ExceptionUtil(ledMessage);
@@ -359,7 +365,7 @@ namespace PowerSystemLibrary.BLL
                                     operation.IsFinish = true;
                                     operation.OperationFlow = ah.VoltageType == VoltageType.低压 ? OperationFlow.低压停电流程结束 : OperationFlow.高压停电流程结束;
 
-                                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, false, surplusCount);
+                                    string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, LEDState.摘牌, surplusCount);
                                     if (ledMessage != string.Empty)
                                     {
                                         throw new ExceptionUtil(ledMessage);
