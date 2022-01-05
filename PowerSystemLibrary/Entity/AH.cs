@@ -41,5 +41,18 @@ namespace PowerSystemLibrary.Entity
         [ExchangeType]
         public string LampIP { get; set; }
 
+        /// 电柜接电的地址号
+        /// </summary>
+        [Required(ErrorMessage = "请输入电柜接电对应的网关IP")]
+        [ExchangeType]
+        public string ElectricityGatewayIP { get; set; }
+
+        /// <summary>
+        /// 电柜接电的地址号
+        /// </summary>
+        [Required(ErrorMessage = "请输入电柜接电对应的地址号")]
+        [ExchangeType]
+        public int ElectricityAddress { get; set; }
+
     }
 }

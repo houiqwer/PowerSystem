@@ -15,7 +15,7 @@ namespace PowerSystemLibrary.Util
     public class ShowLed
     {
 
-        public string ShowLedMethod(string ip, LEDState LEDState, int BrandCount = 0, bool isDebug = false)
+        public string ShowLedMethod(string ip, LEDState LEDState, int BrandCount = 0, bool isDebug = true)
         {
             string message = "";
             if (isDebug)

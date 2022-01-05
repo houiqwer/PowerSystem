@@ -135,6 +135,7 @@
     <Compile Include="Filter\LoginRequiredAttribute.cs" />
     <Compile Include="Util\ApiResult.cs" />
     <Compile Include="Util\BaseUtil.cs" />
+    <Compile Include="Util\ElectricityUtil.cs" />
     <Compile Include="Util\ExceptionUtil.cs" />
     <Compile Include="Util\LampUtil.cs" />
     <Compile Include="Util\Led5kSDK.cs" />

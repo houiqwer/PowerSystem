@@ -161,6 +161,26 @@ namespace PowerSystemLibrary.BLL
                         Operation operation = db.Operation.FirstOrDefault(t => t.ID == selectedElectricalTask.OperationID);
                         AH ah = db.AH.FirstOrDefault(t => t.ID == operation.AHID);
                         string accessToken = WeChatAPI.GetToken(ParaUtil.CorpID, ParaUtil.MessageSecret);
+
+
+                        //先看电柜状态
+                        if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.停电作业)
+                        {
+                            if (new ElectricityUtil().IsElectricityOn(ref message, ah.ElectricityGatewayIP, ah.ElectricityAddress))
+                            {
+                                throw new ExceptionUtil(string.IsNullOrEmpty(message) ? "请先在变电柜停电后再确认完成" : message);
+                            }
+
+                        }
+
+                        if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.送电作业)
+                        {
+                            if (!new ElectricityUtil().IsElectricityOn(ref message, ah.ElectricityGatewayIP, ah.ElectricityAddress))
+                            {
+                                throw new ExceptionUtil(string.IsNullOrEmpty(message) ? "请先在变电柜送电后再确认完成" : message);
+                            }
+                        }
+
                         if (ah.VoltageType == VoltageType.高压 && selectedElectricalTask.ElectricalTaskType != ElectricalTaskType.摘牌作业)
                         {
                             OperationSheet oldOperationSheet = db.OperationSheet.FirstOrDefault(t => t.OperationID == operation.ID && t.ElectricalTaskID == selectedElectricalTask.ID);
@@ -312,7 +332,7 @@ namespace PowerSystemLibrary.BLL
                                 dispatcherResultMessage = WeChatAPI.SendMessage(accessToken, db.User.FirstOrDefault(t => t.ID == operation.UserID).WeChatID, ParaUtil.MessageAgentid, ah.Name + System.Enum.GetName(typeof(VoltageType), ah.VoltageType) + "恢复送电");
 
                             }
-                            else //摘牌任务
+                            else if (selectedElectricalTask.ElectricalTaskType == ElectricalTaskType.摘牌作业)//摘牌任务
                             {
                                 operation.IsPick = true;
                                 //判断是否有并行任务

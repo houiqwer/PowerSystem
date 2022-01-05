@@ -176,6 +176,8 @@ namespace PowerSystemLibrary.BLL
                         ah.VoltageType,
                         VoltageTypeName = System.Enum.GetName(typeof(VoltageType), ah.VoltageType),
                         ah.AHState,
+                        ah.ElectricityGatewayIP,
+                        ah.ElectricityAddress,
                         AHStateName = System.Enum.GetName(typeof(AHState), ah.AHState)
 
                     });

@@ -49,6 +49,8 @@ function Init(id) {
                 $("#powerSubstation").val(data.data.PowerSubstationID);
                 $("#lampIP").val(data.data.LampIP);
                 $("#ledIP").val(data.data.LedIP);
+                $("#electricityGatewayIP").val(data.data.ElectricityGatewayIP);
+                $("#electricityAddress").val(data.data.ElectricityAddress);
             }
             else {
                 Failure(data);
@@ -85,24 +87,38 @@ function Submit() {
         return;
     }
 
+    if ($("#electricityGatewayIP").val() == null || $("#electricityGatewayIP").val() == "") {
+        alert("请输入网关IP");
+        $("#electricityGatewayIP").focus();
+        return;
+    }
+
+    if ($("#electricityAddress").val() == null || $("#electricityAddress").val() == "") {
+        alert("请输入网关地址");
+        $("#electricityAddress").focus();
+        return;
+    }
+
     if (urlID == null || urlID == '') {
-        AddAH($('#name').val(), $("#voltageType").val(), $("#powerSubstation").val(), $("#ledIP").val(), $("#lampIP").val());
+        AddAH($('#name').val(), $("#voltageType").val(), $("#powerSubstation").val(), $("#ledIP").val(), $("#lampIP").val(), $("#electricityGatewayIP").val(), $("#electricityAddress").val());
     }
     else {
-        EditAH(urlID, $('#name').val(), $("#voltageType").val(), $("#powerSubstation").val(), $("#ledIP").val(), $("#lampIP").val());
+        EditAH(urlID, $('#name').val(), $("#voltageType").val(), $("#powerSubstation").val(), $("#ledIP").val(), $("#lampIP").val(), $("#electricityGatewayIP").val(), $("#electricityAddress").val());
     }
 
 }
 
 
-function AddAH(Name, VoltageType, PowerSubstationID,ledIP,lampIP) {
+function AddAH(Name, VoltageType, PowerSubstationID, ledIP, lampIP, electricityGatewayIP, electricityAddress) {
     var path = "/AH/Add";
     var data = {
         'Name': Name,
         'VoltageType': VoltageType,
         'PowerSubstationID': PowerSubstationID,
         'LedIP': ledIP,
-        'LampIP': lampIP
+        'LampIP': lampIP,
+        'ElectricityGatewayIP': electricityGatewayIP,
+        'ElectricityAddress': electricityAddress
     };
     if (basepost(data, path)) {
         layer.alert('添加成功！', {
@@ -116,7 +132,7 @@ function AddAH(Name, VoltageType, PowerSubstationID,ledIP,lampIP) {
     }
 }
 
-function EditAH(ID, Name, VoltageType, PowerSubstationID, ledIP, lampIP) {
+function EditAH(ID, Name, VoltageType, PowerSubstationID, ledIP, lampIP, electricityGatewayIP, electricityAddress) {
     var path = "/AH/Edit";
     var data = {
         'ID': ID,
@@ -124,7 +140,9 @@ function EditAH(ID, Name, VoltageType, PowerSubstationID, ledIP, lampIP) {
         'VoltageType': VoltageType,
         'PowerSubstationID': PowerSubstationID,
         'LedIP': ledIP,
-        'LampIP': lampIP
+        'LampIP': lampIP,
+        'ElectricityGatewayIP': electricityGatewayIP,
+        'ElectricityAddress': electricityAddress
     };
     if (basepost(data, path)) {
         layer.alert('修改成功！', {
