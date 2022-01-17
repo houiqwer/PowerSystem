@@ -16,7 +16,7 @@ namespace PowerSystemLibrary.Util
     public class LampUtil
     {
         private static int Port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["lampPort"]);
-        public string OpenOrCloseLamp(string lampIP, AHState aHState, bool isDebug = true)
+        public string OpenOrCloseLamp(string lampIP, AHState aHState, bool isDebug = false)
         {
             string message = string.Empty;
             if (isDebug)

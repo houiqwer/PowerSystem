@@ -346,7 +346,21 @@ namespace PowerSystemLibrary.BLL
                                     sendElectricalTask.AHID = operation.AHID;
                                     sendElectricalTask.CreateDate = now;
                                     sendElectricalTask.ElectricalTaskType = ElectricalTaskType.送电作业;
+                                    sendElectricalTask.ReciveCount = 2;
                                     db.ElectricalTask.Add(sendElectricalTask);
+                                    db.SaveChanges();
+
+                                    //直接分给以上两人
+                                    List<ElectricalTaskUser> electricalTaskUserList = db.ElectricalTaskUser.Where(m => m.ElectricalTaskID == selectedElectricalTask.ID).ToList();
+                                    foreach (ElectricalTaskUser selectedElectricalTaskUser in electricalTaskUserList)
+                                    {
+                                        ElectricalTaskUser sendElectricalTaskUser = new ElectricalTaskUser();
+                                        sendElectricalTaskUser.UserID = selectedElectricalTaskUser.UserID;
+                                        sendElectricalTaskUser.Date = DateTime.Now;
+                                        sendElectricalTaskUser.ElectricalTaskID = sendElectricalTask.ID;
+                                        db.ElectricalTaskUser.Add(sendElectricalTaskUser);
+                                    }
+
                                     db.SaveChanges();
 
                                     string ledMessage = new ShowLed().ShowLedMethod(ah.LedIP, LEDState.未送电, surplusCount);
